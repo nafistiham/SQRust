@@ -1,0 +1,27 @@
+# Build output
+/target/
+*.rs.bk
+
+# Cargo lock for libraries (keep for binaries)
+# Cargo.lock
+
+# Environment
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Internal docs (private notes, competition research, planning)
+internals/
+
+# Test artifacts
+*.profraw
+lcov.info
