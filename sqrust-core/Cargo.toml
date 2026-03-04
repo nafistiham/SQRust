@@ -1,0 +1,10 @@
+[package]
+name = "sqrust-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sqlparser = { workspace = true }
+serde = { workspace = true }
+toml = { workspace = true }

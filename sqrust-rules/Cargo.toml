@@ -1,0 +1,11 @@
+[package]
+name = "sqrust-rules"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+sqrust-core = { workspace = true }
+
+[dev-dependencies]
+sqrust-core = { workspace = true }

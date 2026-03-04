@@ -1,0 +1,16 @@
+[package]
+name = "sqrust-cli"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "sqrust"
+path = "src/main.rs"
+
+[dependencies]
+sqrust-core = { workspace = true }
+sqrust-rules = { workspace = true }
+clap = { workspace = true }
+rayon = { workspace = true }
+walkdir = { workspace = true }
