@@ -1,6 +1,12 @@
 use clap::{Parser, Subcommand};
 use rayon::prelude::*;
 use sqrust_core::{FileContext, Rule};
+use sqrust_rules::capitalisation::functions::Functions;
+use sqrust_rules::capitalisation::keywords::Keywords;
+use sqrust_rules::convention::coalesce::Coalesce;
+use sqrust_rules::convention::comma_style::CommaStyle;
+use sqrust_rules::convention::not_equal::NotEqual;
+use sqrust_rules::layout::long_lines::LongLines;
 use sqrust_rules::layout::trailing_whitespace::TrailingWhitespace;
 use std::path::PathBuf;
 use std::process;
@@ -28,7 +34,15 @@ enum Commands {
 }
 
 fn rules() -> Vec<Box<dyn Rule>> {
-    vec![Box::new(TrailingWhitespace)]
+    vec![
+        Box::new(TrailingWhitespace),
+        Box::new(Keywords),
+        Box::new(Functions),
+        Box::new(NotEqual),
+        Box::new(CommaStyle),
+        Box::new(Coalesce),
+        Box::new(LongLines::default()),
+    ]
 }
 
 fn collect_sql_files(paths: &[PathBuf]) -> Vec<PathBuf> {
