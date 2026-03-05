@@ -300,6 +300,7 @@ dependencies = [
 name = "sqrust-rules"
 version = "0.1.0"
 dependencies = [
+ "sqlparser",
  "sqrust-core",
 ]
 
