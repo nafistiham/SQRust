@@ -1,5 +1,6 @@
 pub mod functions;
 pub mod keywords;
+pub mod literals;
 pub mod types;
 
 /// Tokenises a SQL source string into a sequence of `Token`s.
