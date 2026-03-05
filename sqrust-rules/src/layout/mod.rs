@@ -7,3 +7,5 @@ pub mod space_before_comma;
 pub mod trailing_blank_lines;
 pub mod comment_spacing;
 pub mod space_around_equals;
+pub mod no_double_spaces;
+pub mod statement_semicolons;
