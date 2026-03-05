@@ -5,3 +5,5 @@ pub mod single_space_after_comma;
 pub mod trailing_whitespace;
 pub mod space_before_comma;
 pub mod trailing_blank_lines;
+pub mod comment_spacing;
+pub mod space_around_equals;
