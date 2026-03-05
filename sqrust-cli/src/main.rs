@@ -2,13 +2,18 @@ use clap::{Parser, Subcommand};
 use rayon::prelude::*;
 use sqrust_core::{FileContext, Rule};
 use sqrust_rules::ambiguous::group_by_position::GroupByPosition;
+use sqrust_rules::ambiguous::having_without_group_by::HavingWithoutGroupBy;
 use sqrust_rules::ambiguous::order_by_position::OrderByPosition;
+use sqrust_rules::ambiguous::select_star_with_other_columns::SelectStarWithOtherColumns;
 use sqrust_rules::capitalisation::functions::Functions;
 use sqrust_rules::capitalisation::keywords::Keywords;
+use sqrust_rules::capitalisation::literals::Literals;
 use sqrust_rules::capitalisation::types::Types;
 use sqrust_rules::convention::coalesce::Coalesce;
 use sqrust_rules::convention::comma_style::CommaStyle;
 use sqrust_rules::convention::count_star::CountStar;
+use sqrust_rules::convention::distinct_parenthesis::DistinctParenthesis;
+use sqrust_rules::convention::is_null::IsNull;
 use sqrust_rules::convention::not_equal::NotEqual;
 use sqrust_rules::convention::select_star::SelectStar;
 use sqrust_rules::layout::long_lines::LongLines;
@@ -16,7 +21,10 @@ use sqrust_rules::layout::single_space_after_comma::SingleSpaceAfterComma;
 use sqrust_rules::layout::tab_indentation::TabIndentation;
 use sqrust_rules::layout::trailing_newline::TrailingNewline;
 use sqrust_rules::layout::trailing_whitespace::TrailingWhitespace;
+use sqrust_rules::lint::duplicate_alias::DuplicateAlias;
 use sqrust_rules::lint::unused_cte::UnusedCte;
+use sqrust_rules::structure::limit_without_order_by::LimitWithoutOrderBy;
+use sqrust_rules::structure::union_all::UnionAll;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -54,17 +62,27 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(Keywords),
         Box::new(Functions),
         Box::new(Types),
+        Box::new(Literals),
         // Convention
         Box::new(NotEqual),
         Box::new(CommaStyle),
         Box::new(Coalesce),
         Box::new(SelectStar),
         Box::new(CountStar),
+        // Convention (continued)
+        Box::new(IsNull),
+        Box::new(DistinctParenthesis),
         // Ambiguous
         Box::new(GroupByPosition),
         Box::new(OrderByPosition),
+        Box::new(SelectStarWithOtherColumns),
+        Box::new(HavingWithoutGroupBy),
         // Lint
         Box::new(UnusedCte),
+        Box::new(DuplicateAlias),
+        // Structure
+        Box::new(UnionAll),
+        Box::new(LimitWithoutOrderBy),
     ]
 }
 
