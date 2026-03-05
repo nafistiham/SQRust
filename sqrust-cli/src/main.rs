@@ -3,6 +3,8 @@ use rayon::prelude::*;
 use sqrust_core::{FileContext, Rule};
 use sqrust_rules::ambiguous::column_name_conflict::ColumnNameConflict;
 use sqrust_rules::ambiguous::group_by_position::GroupByPosition;
+use sqrust_rules::ambiguous::redundant_between::RedundantBetween;
+use sqrust_rules::ambiguous::self_comparison::SelfComparison;
 use sqrust_rules::ambiguous::having_without_group_by::HavingWithoutGroupBy;
 use sqrust_rules::ambiguous::implicit_cross_join::ImplicitCrossJoin;
 use sqrust_rules::ambiguous::join_without_condition::JoinWithoutCondition;
@@ -15,8 +17,10 @@ use sqrust_rules::capitalisation::functions::Functions;
 use sqrust_rules::capitalisation::keywords::Keywords;
 use sqrust_rules::capitalisation::literals::Literals;
 use sqrust_rules::capitalisation::types::Types;
+use sqrust_rules::convention::boolean_comparison::BooleanComparison;
 use sqrust_rules::convention::case_else::CaseElse;
 use sqrust_rules::convention::coalesce::Coalesce;
+use sqrust_rules::convention::like_percent_only::LikePercentOnly;
 use sqrust_rules::convention::no_select_all::NoSelectAll;
 use sqrust_rules::convention::unnecessary_else_null::UnnecessaryElseNull;
 use sqrust_rules::convention::comma_style::CommaStyle;
@@ -30,6 +34,8 @@ use sqrust_rules::convention::select_star::SelectStar;
 use sqrust_rules::convention::trailing_comma::TrailingComma;
 use sqrust_rules::layout::comment_spacing::CommentSpacing;
 use sqrust_rules::layout::long_lines::LongLines;
+use sqrust_rules::layout::max_blank_lines::MaxBlankLines;
+use sqrust_rules::layout::parenthesis_spacing::ParenthesisSpacing;
 use sqrust_rules::layout::no_double_spaces::NoDoubleSpaces;
 use sqrust_rules::layout::statement_semicolons::StatementSemicolons;
 use sqrust_rules::layout::single_space_after_comma::SingleSpaceAfterComma;
@@ -41,6 +47,8 @@ use sqrust_rules::layout::trailing_newline::TrailingNewline;
 use sqrust_rules::layout::trailing_whitespace::TrailingWhitespace;
 use sqrust_rules::lint::delete_without_where::DeleteWithoutWhere;
 use sqrust_rules::lint::duplicate_alias::DuplicateAlias;
+use sqrust_rules::lint::empty_string_comparison::EmptyStringComparison;
+use sqrust_rules::lint::insert_without_column_list::InsertWithoutColumnList;
 use sqrust_rules::lint::update_set_duplicate::UpdateSetDuplicate;
 use sqrust_rules::lint::where_tautology::WhereTautology;
 use sqrust_rules::lint::duplicate_cte_names::DuplicateCteNames;
@@ -49,6 +57,8 @@ use sqrust_rules::lint::unused_cte::UnusedCte;
 use sqrust_rules::lint::update_without_where::UpdateWithoutWhere;
 use sqrust_rules::structure::column_count::ColumnCount;
 use sqrust_rules::structure::distinct_group_by::DistinctGroupBy;
+use sqrust_rules::structure::too_many_joins::TooManyJoins;
+use sqrust_rules::structure::window_without_order_by::WindowWithoutOrderBy;
 use sqrust_rules::structure::having_without_aggregate::HavingWithoutAggregate;
 use sqrust_rules::structure::too_many_ctes::TooManyCtes;
 use sqrust_rules::structure::limit_without_order_by::LimitWithoutOrderBy;
@@ -94,6 +104,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(SpaceAroundEquals),
         Box::new(NoDoubleSpaces),
         Box::new(StatementSemicolons),
+        Box::new(ParenthesisSpacing),
+        Box::new(MaxBlankLines::default()),
         // Capitalisation
         Box::new(Keywords),
         Box::new(Functions),
@@ -113,6 +125,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(OrderByWithOffset),
         Box::new(UnnecessaryElseNull),
         Box::new(NoSelectAll),
+        Box::new(BooleanComparison),
+        Box::new(LikePercentOnly),
         // Ambiguous
         Box::new(GroupByPosition),
         Box::new(OrderByPosition),
@@ -124,6 +138,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(JoinWithoutCondition),
         Box::new(UnionColumnMismatch),
         Box::new(ColumnNameConflict),
+        Box::new(SelfComparison),
+        Box::new(RedundantBetween),
         // Lint
         Box::new(UnusedCte),
         Box::new(DuplicateAlias),
@@ -133,6 +149,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(DuplicateCteNames),
         Box::new(WhereTautology),
         Box::new(UpdateSetDuplicate),
+        Box::new(EmptyStringComparison),
+        Box::new(InsertWithoutColumnList),
         // Structure
         Box::new(UnionAll),
         Box::new(LimitWithoutOrderBy),
@@ -141,6 +159,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(DistinctGroupBy),
         Box::new(SubqueryInSelect),
         Box::new(HavingWithoutAggregate),
+        Box::new(TooManyJoins::default()),
+        Box::new(WindowWithoutOrderBy),
         Box::new(TooManyCtes::default()),
     ]
 }
