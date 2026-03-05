@@ -5,4 +5,6 @@ pub mod limit_without_order_by;
 pub mod nested_subquery;
 pub mod subquery_in_select;
 pub mod too_many_ctes;
+pub mod too_many_joins;
 pub mod union_all;
+pub mod window_without_order_by;
