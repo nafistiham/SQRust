@@ -1,13 +1,22 @@
 use clap::{Parser, Subcommand};
 use rayon::prelude::*;
 use sqrust_core::{FileContext, Rule};
+use sqrust_rules::ambiguous::group_by_position::GroupByPosition;
+use sqrust_rules::ambiguous::order_by_position::OrderByPosition;
 use sqrust_rules::capitalisation::functions::Functions;
 use sqrust_rules::capitalisation::keywords::Keywords;
+use sqrust_rules::capitalisation::types::Types;
 use sqrust_rules::convention::coalesce::Coalesce;
 use sqrust_rules::convention::comma_style::CommaStyle;
+use sqrust_rules::convention::count_star::CountStar;
 use sqrust_rules::convention::not_equal::NotEqual;
+use sqrust_rules::convention::select_star::SelectStar;
 use sqrust_rules::layout::long_lines::LongLines;
+use sqrust_rules::layout::single_space_after_comma::SingleSpaceAfterComma;
+use sqrust_rules::layout::tab_indentation::TabIndentation;
+use sqrust_rules::layout::trailing_newline::TrailingNewline;
 use sqrust_rules::layout::trailing_whitespace::TrailingWhitespace;
+use sqrust_rules::lint::unused_cte::UnusedCte;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -35,13 +44,27 @@ enum Commands {
 
 fn rules() -> Vec<Box<dyn Rule>> {
     vec![
+        // Layout
         Box::new(TrailingWhitespace),
+        Box::new(TrailingNewline),
+        Box::new(TabIndentation),
+        Box::new(SingleSpaceAfterComma),
+        Box::new(LongLines::default()),
+        // Capitalisation
         Box::new(Keywords),
         Box::new(Functions),
+        Box::new(Types),
+        // Convention
         Box::new(NotEqual),
         Box::new(CommaStyle),
         Box::new(Coalesce),
-        Box::new(LongLines::default()),
+        Box::new(SelectStar),
+        Box::new(CountStar),
+        // Ambiguous
+        Box::new(GroupByPosition),
+        Box::new(OrderByPosition),
+        // Lint
+        Box::new(UnusedCte),
     ]
 }
 
