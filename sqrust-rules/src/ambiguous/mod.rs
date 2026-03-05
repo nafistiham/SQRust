@@ -1,3 +1,4 @@
+pub mod column_name_conflict;
 pub mod group_by_position;
 pub mod having_without_group_by;
 pub mod implicit_cross_join;
@@ -6,3 +7,4 @@ pub mod order_by_position;
 pub mod select_star_with_other_columns;
 pub mod table_alias_conflict;
 pub mod unaliased_expression;
+pub mod union_column_mismatch;
