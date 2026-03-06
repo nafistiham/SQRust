@@ -75,6 +75,16 @@ use sqrust_rules::ambiguous::division_by_zero::DivisionByZero;
 use sqrust_rules::ambiguous::or_in_join_condition::OrInJoinCondition;
 use sqrust_rules::layout::unicode_identifiers::UnicodeIdentifiers;
 use sqrust_rules::layout::mixed_line_endings::MixedLineEndings;
+use sqrust_rules::convention::in_single_value::InSingleValue;
+use sqrust_rules::convention::select_distinct_star::SelectDistinctStar;
+use sqrust_rules::lint::null_in_not_in::NullInNotIn;
+use sqrust_rules::lint::drop_table_if_exists::DropTableIfExists;
+use sqrust_rules::structure::large_in_list::LargeInList;
+use sqrust_rules::structure::function_call_depth::FunctionCallDepth;
+use sqrust_rules::ambiguous::cross_join_keyword::CrossJoinKeyword;
+use sqrust_rules::ambiguous::ambiguous_bool_op::AmbiguousBoolOp;
+use sqrust_rules::layout::space_after_semicolon::SpaceAfterSemicolon;
+use sqrust_rules::layout::blank_line_between_statements::BlankLineBetweenStatements;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -183,6 +193,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(OrInJoinCondition),
         Box::new(UnicodeIdentifiers),
         Box::new(MixedLineEndings),
+        // Wave 9
+        Box::new(InSingleValue),
+        Box::new(SelectDistinctStar),
+        Box::new(NullInNotIn),
+        Box::new(DropTableIfExists),
+        Box::new(LargeInList::default()),
+        Box::new(FunctionCallDepth::default()),
+        Box::new(CrossJoinKeyword),
+        Box::new(AmbiguousBoolOp),
+        Box::new(SpaceAfterSemicolon),
+        Box::new(BlankLineBetweenStatements),
     ]
 }
 
