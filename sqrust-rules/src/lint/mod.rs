@@ -1,3 +1,4 @@
+pub mod create_table_without_primary_key;
 pub mod delete_without_where;
 pub mod drop_table_if_exists;
 pub mod duplicate_alias;
@@ -8,6 +9,7 @@ pub mod insert_without_column_list;
 pub mod negated_is_null;
 pub mod null_in_not_in;
 pub mod subquery_without_alias;
+pub mod truncate_table;
 pub mod unused_cte;
 pub mod update_set_duplicate;
 pub mod update_without_where;
