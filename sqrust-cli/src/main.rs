@@ -65,6 +65,16 @@ use sqrust_rules::structure::limit_without_order_by::LimitWithoutOrderBy;
 use sqrust_rules::structure::nested_subquery::NestedSubquery;
 use sqrust_rules::structure::subquery_in_select::SubqueryInSelect;
 use sqrust_rules::structure::union_all::UnionAll;
+use sqrust_rules::convention::no_char_type::NoCharType;
+use sqrust_rules::convention::no_using_clause::NoUsingClause;
+use sqrust_rules::lint::subquery_without_alias::SubqueryWithoutAlias;
+use sqrust_rules::lint::duplicate_column_in_create::DuplicateColumnInCreate;
+use sqrust_rules::structure::case_when_count::CaseWhenCount;
+use sqrust_rules::structure::order_by_in_subquery::OrderByInSubquery;
+use sqrust_rules::ambiguous::division_by_zero::DivisionByZero;
+use sqrust_rules::ambiguous::or_in_join_condition::OrInJoinCondition;
+use sqrust_rules::layout::unicode_identifiers::UnicodeIdentifiers;
+use sqrust_rules::layout::mixed_line_endings::MixedLineEndings;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -162,6 +172,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(TooManyJoins::default()),
         Box::new(WindowWithoutOrderBy),
         Box::new(TooManyCtes::default()),
+        // Wave 8
+        Box::new(NoCharType),
+        Box::new(NoUsingClause),
+        Box::new(SubqueryWithoutAlias),
+        Box::new(DuplicateColumnInCreate),
+        Box::new(CaseWhenCount::default()),
+        Box::new(OrderByInSubquery),
+        Box::new(DivisionByZero),
+        Box::new(OrInJoinCondition),
+        Box::new(UnicodeIdentifiers),
+        Box::new(MixedLineEndings),
     ]
 }
 
