@@ -1,10 +1,12 @@
 pub mod delete_without_where;
+pub mod drop_table_if_exists;
 pub mod duplicate_alias;
 pub mod duplicate_column_in_create;
 pub mod duplicate_cte_names;
 pub mod empty_string_comparison;
 pub mod insert_without_column_list;
 pub mod negated_is_null;
+pub mod null_in_not_in;
 pub mod subquery_without_alias;
 pub mod unused_cte;
 pub mod update_set_duplicate;
