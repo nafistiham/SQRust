@@ -1,8 +1,10 @@
+pub mod case_when_count;
 pub mod column_count;
 pub mod distinct_group_by;
 pub mod having_without_aggregate;
 pub mod limit_without_order_by;
 pub mod nested_subquery;
+pub mod order_by_in_subquery;
 pub mod subquery_in_select;
 pub mod too_many_ctes;
 pub mod too_many_joins;
