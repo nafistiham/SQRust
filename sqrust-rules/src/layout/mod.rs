@@ -15,3 +15,5 @@ pub mod unicode_identifiers;
 pub mod mixed_line_endings;
 pub mod space_after_semicolon;
 pub mod blank_line_between_statements;
+pub mod leading_comma;
+pub mod leading_operator;
