@@ -1,10 +1,12 @@
 pub mod boolean_comparison;
+pub mod colon_cast;
 pub mod concat_operator;
 pub mod case_else;
 pub mod coalesce;
 pub mod comma_style;
 pub mod count_star;
 pub mod distinct_parenthesis;
+pub mod if_null_function;
 pub mod in_null_comparison;
 pub mod in_single_value;
 pub mod is_null;
