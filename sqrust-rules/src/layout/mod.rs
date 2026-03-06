@@ -17,3 +17,5 @@ pub mod space_after_semicolon;
 pub mod blank_line_between_statements;
 pub mod leading_comma;
 pub mod leading_operator;
+pub mod nested_parentheses;
+pub mod comment_style;
