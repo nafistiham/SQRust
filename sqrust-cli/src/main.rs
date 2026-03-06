@@ -95,6 +95,16 @@ use sqrust_rules::ambiguous::full_outer_join::FullOuterJoin;
 use sqrust_rules::ambiguous::select_distinct_with_group_by::SelectDistinctWithGroupBy;
 use sqrust_rules::layout::leading_comma::LeadingComma;
 use sqrust_rules::layout::leading_operator::LeadingOperator;
+use sqrust_rules::convention::colon_cast::ColonCast;
+use sqrust_rules::convention::if_null_function::IfNullFunction;
+use sqrust_rules::lint::alter_table_drop_column::AlterTableDropColumn;
+use sqrust_rules::lint::create_or_replace::CreateOrReplace;
+use sqrust_rules::structure::excessive_where_conditions::ExcessiveWhereConditions;
+use sqrust_rules::structure::too_many_unions::TooManyUnions;
+use sqrust_rules::ambiguous::window_function_without_partition::WindowFunctionWithoutPartition;
+use sqrust_rules::ambiguous::select_null_expression::SelectNullExpression;
+use sqrust_rules::layout::nested_parentheses::NestedParentheses;
+use sqrust_rules::layout::comment_style::CommentStyle;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -225,6 +235,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(SelectDistinctWithGroupBy),
         Box::new(LeadingComma),
         Box::new(LeadingOperator),
+        // Wave 11
+        Box::new(ColonCast),
+        Box::new(IfNullFunction),
+        Box::new(AlterTableDropColumn),
+        Box::new(CreateOrReplace),
+        Box::new(ExcessiveWhereConditions::default()),
+        Box::new(TooManyUnions::default()),
+        Box::new(WindowFunctionWithoutPartition),
+        Box::new(SelectNullExpression),
+        Box::new(NestedParentheses::default()),
+        Box::new(CommentStyle),
     ]
 }
 
