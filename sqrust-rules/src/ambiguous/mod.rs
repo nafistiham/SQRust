@@ -1,9 +1,11 @@
 pub mod column_name_conflict;
+pub mod division_by_zero;
 pub mod group_by_position;
 pub mod having_without_group_by;
 pub mod implicit_cross_join;
 pub mod join_without_condition;
 pub mod order_by_position;
+pub mod or_in_join_condition;
 pub mod redundant_between;
 pub mod select_star_with_other_columns;
 pub mod self_comparison;
