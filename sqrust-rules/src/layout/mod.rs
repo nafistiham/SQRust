@@ -11,3 +11,5 @@ pub mod no_double_spaces;
 pub mod statement_semicolons;
 pub mod parenthesis_spacing;
 pub mod max_blank_lines;
+pub mod unicode_identifiers;
+pub mod mixed_line_endings;
