@@ -85,6 +85,16 @@ use sqrust_rules::ambiguous::cross_join_keyword::CrossJoinKeyword;
 use sqrust_rules::ambiguous::ambiguous_bool_op::AmbiguousBoolOp;
 use sqrust_rules::layout::space_after_semicolon::SpaceAfterSemicolon;
 use sqrust_rules::layout::blank_line_between_statements::BlankLineBetweenStatements;
+use sqrust_rules::convention::like_without_wildcard::LikeWithoutWildcard;
+use sqrust_rules::convention::concat_operator::ConcatOperator;
+use sqrust_rules::lint::truncate_table::TruncateTable;
+use sqrust_rules::lint::create_table_without_primary_key::CreateTableWithoutPrimaryKey;
+use sqrust_rules::structure::excessive_group_by_columns::ExcessiveGroupByColumns;
+use sqrust_rules::structure::natural_join::NaturalJoin;
+use sqrust_rules::ambiguous::full_outer_join::FullOuterJoin;
+use sqrust_rules::ambiguous::select_distinct_with_group_by::SelectDistinctWithGroupBy;
+use sqrust_rules::layout::leading_comma::LeadingComma;
+use sqrust_rules::layout::leading_operator::LeadingOperator;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -204,6 +214,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(AmbiguousBoolOp),
         Box::new(SpaceAfterSemicolon),
         Box::new(BlankLineBetweenStatements),
+        // Wave 10
+        Box::new(LikeWithoutWildcard),
+        Box::new(ConcatOperator),
+        Box::new(TruncateTable),
+        Box::new(CreateTableWithoutPrimaryKey),
+        Box::new(ExcessiveGroupByColumns::default()),
+        Box::new(NaturalJoin),
+        Box::new(FullOuterJoin),
+        Box::new(SelectDistinctWithGroupBy),
+        Box::new(LeadingComma),
+        Box::new(LeadingOperator),
     ]
 }
 
