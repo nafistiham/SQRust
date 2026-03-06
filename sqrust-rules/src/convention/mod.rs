@@ -1,4 +1,5 @@
 pub mod boolean_comparison;
+pub mod concat_operator;
 pub mod case_else;
 pub mod coalesce;
 pub mod comma_style;
@@ -8,6 +9,7 @@ pub mod in_null_comparison;
 pub mod in_single_value;
 pub mod is_null;
 pub mod like_percent_only;
+pub mod like_without_wildcard;
 pub mod no_char_type;
 pub mod no_select_all;
 pub mod no_using_clause;
