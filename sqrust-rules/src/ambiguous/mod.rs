@@ -1,4 +1,6 @@
 pub mod ambiguous_bool_op;
+pub mod function_on_filtered_column;
+pub mod self_join;
 pub mod chained_comparisons;
 pub mod subquery_in_group_by;
 pub mod mixed_join_types;
