@@ -1,3 +1,5 @@
+pub mod no_null_default;
+pub mod unnecessary_case_when;
 pub mod leading_zero_numeric;
 pub mod select_top_n;
 pub mod boolean_comparison;
