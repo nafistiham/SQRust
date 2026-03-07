@@ -115,6 +115,16 @@ use sqrust_rules::ambiguous::nulls_ordering::NullsOrdering;
 use sqrust_rules::ambiguous::mixed_join_types::MixedJoinTypes;
 use sqrust_rules::layout::arithmetic_operator_at_line_end::ArithmeticOperatorAtLineEnd;
 use sqrust_rules::layout::max_statement_length::MaxStatementLength;
+use sqrust_rules::convention::like_tautology::LikeTautology;
+use sqrust_rules::convention::coalesce_null_arg::CoalesceNullArg;
+use sqrust_rules::lint::recursive_cte::RecursiveCte;
+use sqrust_rules::lint::insert_or_replace::InsertOrReplace;
+use sqrust_rules::structure::max_join_on_conditions::MaxJoinOnConditions;
+use sqrust_rules::structure::select_only_literals::SelectOnlyLiterals;
+use sqrust_rules::ambiguous::chained_comparisons::ChainedComparisons;
+use sqrust_rules::ambiguous::subquery_in_group_by::SubqueryInGroupBy;
+use sqrust_rules::layout::consistent_comment_style::ConsistentCommentStyle;
+use sqrust_rules::layout::whitespace_before_semicolon::WhitespaceBeforeSemicolon;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -267,6 +277,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(MixedJoinTypes),
         Box::new(ArithmeticOperatorAtLineEnd),
         Box::new(MaxStatementLength::default()),
+        // Wave 13
+        Box::new(LikeTautology),
+        Box::new(CoalesceNullArg),
+        Box::new(RecursiveCte),
+        Box::new(InsertOrReplace),
+        Box::new(MaxJoinOnConditions::default()),
+        Box::new(SelectOnlyLiterals),
+        Box::new(ChainedComparisons),
+        Box::new(SubqueryInGroupBy),
+        Box::new(ConsistentCommentStyle),
+        Box::new(WhitespaceBeforeSemicolon),
     ]
 }
 
