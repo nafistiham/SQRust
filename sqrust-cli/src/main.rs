@@ -135,6 +135,16 @@ use sqrust_rules::ambiguous::self_join::SelfJoin;
 use sqrust_rules::ambiguous::function_on_filtered_column::FunctionOnFilteredColumn;
 use sqrust_rules::layout::max_identifier_length::MaxIdentifierLength;
 use sqrust_rules::layout::clause_on_new_line::ClauseOnNewLine;
+use sqrust_rules::convention::no_null_default::NoNullDefault;
+use sqrust_rules::convention::unnecessary_case_when::UnnecessaryCaseWhen;
+use sqrust_rules::lint::grant_all_privileges::GrantAllPrivileges;
+use sqrust_rules::lint::alter_table_add_not_null_without_default::AlterTableAddNotNullWithoutDefault;
+use sqrust_rules::structure::aggregate_in_where::AggregateInWhere;
+use sqrust_rules::structure::zero_limit_clause::ZeroLimitClause;
+use sqrust_rules::ambiguous::subquery_in_order_by::SubqueryInOrderBy;
+use sqrust_rules::ambiguous::non_deterministic_group_by::NonDeterministicGroupBy;
+use sqrust_rules::layout::no_multiple_statements_on_line::NoMultipleStatementsOnLine;
+use sqrust_rules::layout::comparison_operator_spacing::ComparisonOperatorSpacing;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -309,6 +319,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(FunctionOnFilteredColumn),
         Box::new(MaxIdentifierLength::default()),
         Box::new(ClauseOnNewLine),
+        // Wave 15
+        Box::new(NoNullDefault),
+        Box::new(UnnecessaryCaseWhen),
+        Box::new(GrantAllPrivileges),
+        Box::new(AlterTableAddNotNullWithoutDefault),
+        Box::new(AggregateInWhere),
+        Box::new(ZeroLimitClause),
+        Box::new(SubqueryInOrderBy),
+        Box::new(NonDeterministicGroupBy),
+        Box::new(NoMultipleStatementsOnLine),
+        Box::new(ComparisonOperatorSpacing),
     ]
 }
 
