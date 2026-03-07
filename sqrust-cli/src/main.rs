@@ -105,6 +105,16 @@ use sqrust_rules::ambiguous::window_function_without_partition::WindowFunctionWi
 use sqrust_rules::ambiguous::select_null_expression::SelectNullExpression;
 use sqrust_rules::layout::nested_parentheses::NestedParentheses;
 use sqrust_rules::layout::comment_style::CommentStyle;
+use sqrust_rules::convention::exists_over_in::ExistsOverIn;
+use sqrust_rules::convention::no_current_timestamp_in_where::NoCurrentTimestampInWhere;
+use sqrust_rules::lint::drop_schema_statement::DropSchemaStatement;
+use sqrust_rules::lint::non_deterministic_function::NonDeterministicFunction;
+use sqrust_rules::structure::having_conditions_count::HavingConditionsCount;
+use sqrust_rules::structure::too_many_subqueries::TooManySubqueries;
+use sqrust_rules::ambiguous::nulls_ordering::NullsOrdering;
+use sqrust_rules::ambiguous::mixed_join_types::MixedJoinTypes;
+use sqrust_rules::layout::arithmetic_operator_at_line_end::ArithmeticOperatorAtLineEnd;
+use sqrust_rules::layout::max_statement_length::MaxStatementLength;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -246,6 +256,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(SelectNullExpression),
         Box::new(NestedParentheses::default()),
         Box::new(CommentStyle),
+        // Wave 12
+        Box::new(ExistsOverIn),
+        Box::new(NoCurrentTimestampInWhere),
+        Box::new(DropSchemaStatement),
+        Box::new(NonDeterministicFunction),
+        Box::new(HavingConditionsCount::default()),
+        Box::new(TooManySubqueries::default()),
+        Box::new(NullsOrdering),
+        Box::new(MixedJoinTypes),
+        Box::new(ArithmeticOperatorAtLineEnd),
+        Box::new(MaxStatementLength::default()),
     ]
 }
 
