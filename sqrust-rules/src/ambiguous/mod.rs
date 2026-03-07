@@ -1,4 +1,6 @@
 pub mod ambiguous_bool_op;
+pub mod mixed_join_types;
+pub mod nulls_ordering;
 pub mod column_name_conflict;
 pub mod cross_join_keyword;
 pub mod division_by_zero;
