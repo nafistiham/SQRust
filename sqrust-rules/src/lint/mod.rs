@@ -1,4 +1,6 @@
 pub mod alter_table_drop_column;
+pub mod duplicate_condition;
+pub mod empty_in_list;
 pub mod recursive_cte;
 pub mod insert_or_replace;
 pub mod create_or_replace;
