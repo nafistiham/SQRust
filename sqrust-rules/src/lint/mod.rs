@@ -1,3 +1,4 @@
+pub mod alter_table_add_not_null_without_default;
 pub mod alter_table_drop_column;
 pub mod duplicate_condition;
 pub mod empty_in_list;
@@ -9,6 +10,7 @@ pub mod non_deterministic_function;
 pub mod create_table_without_primary_key;
 pub mod delete_without_where;
 pub mod drop_table_if_exists;
+pub mod grant_all_privileges;
 pub mod duplicate_alias;
 pub mod duplicate_column_in_create;
 pub mod duplicate_cte_names;
