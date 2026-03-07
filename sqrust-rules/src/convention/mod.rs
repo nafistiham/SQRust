@@ -1,5 +1,7 @@
 pub mod boolean_comparison;
+pub mod coalesce_null_arg;
 pub mod exists_over_in;
+pub mod like_tautology;
 pub mod no_current_timestamp_in_where;
 pub mod colon_cast;
 pub mod concat_operator;
