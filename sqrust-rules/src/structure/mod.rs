@@ -1,3 +1,4 @@
+pub mod aggregate_in_where;
 pub mod case_when_count;
 pub mod column_count;
 pub mod distinct_group_by;
@@ -22,3 +23,4 @@ pub mod too_many_subqueries;
 pub mod too_many_unions;
 pub mod union_all;
 pub mod window_without_order_by;
+pub mod zero_limit_clause;
