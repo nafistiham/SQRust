@@ -1,5 +1,7 @@
 pub mod alter_table_drop_column;
 pub mod create_or_replace;
+pub mod drop_schema_statement;
+pub mod non_deterministic_function;
 pub mod create_table_without_primary_key;
 pub mod delete_without_where;
 pub mod drop_table_if_exists;
