@@ -21,3 +21,5 @@ pub mod leading_comma;
 pub mod leading_operator;
 pub mod nested_parentheses;
 pub mod comment_style;
+pub mod consistent_comment_style;
+pub mod whitespace_before_semicolon;
