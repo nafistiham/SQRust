@@ -1,4 +1,6 @@
 pub mod alter_table_drop_column;
+pub mod recursive_cte;
+pub mod insert_or_replace;
 pub mod create_or_replace;
 pub mod drop_schema_statement;
 pub mod non_deterministic_function;
