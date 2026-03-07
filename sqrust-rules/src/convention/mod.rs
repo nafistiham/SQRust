@@ -1,4 +1,6 @@
 pub mod boolean_comparison;
+pub mod exists_over_in;
+pub mod no_current_timestamp_in_where;
 pub mod colon_cast;
 pub mod concat_operator;
 pub mod case_else;
