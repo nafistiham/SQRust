@@ -1,4 +1,6 @@
 pub mod ambiguous_bool_op;
+pub mod chained_comparisons;
+pub mod subquery_in_group_by;
 pub mod mixed_join_types;
 pub mod nulls_ordering;
 pub mod column_name_conflict;
