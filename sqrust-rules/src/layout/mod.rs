@@ -23,3 +23,5 @@ pub mod nested_parentheses;
 pub mod comment_style;
 pub mod consistent_comment_style;
 pub mod whitespace_before_semicolon;
+pub mod max_identifier_length;
+pub mod clause_on_new_line;
