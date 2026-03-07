@@ -1,3 +1,5 @@
+pub mod arithmetic_operator_at_line_end;
+pub mod max_statement_length;
 pub mod long_lines;
 pub mod tab_indentation;
 pub mod trailing_newline;
