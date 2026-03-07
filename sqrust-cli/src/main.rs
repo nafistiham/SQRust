@@ -125,6 +125,16 @@ use sqrust_rules::ambiguous::chained_comparisons::ChainedComparisons;
 use sqrust_rules::ambiguous::subquery_in_group_by::SubqueryInGroupBy;
 use sqrust_rules::layout::consistent_comment_style::ConsistentCommentStyle;
 use sqrust_rules::layout::whitespace_before_semicolon::WhitespaceBeforeSemicolon;
+use sqrust_rules::convention::select_top_n::SelectTopN;
+use sqrust_rules::convention::leading_zero_numeric::LeadingZeroNumeric;
+use sqrust_rules::lint::empty_in_list::EmptyInList;
+use sqrust_rules::lint::duplicate_condition::DuplicateCondition;
+use sqrust_rules::structure::too_many_order_by_columns::TooManyOrderByColumns;
+use sqrust_rules::structure::mixed_aggregate_and_columns::MixedAggregateAndColumns;
+use sqrust_rules::ambiguous::self_join::SelfJoin;
+use sqrust_rules::ambiguous::function_on_filtered_column::FunctionOnFilteredColumn;
+use sqrust_rules::layout::max_identifier_length::MaxIdentifierLength;
+use sqrust_rules::layout::clause_on_new_line::ClauseOnNewLine;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -288,6 +298,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(SubqueryInGroupBy),
         Box::new(ConsistentCommentStyle),
         Box::new(WhitespaceBeforeSemicolon),
+        // Wave 14
+        Box::new(SelectTopN),
+        Box::new(LeadingZeroNumeric),
+        Box::new(EmptyInList),
+        Box::new(DuplicateCondition),
+        Box::new(TooManyOrderByColumns::default()),
+        Box::new(MixedAggregateAndColumns),
+        Box::new(SelfJoin),
+        Box::new(FunctionOnFilteredColumn),
+        Box::new(MaxIdentifierLength::default()),
+        Box::new(ClauseOnNewLine),
     ]
 }
 
