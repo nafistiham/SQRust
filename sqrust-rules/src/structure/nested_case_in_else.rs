@@ -15,10 +15,11 @@ impl Rule for NestedCaseInElse {
             return Vec::new();
         }
         let mut diags = Vec::new();
-        // Counter tracks how many ELSE keywords we've already used so we can
-        // pinpoint the correct ELSE that introduces the nested CASE.
-        let mut else_count = 0usize;
         for stmt in &ctx.statements {
+            // Counter tracks how many ELSE keywords we've already used so we can
+            // pinpoint the correct ELSE that introduces the nested CASE.
+            // Reset per statement so the offset search stays within the current statement.
+            let mut else_count = 0usize;
             if let Statement::Query(q) = stmt {
                 check_query(q, ctx, &mut else_count, &mut diags);
             }
