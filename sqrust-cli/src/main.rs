@@ -143,6 +143,8 @@ use sqrust_rules::structure::aggregate_in_where::AggregateInWhere;
 use sqrust_rules::structure::zero_limit_clause::ZeroLimitClause;
 use sqrust_rules::ambiguous::subquery_in_order_by::SubqueryInOrderBy;
 use sqrust_rules::ambiguous::non_deterministic_group_by::NonDeterministicGroupBy;
+use sqrust_rules::ambiguous::inconsistent_order_by_direction::InconsistentOrderByDirection;
+use sqrust_rules::ambiguous::inconsistent_column_reference::InconsistentColumnReference;
 use sqrust_rules::layout::no_multiple_statements_on_line::NoMultipleStatementsOnLine;
 use sqrust_rules::layout::comparison_operator_spacing::ComparisonOperatorSpacing;
 use sqrust_rules::convention::left_join::LeftJoin;
@@ -343,6 +345,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(ConsecutiveSemicolons),
         Box::new(NestedCaseInElse),
         Box::new(UnusedJoin),
+        Box::new(InconsistentOrderByDirection),
+        Box::new(InconsistentColumnReference),
     ]
 }
 
