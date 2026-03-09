@@ -145,6 +145,8 @@ use sqrust_rules::ambiguous::subquery_in_order_by::SubqueryInOrderBy;
 use sqrust_rules::ambiguous::non_deterministic_group_by::NonDeterministicGroupBy;
 use sqrust_rules::layout::no_multiple_statements_on_line::NoMultipleStatementsOnLine;
 use sqrust_rules::layout::comparison_operator_spacing::ComparisonOperatorSpacing;
+use sqrust_rules::convention::left_join::LeftJoin;
+use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -330,6 +332,9 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NonDeterministicGroupBy),
         Box::new(NoMultipleStatementsOnLine),
         Box::new(ComparisonOperatorSpacing),
+        // Wave 16
+        Box::new(LeftJoin),
+        Box::new(JoinConditionStyle),
     ]
 }
 

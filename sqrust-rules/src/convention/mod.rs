@@ -29,3 +29,5 @@ pub mod select_distinct_star;
 pub mod select_star;
 pub mod trailing_comma;
 pub mod unnecessary_else_null;
+pub mod left_join;
+pub mod join_condition_style;
