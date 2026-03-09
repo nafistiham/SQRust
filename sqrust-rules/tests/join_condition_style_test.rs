@@ -77,3 +77,9 @@ fn cross_table_eq_in_subquery_where_flagged() {
     let d = check("SELECT * FROM (SELECT * FROM a, b WHERE a.id = b.id) sub");
     assert_eq!(d.len(), 1);
 }
+
+#[test]
+fn full_join_with_on_and_same_table_where_no_violation() {
+    // Filter in WHERE references only one table — not a join condition
+    assert!(check("SELECT * FROM t1 FULL JOIN t2 ON t1.id = t2.id WHERE t1.active = 1").is_empty());
+}

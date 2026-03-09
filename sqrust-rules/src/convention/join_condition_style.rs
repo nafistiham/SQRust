@@ -76,14 +76,15 @@ fn collect_cross_table_eq(expr: &Expr, ctx: &FileContext, count: &mut usize, dia
                         if l_table != r_table {
                             let occ = *count;
                             *count += 1;
-                            let offset = find_nth_word(&ctx.source, &l_parts[0].value, occ);
-                            let (line, col) = offset_to_line_col(&ctx.source, offset);
-                            diags.push(Diagnostic {
-                                rule: "Convention/JoinConditionStyle",
-                                message: "Join condition found in WHERE clause; move it to the ON clause".to_string(),
-                                line,
-                                col,
-                            });
+                            if let Some(offset) = find_nth_word(&ctx.source, &l_parts[0].value, occ) {
+                                let (line, col) = offset_to_line_col(&ctx.source, offset);
+                                diags.push(Diagnostic {
+                                    rule: "Convention/JoinConditionStyle",
+                                    message: "Join condition found in WHERE clause; move it to the ON clause".to_string(),
+                                    line,
+                                    col,
+                                });
+                            }
                             return;
                         }
                     }
@@ -97,7 +98,7 @@ fn collect_cross_table_eq(expr: &Expr, ctx: &FileContext, count: &mut usize, dia
     }
 }
 
-fn find_nth_word(source: &str, word: &str, nth: usize) -> usize {
+fn find_nth_word(source: &str, word: &str, nth: usize) -> Option<usize> {
     let bytes = source.as_bytes();
     let word_upper: Vec<u8> = word.bytes().map(|b| b.to_ascii_uppercase()).collect();
     let wlen = word_upper.len();
@@ -124,7 +125,7 @@ fn find_nth_word(source: &str, word: &str, nth: usize) -> usize {
             let after_ok = end >= len || !is_word_char(bytes[end]);
             if after_ok && (i..end).all(|k| skip.is_code(k)) {
                 if count == nth {
-                    return i;
+                    return Some(i);
                 }
                 count += 1;
                 i += wlen;
@@ -133,7 +134,7 @@ fn find_nth_word(source: &str, word: &str, nth: usize) -> usize {
         }
         i += 1;
     }
-    0
+    None
 }
 
 fn offset_to_line_col(source: &str, offset: usize) -> (usize, usize) {

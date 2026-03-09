@@ -53,14 +53,15 @@ fn check_select(sel: &Select, src: &str, count: &mut usize, diags: &mut Vec<Diag
             if is_right_join(&join.join_operator) {
                 let occ = *count;
                 *count += 1;
-                let offset = find_nth_keyword(src, b"RIGHT", occ);
-                let (line, col) = offset_to_line_col(src, offset);
-                diags.push(Diagnostic {
-                    rule: "Convention/LeftJoin",
-                    message: "Prefer LEFT JOIN over RIGHT JOIN; rewrite from the other table's perspective".to_string(),
-                    line,
-                    col,
-                });
+                if let Some(offset) = find_nth_keyword(src, b"RIGHT", occ) {
+                    let (line, col) = offset_to_line_col(src, offset);
+                    diags.push(Diagnostic {
+                        rule: "Convention/LeftJoin",
+                        message: "Prefer LEFT JOIN over RIGHT JOIN; rewrite from the other table's perspective".to_string(),
+                        line,
+                        col,
+                    });
+                }
             }
         }
     }
@@ -79,7 +80,7 @@ fn is_right_join(op: &JoinOperator) -> bool {
     )
 }
 
-fn find_nth_keyword(source: &str, keyword: &[u8], nth: usize) -> usize {
+fn find_nth_keyword(source: &str, keyword: &[u8], nth: usize) -> Option<usize> {
     let bytes = source.as_bytes();
     let kw_len = keyword.len();
     let len = bytes.len();
@@ -106,7 +107,7 @@ fn find_nth_keyword(source: &str, keyword: &[u8], nth: usize) -> usize {
             let all_code = (i..end).all(|k| skip.is_code(k));
             if after_ok && all_code {
                 if count == nth {
-                    return i;
+                    return Some(i);
                 }
                 count += 1;
                 i += kw_len;
@@ -115,7 +116,7 @@ fn find_nth_keyword(source: &str, keyword: &[u8], nth: usize) -> usize {
         }
         i += 1;
     }
-    0
+    None
 }
 
 fn offset_to_line_col(source: &str, offset: usize) -> (usize, usize) {
