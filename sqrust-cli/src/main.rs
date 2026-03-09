@@ -147,6 +147,8 @@ use sqrust_rules::layout::no_multiple_statements_on_line::NoMultipleStatementsOn
 use sqrust_rules::layout::comparison_operator_spacing::ComparisonOperatorSpacing;
 use sqrust_rules::convention::left_join::LeftJoin;
 use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
+use sqrust_rules::lint::unused_table_alias::UnusedTableAlias;
+use sqrust_rules::lint::consecutive_semicolons::ConsecutiveSemicolons;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -335,6 +337,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         // Wave 16
         Box::new(LeftJoin),
         Box::new(JoinConditionStyle),
+        Box::new(UnusedTableAlias),
+        Box::new(ConsecutiveSemicolons),
     ]
 }
 

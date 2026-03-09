@@ -21,6 +21,8 @@ pub mod null_in_not_in;
 pub mod subquery_without_alias;
 pub mod truncate_table;
 pub mod unused_cte;
+pub mod unused_table_alias;
+pub mod consecutive_semicolons;
 pub mod update_set_duplicate;
 pub mod update_without_where;
 pub mod where_tautology;
