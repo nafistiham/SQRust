@@ -24,3 +24,5 @@ pub mod too_many_unions;
 pub mod union_all;
 pub mod window_without_order_by;
 pub mod zero_limit_clause;
+pub mod nested_case_in_else;
+pub mod unused_join;
