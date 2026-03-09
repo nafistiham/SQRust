@@ -147,6 +147,8 @@ use sqrust_rules::ambiguous::inconsistent_order_by_direction::InconsistentOrderB
 use sqrust_rules::ambiguous::inconsistent_column_reference::InconsistentColumnReference;
 use sqrust_rules::layout::no_multiple_statements_on_line::NoMultipleStatementsOnLine;
 use sqrust_rules::layout::comparison_operator_spacing::ComparisonOperatorSpacing;
+use sqrust_rules::layout::select_target_new_line::SelectTargetNewLine;
+use sqrust_rules::layout::set_operator_new_line::SetOperatorNewLine;
 use sqrust_rules::convention::left_join::LeftJoin;
 use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
 use sqrust_rules::lint::unused_table_alias::UnusedTableAlias;
@@ -347,6 +349,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(UnusedJoin),
         Box::new(InconsistentOrderByDirection),
         Box::new(InconsistentColumnReference),
+        Box::new(SelectTargetNewLine),
+        Box::new(SetOperatorNewLine),
     ]
 }
 

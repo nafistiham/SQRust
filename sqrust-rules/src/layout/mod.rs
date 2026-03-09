@@ -27,3 +27,5 @@ pub mod max_identifier_length;
 pub mod clause_on_new_line;
 pub mod no_multiple_statements_on_line;
 pub mod comparison_operator_spacing;
+pub mod select_target_new_line;
+pub mod set_operator_new_line;
