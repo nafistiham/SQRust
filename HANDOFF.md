@@ -4,7 +4,7 @@ Generated: 2026-03-09
 
 ## Quick Summary
 
-SQRust is a SQL linter + formatter in Rust — think "Ruff for SQL". It competes with sqlfluff (~80 rules, Python, slow) and sqruff (~30 rules, Rust, fast). We have 145 rules across 15 waves with all tests green.
+SQRust is a SQL linter + formatter in Rust — think "Ruff for SQL". It competes with sqlfluff (~80 rules, Python, slow) and sqruff (~30 rules, Rust, fast). We have 155 rules across 16 waves with all tests green.
 
 ---
 
@@ -99,7 +99,7 @@ SQRust/
 └── sqrust-cli/           # sqrust check / sqrust fmt binary
 ```
 
-### Rule Count: 145 (Waves 1–15 complete)
+### Rule Count: 155 (Waves 1–16 complete)
 
 | Wave | Rules Added | Categories |
 |------|-------------|------------|
@@ -112,6 +112,7 @@ SQRust/
 | 13   | 10          | LikeTautology, RecursiveCte, ChainedComparisons, etc. |
 | 14   | 10          | SelectTopN, EmptyInList, SelfJoin, MaxIdentifierLength, etc. |
 | 15   | 10          | NoNullDefault, AggregateInWhere, SubqueryInOrderBy, etc. |
+| 16   | 10          | LeftJoin, JoinConditionStyle, UnusedTableAlias, ConsecutiveSemicolons, NestedCaseInElse, UnusedJoin, InconsistentOrderByDirection, InconsistentColumnReference, SelectTargetNewLine, SetOperatorNewLine |
 
 ### Branch Strategy
 
@@ -148,7 +149,7 @@ All 3 branches are in sync. Always work on `develop`.
 
 ## Next Steps (Priority Order)
 
-### Option A — Keep Adding Rules (Wave 16)
+### Option A — Keep Adding Rules (Wave 17)
 Run 5 parallel agents, each implementing 2 new rules. Use the established pattern:
 - Agent per category (convention / lint / structure / ambiguous / layout)
 - TDD: write tests first, then implement
@@ -174,7 +175,7 @@ Write the public face of the project and run performance comparisons.
 
 ---
 
-## How to Continue Wave 16
+## How to Continue Wave 17
 
 Dispatch 5 parallel agents in Claude Code (one message, 5 Task tool calls):
 

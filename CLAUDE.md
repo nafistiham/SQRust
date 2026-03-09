@@ -1,5 +1,24 @@
 # SQRust — CLAUDE.md
 
+## Current Status (as of 2026-03-10)
+
+- **155 rules** implemented across Waves 1–16 — all tests green
+- **FP reduction:** Session 9 complete (see `HANDOFF.md` for benchmark numbers)
+- All 3 branches (`main`, `develop`, `production`) are in sync
+
+### Next Session Options
+
+**Option A — Wave 17 (more rules)**
+Dispatch 5 parallel agents (one per category: convention/lint/structure/ambiguous/layout), each implementing 2 rules. TDD: ≥13 tests per rule.
+
+**Option B — sqrust.toml config**
+Allow enabling/disabling rules per project.
+
+**Option C — README + benchmarks**
+Public docs and perf comparison vs sqlfluff/sqruff.
+
+---
+
 ## What This Is
 
 A SQL linter and formatter written in Rust. Targets the dbt / data engineering market as a fast replacement for sqlfluff. The Ruff-for-SQL play.
