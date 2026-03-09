@@ -46,6 +46,7 @@ impl Rule for ConsecutiveSemicolons {
                     // Skip past this entire semicolon run to avoid double-counting.
                     i = j;
                     while i < len
+                        && skip.is_code(i)
                         && (bytes[i] == b';'
                             || bytes[i] == b' '
                             || bytes[i] == b'\t'
