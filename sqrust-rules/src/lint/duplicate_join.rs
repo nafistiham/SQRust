@@ -1,6 +1,6 @@
 use sqrust_core::{Diagnostic, FileContext, Rule};
 use sqlparser::ast::{Query, Select, SetExpr, Statement, TableFactor, TableWithJoins, With};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 pub struct DuplicateJoin;
 
@@ -62,9 +62,12 @@ fn check_table_with_joins(
 ) {
     // Collect all table names (lowercased full name) with first occurrence offset
     let mut seen: HashMap<String, usize> = HashMap::new();
+    let mut already_flagged: HashSet<String> = HashSet::new();
+    let mut last_off: usize = 0;
 
     // Main table
-    if let Some((name, off)) = table_factor_name(&twj.relation, src) {
+    if let Some((name, off)) = table_factor_name(&twj.relation, src, last_off) {
+        last_off = off + 1;
         seen.insert(name, off);
     }
 
@@ -72,11 +75,11 @@ fn check_table_with_joins(
     check_factor_subqueries(&twj.relation, src, rule, diags);
 
     // JOINs
-    let mut flagged = false;
     for join in &twj.joins {
         check_factor_subqueries(&join.relation, src, rule, diags);
-        if let Some((name, off)) = table_factor_name(&join.relation, src) {
-            if seen.contains_key(&name) && !flagged {
+        if let Some((name, off)) = table_factor_name(&join.relation, src, last_off) {
+            last_off = off + 1;
+            if seen.contains_key(&name) && !already_flagged.contains(&name) {
                 let (line, col) = offset_to_line_col(src, off);
                 diags.push(Diagnostic {
                     rule,
@@ -87,15 +90,15 @@ fn check_table_with_joins(
                     line,
                     col,
                 });
-                flagged = true;
-            } else {
+                already_flagged.insert(name.clone());
+            } else if !seen.contains_key(&name) {
                 seen.insert(name, off);
             }
         }
     }
 }
 
-fn table_factor_name(tf: &TableFactor, src: &str) -> Option<(String, usize)> {
+fn table_factor_name(tf: &TableFactor, src: &str, start: usize) -> Option<(String, usize)> {
     match tf {
         TableFactor::Table { name, .. } => {
             let full_name = name
@@ -105,7 +108,7 @@ fn table_factor_name(tf: &TableFactor, src: &str) -> Option<(String, usize)> {
                 .collect::<Vec<_>>()
                 .join(".");
             let last = name.0.last()?.value.clone();
-            let off = find_word_in_source(src, &last, 0)?;
+            let off = find_word_in_source(src, &last, start)?;
             Some((full_name, off))
         }
         _ => None,

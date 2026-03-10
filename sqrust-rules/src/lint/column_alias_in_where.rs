@@ -63,8 +63,26 @@ fn check_select(sel: &Select, src: &str, rule: &'static str, diags: &mut Vec<Dia
 
     // Walk WHERE for identifiers matching aliases
     if let Some(where_expr) = &sel.selection {
-        find_alias_refs(where_expr, &aliases, src, rule, diags);
+        let start_offset = find_where_offset(src);
+        find_alias_refs(where_expr, &aliases, src, rule, diags, start_offset);
     }
+}
+
+fn find_where_offset(src: &str) -> usize {
+    let bytes = src.as_bytes();
+    let kw = b"WHERE";
+    let mut i = 0;
+    while i + 5 <= bytes.len() {
+        if bytes[i..i + 5].eq_ignore_ascii_case(kw) {
+            let before_ok = i == 0 || !is_word_char(bytes[i - 1]);
+            let after_ok = i + 5 >= bytes.len() || !is_word_char(bytes[i + 5]);
+            if before_ok && after_ok {
+                return i;
+            }
+        }
+        i += 1;
+    }
+    0
 }
 
 fn find_alias_refs(
@@ -73,12 +91,13 @@ fn find_alias_refs(
     src: &str,
     rule: &'static str,
     diags: &mut Vec<Diagnostic>,
+    start_offset: usize,
 ) {
     match expr {
         Expr::Identifier(ident) => {
             let lower = ident.value.to_lowercase();
             if aliases.contains(&lower) {
-                if let Some(off) = find_word_in_source(src, &ident.value, 0) {
+                if let Some(off) = find_word_in_source(src, &ident.value, start_offset) {
                     let (line, col) = offset_to_line_col(src, off);
                     diags.push(Diagnostic {
                         rule,
@@ -93,27 +112,29 @@ fn find_alias_refs(
             }
         }
         Expr::BinaryOp { left, right, .. } => {
-            find_alias_refs(left, aliases, src, rule, diags);
-            find_alias_refs(right, aliases, src, rule, diags);
+            find_alias_refs(left, aliases, src, rule, diags, start_offset);
+            find_alias_refs(right, aliases, src, rule, diags, start_offset);
         }
         Expr::UnaryOp { expr, .. } | Expr::Nested(expr) => {
-            find_alias_refs(expr, aliases, src, rule, diags);
+            find_alias_refs(expr, aliases, src, rule, diags, start_offset);
         }
         Expr::Between { expr, low, high, .. } => {
-            find_alias_refs(expr, aliases, src, rule, diags);
-            find_alias_refs(low, aliases, src, rule, diags);
-            find_alias_refs(high, aliases, src, rule, diags);
+            find_alias_refs(expr, aliases, src, rule, diags, start_offset);
+            find_alias_refs(low, aliases, src, rule, diags, start_offset);
+            find_alias_refs(high, aliases, src, rule, diags, start_offset);
         }
         Expr::InList { expr, list, .. } => {
-            find_alias_refs(expr, aliases, src, rule, diags);
+            find_alias_refs(expr, aliases, src, rule, diags, start_offset);
             for e in list {
-                find_alias_refs(e, aliases, src, rule, diags);
+                find_alias_refs(e, aliases, src, rule, diags, start_offset);
             }
         }
-        Expr::IsNull(e) | Expr::IsNotNull(e) => find_alias_refs(e, aliases, src, rule, diags),
+        Expr::IsNull(e) | Expr::IsNotNull(e) => {
+            find_alias_refs(e, aliases, src, rule, diags, start_offset);
+        }
         Expr::Like { expr, pattern, .. } | Expr::ILike { expr, pattern, .. } => {
-            find_alias_refs(expr, aliases, src, rule, diags);
-            find_alias_refs(pattern, aliases, src, rule, diags);
+            find_alias_refs(expr, aliases, src, rule, diags, start_offset);
+            find_alias_refs(pattern, aliases, src, rule, diags, start_offset);
         }
         _ => {}
     }

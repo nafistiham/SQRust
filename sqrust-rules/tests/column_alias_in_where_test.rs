@@ -56,12 +56,11 @@ fn alias_in_having_no_violation() {
 }
 
 #[test]
-fn alias_same_as_column_name_flagged() {
-    // Even if the alias matches a real column name, we flag conservatively
+fn alias_same_as_column_name_conservative() {
+    // When alias and column name are identical, we flag conservatively.
     let d = check("SELECT id AS id FROM t WHERE id > 1");
-    // Actually id is also a real column name — this may produce a false positive.
-    // The test documents the conservative behavior.
-    let _ = d; // Don't assert count — behavior is conservative
+    // Conservative: any identifier in WHERE matching an alias is flagged
+    assert!(!d.is_empty());
 }
 
 #[test]
