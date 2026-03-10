@@ -67,7 +67,6 @@ fn scan_select_targets(bytes: &[u8], skip_map: &SkipMap, scan_start: usize) -> O
     ];
     let mut i = scan_start;
     let mut depth = 0i32;
-    let mut comma_count = 0usize;
 
     while i < len {
         if !skip_map.is_code(i) {
@@ -105,7 +104,6 @@ fn scan_select_targets(bytes: &[u8], skip_map: &SkipMap, scan_start: usize) -> O
             }
 
             if b == b',' {
-                comma_count += 1;
                 // After this comma, check if there is a newline before the next column.
                 // Scan forward through whitespace and skip-map bytes; if we reach
                 // a code byte without passing through a '\n', it's a violation.
@@ -113,7 +111,7 @@ fn scan_select_targets(bytes: &[u8], skip_map: &SkipMap, scan_start: usize) -> O
                 let mut j = i + 1;
                 let mut found_newline = false;
                 while j < len {
-                    if bytes[j] == b'\n' {
+                    if skip_map.is_code(j) && bytes[j] == b'\n' {
                         found_newline = true;
                         break;
                     }
@@ -154,7 +152,6 @@ fn scan_select_targets(bytes: &[u8], skip_map: &SkipMap, scan_start: usize) -> O
     // first column is not on the same line as the second. The comma-after
     // check above handles this since it checks from AFTER each comma.
     // Return None if no violation found.
-    let _ = comma_count;
     None
 }
 

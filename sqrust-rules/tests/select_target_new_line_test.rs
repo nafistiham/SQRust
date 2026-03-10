@@ -78,3 +78,10 @@ fn subquery_with_multi_col_select_flagged() {
     let d = check("SELECT * FROM (SELECT id, name FROM t) sub");
     assert_eq!(d.len(), 1);
 }
+
+#[test]
+fn block_comment_newline_does_not_suppress_flag() {
+    // The newline inside the block comment must NOT count as putting columns on separate lines.
+    let d = check("SELECT id, /* a comment\n   spanning lines */ name FROM t");
+    assert_eq!(d.len(), 1);
+}
