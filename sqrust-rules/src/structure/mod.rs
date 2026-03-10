@@ -26,3 +26,5 @@ pub mod window_without_order_by;
 pub mod zero_limit_clause;
 pub mod nested_case_in_else;
 pub mod unused_join;
+pub mod wildcard_in_union;
+pub mod unqualified_column_in_join;

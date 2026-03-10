@@ -160,6 +160,8 @@ use sqrust_rules::lint::unused_table_alias::UnusedTableAlias;
 use sqrust_rules::lint::consecutive_semicolons::ConsecutiveSemicolons;
 use sqrust_rules::structure::nested_case_in_else::NestedCaseInElse;
 use sqrust_rules::structure::unused_join::UnusedJoin;
+use sqrust_rules::structure::wildcard_in_union::WildcardInUnion;
+use sqrust_rules::structure::unqualified_column_in_join::UnqualifiedColumnInJoin;
 use std::path::PathBuf;
 use std::process;
 use walkdir::WalkDir;
@@ -361,6 +363,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(OrInsteadOfIn),
         Box::new(ColumnAliasInWhere),
         Box::new(DuplicateJoin),
+        Box::new(WildcardInUnion),
+        Box::new(UnqualifiedColumnInJoin),
     ]
 }
 
