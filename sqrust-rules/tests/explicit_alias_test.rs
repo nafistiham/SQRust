@@ -89,3 +89,16 @@ fn alias_in_string_not_flagged() {
 fn lateral_join_with_explicit_alias_no_violation() {
     assert!(check("SELECT t.id FROM t JOIN u AS u1 ON t.id = u1.id").is_empty());
 }
+
+#[test]
+fn cte_alias_no_violation() {
+    // CTE name after WITH is not a FROM/JOIN alias — should not flag
+    assert!(check("WITH cte AS (SELECT 1) SELECT * FROM cte").is_empty());
+}
+
+#[test]
+fn alias_after_newline_flagged() {
+    // Formatted SQL with alias on next line
+    let d = check("SELECT id FROM orders\no WHERE o.id = 1");
+    assert_eq!(d.len(), 1);
+}

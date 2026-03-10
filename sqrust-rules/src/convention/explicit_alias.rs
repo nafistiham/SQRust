@@ -95,7 +95,7 @@ impl Rule for ExplicitAlias {
 
                 // Skip whitespace after table/subquery
                 let mut k = table_end;
-                while k < len && (bytes[k] == b' ' || bytes[k] == b'\t') {
+                while k < len && (bytes[k] == b' ' || bytes[k] == b'\t' || bytes[k] == b'\n' || bytes[k] == b'\r') {
                     k += 1;
                 }
 

@@ -49,19 +49,44 @@ fn check_set_expr(body: &SetExpr, src: &str, rule: &'static str, diags: &mut Vec
     }
 }
 
+const MIN_OR_COUNT_FOR_IN: usize = 3;
+
+fn find_clause_offset(src: &str, keyword: &[u8]) -> Option<usize> {
+    let bytes = src.as_bytes();
+    let klen = keyword.len();
+    let len = bytes.len();
+    if klen == 0 || klen > len {
+        return None;
+    }
+    let mut i = 0;
+    while i + klen <= len {
+        if bytes[i..i + klen].eq_ignore_ascii_case(keyword) {
+            let before_ok = i == 0 || !is_word_char_plain(bytes[i - 1]);
+            let after_ok = i + klen >= len || !is_word_char_plain(bytes[i + klen]);
+            if before_ok && after_ok {
+                return Some(i);
+            }
+        }
+        i += 1;
+    }
+    None
+}
+
 fn check_select(sel: &Select, src: &str, rule: &'static str, diags: &mut Vec<Diagnostic>) {
     if let Some(expr) = &sel.selection {
-        check_expr_for_or_chains(expr, src, rule, diags);
+        let start = find_clause_offset(src, b"WHERE").unwrap_or(0);
+        check_expr_for_or_chains(expr, src, rule, diags, start);
     }
     if let Some(expr) = &sel.having {
-        check_expr_for_or_chains(expr, src, rule, diags);
+        let start = find_clause_offset(src, b"HAVING").unwrap_or(0);
+        check_expr_for_or_chains(expr, src, rule, diags, start);
     }
 }
 
-fn check_expr_for_or_chains(expr: &Expr, src: &str, rule: &'static str, diags: &mut Vec<Diagnostic>) {
+fn check_expr_for_or_chains(expr: &Expr, src: &str, rule: &'static str, diags: &mut Vec<Diagnostic>, start_offset: usize) {
     // Collect the full OR chain at this level
     let mut equalities: Vec<(String, usize)> = Vec::new(); // (col_name, source_offset)
-    collect_or_equalities(expr, &mut equalities, src);
+    collect_or_equalities(expr, &mut equalities, src, start_offset);
 
     if equalities.len() >= 2 {
         // Group by column name
@@ -70,7 +95,7 @@ fn check_expr_for_or_chains(expr: &Expr, src: &str, rule: &'static str, diags: &
             counts.entry(col.as_str()).or_default().push(*off);
         }
         for (col, offsets) in &counts {
-            if offsets.len() >= 3 {
+            if offsets.len() >= MIN_OR_COUNT_FOR_IN {
                 let off = offsets[0];
                 let (line, col_pos) = offset_to_line_col(src, off);
                 diags.push(Diagnostic {
@@ -92,37 +117,38 @@ fn check_expr_for_or_chains(expr: &Expr, src: &str, rule: &'static str, diags: &
         Expr::BinaryOp { left, right, .. } => {
             // If not all OR, recurse into branches
             if equalities.is_empty() {
-                check_expr_for_or_chains(left, src, rule, diags);
-                check_expr_for_or_chains(right, src, rule, diags);
+                check_expr_for_or_chains(left, src, rule, diags, start_offset);
+                check_expr_for_or_chains(right, src, rule, diags, start_offset);
             }
         }
-        Expr::Nested(inner) => check_expr_for_or_chains(inner, src, rule, diags),
-        Expr::UnaryOp { expr: inner, .. } => check_expr_for_or_chains(inner, src, rule, diags),
+        Expr::Nested(inner) => check_expr_for_or_chains(inner, src, rule, diags, start_offset),
+        Expr::UnaryOp { expr: inner, .. } => check_expr_for_or_chains(inner, src, rule, diags, start_offset),
         _ => {}
     }
 }
 
 /// Recursively collects (column_name, offset) for each `col = literal` in an OR chain.
 /// Only collects from BinaryOp(Or) chains; stops at non-Or operators.
-fn collect_or_equalities(expr: &Expr, out: &mut Vec<(String, usize)>, src: &str) {
+/// `start_offset` is the minimum byte offset to search from (e.g. the WHERE/HAVING clause start).
+fn collect_or_equalities(expr: &Expr, out: &mut Vec<(String, usize)>, src: &str, start_offset: usize) {
     use sqlparser::ast::BinaryOperator;
     match expr {
         Expr::BinaryOp { left, op: BinaryOperator::Or, right } => {
-            collect_or_equalities(left, out, src);
-            collect_or_equalities(right, out, src);
+            collect_or_equalities(left, out, src, start_offset);
+            collect_or_equalities(right, out, src, start_offset);
         }
         Expr::BinaryOp { left, op: BinaryOperator::Eq, right } => {
             // Check for col = literal pattern
             let col_name = expr_to_col_name(left)
                 .or_else(|| expr_to_col_name(right));
             if let Some(name) = col_name {
-                // Find position of the column name in source
-                if let Some(off) = find_word_in_source(src, &name, 0) {
+                // Find position of the column name in source, starting from the clause offset
+                if let Some(off) = find_word_in_source(src, &name, start_offset) {
                     out.push((name, off));
                 }
             }
         }
-        Expr::Nested(inner) => collect_or_equalities(inner, out, src),
+        Expr::Nested(inner) => collect_or_equalities(inner, out, src, start_offset),
         _ => {}
     }
 }

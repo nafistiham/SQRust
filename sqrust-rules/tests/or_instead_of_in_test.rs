@@ -91,3 +91,35 @@ fn mixed_qualified_unqualified_three_no_violation() {
     // (treating t.status and status as different for simplicity)
     assert!(check("SELECT id FROM t WHERE t.status = 'a' OR status = 'b' OR t.status = 'c'").is_empty());
 }
+
+#[test]
+fn position_points_to_where_clause_not_select_list() {
+    // "status" appears first in SELECT list at col ~8, then in WHERE at a later offset.
+    // The diagnostic must point to WHERE clause, not the SELECT list.
+    let sql = "SELECT status FROM t WHERE status = 'a' OR status = 'b' OR status = 'c'";
+    let d = check(sql);
+    assert_eq!(d.len(), 1);
+    // "WHERE" starts at byte 21. The first WHERE-clause "status" is at byte 27.
+    // col 28 (1-based). The SELECT-list "status" is at byte 7, col 8.
+    // Ensure we are NOT pointing at the SELECT list occurrence (col 8).
+    assert!(
+        d[0].col > 8,
+        "expected col > 8 (WHERE clause), got col={}",
+        d[0].col
+    );
+}
+
+#[test]
+fn having_position_points_to_having_clause_not_select_list() {
+    // "dept" first appears in SELECT list, then in HAVING clause.
+    let sql = "SELECT dept FROM t GROUP BY dept HAVING dept = 'a' OR dept = 'b' OR dept = 'c'";
+    let d = check(sql);
+    assert_eq!(d.len(), 1);
+    // HAVING keyword starts around byte 32. The SELECT-list "dept" is at byte 7, col 8.
+    // Ensure we are NOT pointing at the SELECT list occurrence.
+    assert!(
+        d[0].col > 8,
+        "expected col > 8 (HAVING clause), got col={}",
+        d[0].col
+    );
+}
