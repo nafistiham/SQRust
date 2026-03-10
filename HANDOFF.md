@@ -4,7 +4,7 @@ Generated: 2026-03-09
 
 ## Quick Summary
 
-SQRust is a SQL linter + formatter in Rust — think "Ruff for SQL". It competes with sqlfluff (~80 rules, Python, slow) and sqruff (~30 rules, Rust, fast). We have 155 rules across 16 waves with all tests green.
+SQRust is a SQL linter + formatter in Rust — think "Ruff for SQL". It competes with sqlfluff (~80 rules, Python, slow) and sqruff (~30 rules, Rust, fast). We have 165 rules across 17 waves with all tests green.
 
 ---
 
@@ -99,7 +99,7 @@ SQRust/
 └── sqrust-cli/           # sqrust check / sqrust fmt binary
 ```
 
-### Rule Count: 155 (Waves 1–16 complete)
+### Rule Count: 165 (Waves 1–17 complete)
 
 | Wave | Rules Added | Categories |
 |------|-------------|------------|
@@ -113,6 +113,7 @@ SQRust/
 | 14   | 10          | SelectTopN, EmptyInList, SelfJoin, MaxIdentifierLength, etc. |
 | 15   | 10          | NoNullDefault, AggregateInWhere, SubqueryInOrderBy, etc. |
 | 16   | 10          | LeftJoin, JoinConditionStyle, UnusedTableAlias, ConsecutiveSemicolons, NestedCaseInElse, UnusedJoin, InconsistentOrderByDirection, InconsistentColumnReference, SelectTargetNewLine, SetOperatorNewLine |
+| 17   | 10          | ExplicitAlias, OrInsteadOfIn, ColumnAliasInWhere, DuplicateJoin, WildcardInUnion, UnqualifiedColumnInJoin, FloatingPointComparison, AmbiguousDateFormat, ArithmeticOperatorPadding, BlankLineAfterCte |
 
 ### Branch Strategy
 
@@ -132,7 +133,7 @@ All 3 branches are in sync. Always work on `develop`.
 
 ### Done ✅
 - Full Cargo workspace + Rule trait
-- 145 lint rules with tests
+- 165 lint rules with tests
 - `sqrust check` (parallel via rayon)
 - `sqrust fmt` (auto-fix for layout rules)
 - CI-ready (all tests green)
@@ -149,7 +150,7 @@ All 3 branches are in sync. Always work on `develop`.
 
 ## Next Steps (Priority Order)
 
-### Option A — Keep Adding Rules (Wave 17)
+### Option A — Keep Adding Rules (Wave 18)
 Run 5 parallel agents, each implementing 2 new rules. Use the established pattern:
 - Agent per category (convention / lint / structure / ambiguous / layout)
 - TDD: write tests first, then implement
@@ -175,7 +176,7 @@ Write the public face of the project and run performance comparisons.
 
 ---
 
-## How to Continue Wave 17
+## How to Continue Wave 18
 
 Dispatch 5 parallel agents in Claude Code (one message, 5 Task tool calls):
 

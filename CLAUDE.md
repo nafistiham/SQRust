@@ -2,13 +2,13 @@
 
 ## Current Status (as of 2026-03-10)
 
-- **155 rules** implemented across Waves 1–16 — all tests green
+- **165 rules** implemented across Waves 1–17 — all tests green
 - **FP reduction:** Session 9 complete (see `HANDOFF.md` for benchmark numbers)
 - All 3 branches (`main`, `develop`, `production`) are in sync
 
 ### Next Session Options
 
-**Option A — Wave 17 (more rules)**
+**Option A — Wave 18 (more rules)**
 Dispatch 5 parallel agents (one per category: convention/lint/structure/ambiguous/layout), each implementing 2 rules. TDD: ≥13 tests per rule.
 
 **Option B — sqrust.toml config**
