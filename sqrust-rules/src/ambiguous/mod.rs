@@ -28,3 +28,5 @@ pub mod union_column_mismatch;
 pub mod window_function_without_partition;
 pub mod inconsistent_order_by_direction;
 pub mod inconsistent_column_reference;
+pub mod floating_point_comparison;
+pub mod ambiguous_date_format;
