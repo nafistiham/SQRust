@@ -154,6 +154,8 @@ use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
 // Wave 17
 use sqrust_rules::convention::explicit_alias::ExplicitAlias;
 use sqrust_rules::convention::or_instead_of_in::OrInsteadOfIn;
+use sqrust_rules::lint::column_alias_in_where::ColumnAliasInWhere;
+use sqrust_rules::lint::duplicate_join::DuplicateJoin;
 use sqrust_rules::lint::unused_table_alias::UnusedTableAlias;
 use sqrust_rules::lint::consecutive_semicolons::ConsecutiveSemicolons;
 use sqrust_rules::structure::nested_case_in_else::NestedCaseInElse;
@@ -357,6 +359,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         // Wave 17
         Box::new(ExplicitAlias),
         Box::new(OrInsteadOfIn),
+        Box::new(ColumnAliasInWhere),
+        Box::new(DuplicateJoin),
     ]
 }
 

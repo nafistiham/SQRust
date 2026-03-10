@@ -26,3 +26,5 @@ pub mod consecutive_semicolons;
 pub mod update_set_duplicate;
 pub mod update_without_where;
 pub mod where_tautology;
+pub mod column_alias_in_where;
+pub mod duplicate_join;
