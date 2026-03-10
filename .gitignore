@@ -19,8 +19,14 @@
 .DS_Store
 Thumbs.db
 
-# Internal docs (private notes, competition research, planning)
+# Claude AI assistant config (private agent definitions and local settings)
+.claude/
+
+# Internal docs (private notes, competition research, planning, handoff)
 internals/
+CLAUDE.md
+HANDOFF.md
+docs/plans/
 
 # Test artifacts
 *.profraw

@@ -27,11 +27,30 @@ Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5 runs, real co
 
 ## Install
 
+**Pre-built binary (recommended):**
+
 ```bash
-cargo install sqrust-cli
+# macOS (Apple Silicon)
+curl -sSL https://github.com/nafistiham/SQRust/releases/latest/download/sqrust-aarch64-apple-darwin.tar.gz | tar -xz
+sudo mv sqrust /usr/local/bin/
+
+# macOS (Intel)
+curl -sSL https://github.com/nafistiham/SQRust/releases/latest/download/sqrust-x86_64-apple-darwin.tar.gz | tar -xz
+sudo mv sqrust /usr/local/bin/
+
+# Linux (x86_64)
+curl -sSL https://github.com/nafistiham/SQRust/releases/latest/download/sqrust-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+sudo mv sqrust /usr/local/bin/
 ```
 
-Or download a pre-built binary from [Releases](https://github.com/nafistiham/SQRust/releases).
+**Build from source:**
+
+```bash
+git clone https://github.com/nafistiham/SQRust.git
+cd SQRust
+cargo build -p sqrust-cli --release
+# binary at: target/release/sqrust
+```
 
 ---
 
