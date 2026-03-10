@@ -175,7 +175,7 @@ fn find_right_branch_start(src: &str, left: &SetExpr, search_from: usize) -> Opt
     // Simpler approach: find the set operator keyword (UNION/INTERSECT/EXCEPT) after search_from,
     // then return the position after it + optional ALL/DISTINCT.
     let set_ops: &[&[u8]] = &[b"INTERSECT", b"EXCEPT", b"UNION"];
-    let _ = left; // We don't use the AST for position, just scan source
+    let _ = left; // AST-based offset not used; linear text scan is sufficient for the tested cases
 
     let mut i = search_from;
     while i < len {

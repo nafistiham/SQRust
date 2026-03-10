@@ -169,7 +169,7 @@ fn find_word_in_source(src: &str, word: &str, start: usize) -> Option<usize> {
     let mut i = start;
     while i + wlen <= bytes.len() {
         if bytes[i..i + wlen].eq_ignore_ascii_case(wbytes) {
-            let before_ok = i == 0 || !is_wc(bytes[i - 1]);
+            let before_ok = i == 0 || (!is_wc(bytes[i - 1]) && bytes[i - 1] != b'.');
             let after_ok = i + wlen >= bytes.len() || !is_wc(bytes[i + wlen]);
             if before_ok && after_ok {
                 return Some(i);

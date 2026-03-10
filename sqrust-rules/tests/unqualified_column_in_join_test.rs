@@ -83,10 +83,10 @@ fn function_arg_unqualified_flagged() {
 }
 
 #[test]
-fn on_clause_not_flagged() {
-    // ON clause qualifications are expected and not flagged by this rule
-    // (they must be qualified for the JOIN to make sense)
-    // This test just ensures the rule doesn't double-count ON cols
-    let d = check("SELECT t.id FROM t JOIN u ON t.id = u.t_id");
-    assert!(d.is_empty());
+fn on_clause_columns_not_flagged_but_select_unqualified_is() {
+    // ON clause uses qualified refs — only the bare `id` in SELECT should be flagged
+    let d = check("SELECT id FROM t JOIN u ON t.id = u.t_id");
+    // `id` in SELECT is unqualified → 1 violation
+    // `t.id` and `u.t_id` in ON are qualified → no violations from ON
+    assert_eq!(d.len(), 1);
 }
