@@ -151,6 +151,9 @@ use sqrust_rules::layout::select_target_new_line::SelectTargetNewLine;
 use sqrust_rules::layout::set_operator_new_line::SetOperatorNewLine;
 use sqrust_rules::convention::left_join::LeftJoin;
 use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
+// Wave 17
+use sqrust_rules::convention::explicit_alias::ExplicitAlias;
+use sqrust_rules::convention::or_instead_of_in::OrInsteadOfIn;
 use sqrust_rules::lint::unused_table_alias::UnusedTableAlias;
 use sqrust_rules::lint::consecutive_semicolons::ConsecutiveSemicolons;
 use sqrust_rules::structure::nested_case_in_else::NestedCaseInElse;
@@ -351,6 +354,9 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(InconsistentColumnReference),
         Box::new(SelectTargetNewLine),
         Box::new(SetOperatorNewLine),
+        // Wave 17
+        Box::new(ExplicitAlias),
+        Box::new(OrInsteadOfIn),
     ]
 }
 

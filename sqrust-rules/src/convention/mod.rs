@@ -31,3 +31,5 @@ pub mod trailing_comma;
 pub mod unnecessary_else_null;
 pub mod left_join;
 pub mod join_condition_style;
+pub mod explicit_alias;
+pub mod or_instead_of_in;
