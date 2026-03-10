@@ -152,6 +152,8 @@ use sqrust_rules::layout::set_operator_new_line::SetOperatorNewLine;
 use sqrust_rules::convention::left_join::LeftJoin;
 use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
 // Wave 17
+use sqrust_rules::layout::arithmetic_operator_padding::ArithmeticOperatorPadding;
+use sqrust_rules::layout::blank_line_after_cte::BlankLineAfterCte;
 use sqrust_rules::ambiguous::floating_point_comparison::FloatingPointComparison;
 use sqrust_rules::ambiguous::ambiguous_date_format::AmbiguousDateFormat;
 use sqrust_rules::convention::explicit_alias::ExplicitAlias;
@@ -369,6 +371,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(UnqualifiedColumnInJoin),
         Box::new(FloatingPointComparison),
         Box::new(AmbiguousDateFormat),
+        Box::new(ArithmeticOperatorPadding),
+        Box::new(BlankLineAfterCte),
     ]
 }
 

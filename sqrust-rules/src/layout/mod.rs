@@ -29,3 +29,5 @@ pub mod no_multiple_statements_on_line;
 pub mod comparison_operator_spacing;
 pub mod select_target_new_line;
 pub mod set_operator_new_line;
+pub mod arithmetic_operator_padding;
+pub mod blank_line_after_cte;
