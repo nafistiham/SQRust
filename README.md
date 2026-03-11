@@ -120,7 +120,7 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 
 ## Configuration
 
-Drop a `sqrust.toml` in your project root (or any parent directory):
+Create a `sqrust.toml` in your project root. sqrust automatically finds it by walking up from the path you lint — no flags needed:
 
 ```toml
 [sqrust]
