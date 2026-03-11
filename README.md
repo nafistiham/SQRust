@@ -30,7 +30,13 @@ Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5 runs, real co
 
 ## Install
 
-**Pre-built binary (recommended):**
+**cargo (recommended):**
+
+```bash
+cargo install sqrust-cli
+```
+
+**Pre-built binary:**
 
 ```bash
 # macOS (Apple Silicon)
