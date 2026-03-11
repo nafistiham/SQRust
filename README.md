@@ -1,5 +1,8 @@
 # SQRust
 
+[![CI](https://github.com/nafistiham/SQRust/actions/workflows/ci.yml/badge.svg)](https://github.com/nafistiham/SQRust/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **A fast SQL linter written in Rust.** The Ruff for SQL.
 
 165 rules. Single binary. No Python required.
