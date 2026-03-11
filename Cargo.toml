@@ -6,10 +6,15 @@ resolver = "2"
 version = "0.1.0"
 edition = "2021"
 license = "MIT"
+description = "Fast SQL linter written in Rust — the Ruff for SQL"
+repository = "https://github.com/nafistiham/SQRust"
+homepage = "https://github.com/nafistiham/SQRust"
+keywords = ["sql", "linter", "dbt", "sqlfluff"]
+categories = ["command-line-utilities", "development-tools"]
 
 [workspace.dependencies]
-sqrust-core = { path = "sqrust-core" }
-sqrust-rules = { path = "sqrust-rules" }
+sqrust-core = { path = "sqrust-core", version = "0.1.0" }
+sqrust-rules = { path = "sqrust-rules", version = "0.1.0" }
 sqlparser = "0.53"
 serde = { version = "1", features = ["derive"] }
 toml = "0.8"
