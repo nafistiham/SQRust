@@ -106,11 +106,32 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 | Speed (500 files) | **62 ms** | 569 ms | 38,000 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | ✅ | ✅ | ✅ |
-| Config file | 🚧 | ✅ | ✅ |
+| Config file | ✅ | ✅ | ✅ |
 | Dialect support | ANSI | ANSI+ | Many |
 | dbt-ready | ✅ | ✅ | ✅ |
 
-> Config file (`sqrust.toml`) is in active development.
+---
+
+## Configuration
+
+Drop a `sqrust.toml` in your project root (or any parent directory):
+
+```toml
+[sqrust]
+exclude = ["dbt_packages/**", "target/**"]
+
+[rules]
+disable = [
+    "Convention/SelectStar",
+    "Layout/LongLines",
+]
+```
+
+All 165 rules are enabled by default. Use `disable` to turn off specific rules by name.
+
+See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
+
+> **v0.2.0 (planned):** Ruff-style allowlist — opt into rule categories with `select = ["Convention"]` instead of opting out. Fields are reserved; using them now gives a clear error.
 
 ---
 

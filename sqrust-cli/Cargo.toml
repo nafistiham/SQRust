@@ -14,3 +14,4 @@ sqrust-rules = { workspace = true }
 clap = { workspace = true }
 rayon = { workspace = true }
 walkdir = { workspace = true }
+glob = { workspace = true }

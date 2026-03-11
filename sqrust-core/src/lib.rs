@@ -1,3 +1,6 @@
+pub mod config;
+pub use config::Config;
+
 use sqlparser::ast::Statement;
 use sqlparser::dialect::GenericDialect;
 use sqlparser::parser::Parser;

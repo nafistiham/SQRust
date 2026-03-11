@@ -166,7 +166,8 @@ use sqrust_rules::structure::nested_case_in_else::NestedCaseInElse;
 use sqrust_rules::structure::unused_join::UnusedJoin;
 use sqrust_rules::structure::wildcard_in_union::WildcardInUnion;
 use sqrust_rules::structure::unqualified_column_in_join::UnqualifiedColumnInJoin;
-use std::path::PathBuf;
+use sqrust_core::Config;
+use std::path::{Path, PathBuf};
 use std::process;
 use walkdir::WalkDir;
 
@@ -393,73 +394,126 @@ fn collect_sql_files(paths: &[PathBuf]) -> Vec<PathBuf> {
     files
 }
 
-fn main() {
-    let cli = Cli::parse();
-    let rules = rules();
+/// Returns true if the path matches any of the exclude glob patterns.
+/// Patterns are matched against the full path string and all path suffixes,
+/// so `dbt_packages/**` matches `/project/dbt_packages/foo.sql`.
+fn is_excluded(path: &Path, exclude: &[String]) -> bool {
+    if exclude.is_empty() {
+        return false;
+    }
+    let path_str = path.to_string_lossy();
+    // Collect suffix start positions (after each '/')
+    let suffix_starts: Vec<usize> = path_str
+        .char_indices()
+        .filter(|(_, c)| *c == '/' || *c == '\\')
+        .map(|(i, _)| i + 1)
+        .collect();
 
-    match cli.command {
-        Commands::Check { paths } => {
-            let files = collect_sql_files(&paths);
-            if files.is_empty() {
-                eprintln!("No SQL files found.");
-                process::exit(0);
-            }
-
-            let violations: Vec<String> = files
-                .par_iter()
-                .flat_map(|path| {
-                    let source = match std::fs::read_to_string(path) {
-                        Ok(s) => s,
-                        Err(e) => {
-                            eprintln!("Error reading {}: {}", path.display(), e);
-                            return Vec::new();
-                        }
-                    };
-                    let ctx = FileContext::from_source(&source, &path.to_string_lossy());
-                    rules
-                        .iter()
-                        .flat_map(|rule| rule.check(&ctx))
-                        .map(|d| {
-                            format!(
-                                "{}:{}:{}: [{}] {}",
-                                path.display(),
-                                d.line,
-                                d.col,
-                                d.rule,
-                                d.message
-                            )
-                        })
-                        .collect::<Vec<_>>()
-                })
-                .collect();
-
-            for v in &violations {
-                println!("{}", v);
-            }
-
-            if !violations.is_empty() {
-                process::exit(1);
+    for pattern_str in exclude {
+        let Ok(pattern) = glob::Pattern::new(pattern_str) else {
+            continue;
+        };
+        if pattern.matches(&path_str) {
+            return true;
+        }
+        for &start in &suffix_starts {
+            if pattern.matches(&path_str[start..]) {
+                return true;
             }
         }
+    }
+    false
+}
 
-        Commands::Fmt { paths } => {
-            let files = collect_sql_files(&paths);
-            for path in &files {
-                let source = match std::fs::read_to_string(path) {
-                    Ok(s) => s,
-                    Err(e) => {
-                        eprintln!("Error reading {}: {}", path.display(), e);
-                        continue;
+fn main() {
+    let cli = Cli::parse();
+
+    match cli.command {
+        Commands::Check { ref paths } | Commands::Fmt { ref paths } => {
+            // Load config from first path arg, or current dir.
+            let config_start = paths.first().map(PathBuf::as_path).unwrap_or(Path::new("."));
+            let config = match Config::load(config_start) {
+                Ok(c) => c,
+                Err(e) => {
+                    eprintln!("sqrust: {}", e);
+                    process::exit(2);
+                }
+            };
+
+            let active_rules: Vec<Box<dyn Rule>> = rules()
+                .into_iter()
+                .filter(|r| config.rule_enabled(r.name()))
+                .collect();
+
+            let all_files = collect_sql_files(paths);
+            let files: Vec<PathBuf> = all_files
+                .into_iter()
+                .filter(|p| !is_excluded(p, &config.sqrust.exclude))
+                .collect();
+
+            match cli.command {
+                Commands::Check { .. } => {
+                    if files.is_empty() {
+                        eprintln!("No SQL files found.");
+                        process::exit(0);
                     }
-                };
-                let ctx = FileContext::from_source(&source, &path.to_string_lossy());
-                for rule in &rules {
-                    if let Some(fixed) = rule.fix(&ctx) {
-                        if fixed != source {
-                            if let Err(e) = std::fs::write(path, &fixed) {
-                                eprintln!("Error writing {}: {}", path.display(), e);
-                            } else {
-                                println!("Fixed: {}", path.display());
+
+                    let violations: Vec<String> = files
+                        .par_iter()
+                        .flat_map(|path| {
+                            let source = match std::fs::read_to_string(path) {
+                                Ok(s) => s,
+                                Err(e) => {
+                                    eprintln!("Error reading {}: {}", path.display(), e);
+                                    return Vec::new();
+                                }
+                            };
+                            let ctx = FileContext::from_source(&source, &path.to_string_lossy());
+                            active_rules
+                                .iter()
+                                .flat_map(|rule| rule.check(&ctx))
+                                .map(|d| {
+                                    format!(
+                                        "{}:{}:{}: [{}] {}",
+                                        path.display(),
+                                        d.line,
+                                        d.col,
+                                        d.rule,
+                                        d.message
+                                    )
+                                })
+                                .collect::<Vec<_>>()
+                        })
+                        .collect();
+
+                    for v in &violations {
+                        println!("{}", v);
+                    }
+
+                    if !violations.is_empty() {
+                        process::exit(1);
+                    }
+                }
+
+                Commands::Fmt { .. } => {
+                    for path in &files {
+                        let source = match std::fs::read_to_string(path) {
+                            Ok(s) => s,
+                            Err(e) => {
+                                eprintln!("Error reading {}: {}", path.display(), e);
+                                continue;
+                            }
+                        };
+                        let ctx = FileContext::from_source(&source, &path.to_string_lossy());
+                        for rule in &active_rules {
+                            if let Some(fixed) = rule.fix(&ctx) {
+                                if fixed != source {
+                                    if let Err(e) = std::fs::write(path, &fixed) {
+                                        eprintln!("Error writing {}: {}", path.display(), e);
+                                    } else {
+                                        println!("Fixed: {}", path.display());
+                                    }
+                                }
                             }
                         }
                     }
