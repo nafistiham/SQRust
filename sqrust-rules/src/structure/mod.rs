@@ -28,3 +28,5 @@ pub mod nested_case_in_else;
 pub mod unused_join;
 pub mod wildcard_in_union;
 pub mod unqualified_column_in_join;
+pub mod deep_cte_chain;
+pub mod insert_select_star;

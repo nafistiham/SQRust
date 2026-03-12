@@ -33,3 +33,5 @@ pub mod left_join;
 pub mod join_condition_style;
 pub mod explicit_alias;
 pub mod or_instead_of_in;
+pub mod redundant_alias;
+pub mod nullable_concat;

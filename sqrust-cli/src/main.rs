@@ -151,6 +151,11 @@ use sqrust_rules::layout::select_target_new_line::SelectTargetNewLine;
 use sqrust_rules::layout::set_operator_new_line::SetOperatorNewLine;
 use sqrust_rules::convention::left_join::LeftJoin;
 use sqrust_rules::convention::join_condition_style::JoinConditionStyle;
+// Wave 18
+use sqrust_rules::convention::redundant_alias::RedundantAlias;
+use sqrust_rules::convention::nullable_concat::NullableConcat;
+use sqrust_rules::lint::duplicate_select_column::DuplicateSelectColumn;
+use sqrust_rules::lint::keyword_identifier::KeywordIdentifier;
 // Wave 17
 use sqrust_rules::layout::arithmetic_operator_padding::ArithmeticOperatorPadding;
 use sqrust_rules::layout::blank_line_after_cte::BlankLineAfterCte;
@@ -166,6 +171,13 @@ use sqrust_rules::structure::nested_case_in_else::NestedCaseInElse;
 use sqrust_rules::structure::unused_join::UnusedJoin;
 use sqrust_rules::structure::wildcard_in_union::WildcardInUnion;
 use sqrust_rules::structure::unqualified_column_in_join::UnqualifiedColumnInJoin;
+// Wave 18
+use sqrust_rules::layout::consistent_quote_style::ConsistentQuoteStyle;
+use sqrust_rules::layout::space_around_concat_operator::SpaceAroundConcatOperator;
+use sqrust_rules::structure::deep_cte_chain::DeepCteChain;
+use sqrust_rules::structure::insert_select_star::InsertSelectStar;
+use sqrust_rules::ambiguous::case_null_check::CaseNullCheck;
+use sqrust_rules::ambiguous::multiple_count_distinct::MultipleCountDistinct;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -374,6 +386,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(AmbiguousDateFormat),
         Box::new(ArithmeticOperatorPadding),
         Box::new(BlankLineAfterCte),
+        // Wave 18
+        Box::new(RedundantAlias),
+        Box::new(NullableConcat),
+        Box::new(ConsistentQuoteStyle),
+        Box::new(SpaceAroundConcatOperator),
+        Box::new(DuplicateSelectColumn),
+        Box::new(KeywordIdentifier),
+        Box::new(DeepCteChain::default()),
+        Box::new(InsertSelectStar),
+        Box::new(CaseNullCheck),
+        Box::new(MultipleCountDistinct),
     ]
 }
 
