@@ -35,3 +35,5 @@ pub mod consistent_quote_style;
 pub mod space_around_concat_operator;
 pub mod function_call_spacing;
 pub mod indentation_consistency;
+pub mod no_space_around_dot;
+pub mod unnecessary_alias_quoting;

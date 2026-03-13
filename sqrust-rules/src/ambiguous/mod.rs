@@ -34,3 +34,5 @@ pub mod case_null_check;
 pub mod multiple_count_distinct;
 pub mod coalesce_with_single_arg;
 pub mod in_subquery_multi_column;
+pub mod exists_select_list;
+pub mod between_null_boundary;

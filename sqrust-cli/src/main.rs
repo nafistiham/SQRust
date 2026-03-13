@@ -180,6 +180,9 @@ use sqrust_rules::ambiguous::case_null_check::CaseNullCheck;
 use sqrust_rules::ambiguous::multiple_count_distinct::MultipleCountDistinct;
 use sqrust_rules::lint::alter_column_type::AlterColumnType;
 use sqrust_rules::lint::cross_database_reference::CrossDatabaseReference;
+// Wave 20
+use sqrust_rules::lint::select_into_table::SelectIntoTable;
+use sqrust_rules::lint::order_by_in_view::OrderByInView;
 // Wave 19
 use sqrust_rules::ambiguous::coalesce_with_single_arg::CoalesceWithSingleArg;
 use sqrust_rules::ambiguous::in_subquery_multi_column::InSubqueryMultiColumn;
@@ -189,6 +192,15 @@ use sqrust_rules::convention::explicit_join_type::ExplicitJoinType;
 use sqrust_rules::convention::negated_not_like::NegatedNotLike;
 use sqrust_rules::layout::function_call_spacing::FunctionCallSpacing;
 use sqrust_rules::layout::indentation_consistency::IndentationConsistency;
+// Wave 20
+use sqrust_rules::layout::no_space_around_dot::NoSpaceAroundDot;
+use sqrust_rules::layout::unnecessary_alias_quoting::UnnecessaryAliasQuoting;
+use sqrust_rules::structure::except_all::ExceptAll;
+use sqrust_rules::structure::lateral_column_alias::LateralColumnAlias;
+use sqrust_rules::ambiguous::exists_select_list::ExistsSelectList;
+use sqrust_rules::ambiguous::between_null_boundary::BetweenNullBoundary;
+use sqrust_rules::convention::avoid_iif::AvoidIif;
+use sqrust_rules::convention::cast_vs_convert::CastVsConvert;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -421,6 +433,18 @@ fn rules() -> Vec<Box<dyn Rule>> {
         // Wave 19 (lint)
         Box::new(AlterColumnType),
         Box::new(CrossDatabaseReference),
+        // Wave 20
+        Box::new(SelectIntoTable),
+        Box::new(OrderByInView),
+        Box::new(NoSpaceAroundDot),
+        Box::new(UnnecessaryAliasQuoting),
+        Box::new(ExceptAll),
+        Box::new(LateralColumnAlias),
+        Box::new(ExistsSelectList),
+        Box::new(BetweenNullBoundary),
+        // Wave 20
+        Box::new(AvoidIif),
+        Box::new(CastVsConvert),
     ]
 }
 

@@ -32,3 +32,5 @@ pub mod duplicate_select_column;
 pub mod keyword_identifier;
 pub mod alter_column_type;
 pub mod cross_database_reference;
+pub mod select_into_table;
+pub mod order_by_in_view;
