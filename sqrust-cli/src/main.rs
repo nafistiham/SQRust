@@ -178,6 +178,17 @@ use sqrust_rules::structure::deep_cte_chain::DeepCteChain;
 use sqrust_rules::structure::insert_select_star::InsertSelectStar;
 use sqrust_rules::ambiguous::case_null_check::CaseNullCheck;
 use sqrust_rules::ambiguous::multiple_count_distinct::MultipleCountDistinct;
+use sqrust_rules::lint::alter_column_type::AlterColumnType;
+use sqrust_rules::lint::cross_database_reference::CrossDatabaseReference;
+// Wave 19
+use sqrust_rules::ambiguous::coalesce_with_single_arg::CoalesceWithSingleArg;
+use sqrust_rules::ambiguous::in_subquery_multi_column::InSubqueryMultiColumn;
+use sqrust_rules::structure::set_op_precedence::SetOpPrecedence;
+use sqrust_rules::structure::window_frame_all_rows::WindowFrameAllRows;
+use sqrust_rules::convention::explicit_join_type::ExplicitJoinType;
+use sqrust_rules::convention::negated_not_like::NegatedNotLike;
+use sqrust_rules::layout::function_call_spacing::FunctionCallSpacing;
+use sqrust_rules::layout::indentation_consistency::IndentationConsistency;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -397,6 +408,19 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(InsertSelectStar),
         Box::new(CaseNullCheck),
         Box::new(MultipleCountDistinct),
+        // Wave 19
+        Box::new(CoalesceWithSingleArg),
+        Box::new(InSubqueryMultiColumn),
+        Box::new(SetOpPrecedence),
+        Box::new(WindowFrameAllRows),
+        Box::new(ExplicitJoinType),
+        Box::new(NegatedNotLike),
+        // Wave 19 (layout)
+        Box::new(FunctionCallSpacing),
+        Box::new(IndentationConsistency),
+        // Wave 19 (lint)
+        Box::new(AlterColumnType),
+        Box::new(CrossDatabaseReference),
     ]
 }
 

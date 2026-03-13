@@ -30,3 +30,5 @@ pub mod wildcard_in_union;
 pub mod unqualified_column_in_join;
 pub mod deep_cte_chain;
 pub mod insert_select_star;
+pub mod set_op_precedence;
+pub mod window_frame_all_rows;

@@ -30,3 +30,5 @@ pub mod column_alias_in_where;
 pub mod duplicate_join;
 pub mod duplicate_select_column;
 pub mod keyword_identifier;
+pub mod alter_column_type;
+pub mod cross_database_reference;

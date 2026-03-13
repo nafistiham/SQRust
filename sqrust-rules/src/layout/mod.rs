@@ -33,3 +33,5 @@ pub mod arithmetic_operator_padding;
 pub mod blank_line_after_cte;
 pub mod consistent_quote_style;
 pub mod space_around_concat_operator;
+pub mod function_call_spacing;
+pub mod indentation_consistency;

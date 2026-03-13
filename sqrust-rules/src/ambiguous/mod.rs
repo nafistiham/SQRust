@@ -32,3 +32,5 @@ pub mod floating_point_comparison;
 pub mod ambiguous_date_format;
 pub mod case_null_check;
 pub mod multiple_count_distinct;
+pub mod coalesce_with_single_arg;
+pub mod in_subquery_multi_column;
