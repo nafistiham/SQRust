@@ -52,4 +52,5 @@ pub mod string_agg_separator;
 pub mod top_n_without_order;
 pub mod no_values_function;
 pub mod no_decode_function;
+pub mod no_charindex_function;
 pub mod nvl_function;

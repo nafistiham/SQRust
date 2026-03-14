@@ -215,6 +215,8 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 28
+use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 // Wave 27
 use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 use sqrust_rules::lint::drop_column_if_exists::DropColumnIfExists;
@@ -557,6 +559,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NestedAggregate),
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
+        // Wave 28
+        Box::new(NoCharindexFunction),
         // Wave 27
 Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
