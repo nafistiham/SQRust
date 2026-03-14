@@ -221,6 +221,7 @@ use sqrust_rules::convention::no_if_function::NoIFFunction;
 use sqrust_rules::lint::insert_ignore::InsertIgnore;
 use sqrust_rules::lint::create_temp_table::CreateTempTable;
 use sqrust_rules::structure::large_offset::LargeOffset;
+use sqrust_rules::structure::nested_aggregate::NestedAggregate;
 // Wave 22
 use sqrust_rules::ambiguous::date_arithmetic::DateArithmetic;
 use sqrust_rules::ambiguous::integer_division::IntegerDivision;
@@ -501,6 +502,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(InsertIgnore),
         Box::new(CreateTempTable),
         Box::new(LargeOffset),
+        Box::new(NestedAggregate),
     ]
 }
 
