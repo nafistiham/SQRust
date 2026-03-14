@@ -246,6 +246,7 @@ use sqrust_rules::ambiguous::string_to_number_comparison::StringToNumberComparis
 use sqrust_rules::layout::operator_at_line_start::OperatorAtLineStart;
 // Wave 29
 use sqrust_rules::layout::where_on_new_line::WhereOnNewLine;
+use sqrust_rules::layout::having_on_new_line::HavingOnNewLine;
 // Wave 28
 use sqrust_rules::layout::join_on_new_line::JoinOnNewLine;
 use sqrust_rules::layout::select_column_per_line::SelectColumnPerLine;
@@ -594,6 +595,8 @@ Box::new(SubqueryInJoinCondition),
         Box::new(ExcessiveUnionChain),
 Box::new(YearMonthDayFunction),
         Box::new(ConvertFunction),
+Box::new(WhereOnNewLine),
+        Box::new(HavingOnNewLine),
         // Wave 28
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
