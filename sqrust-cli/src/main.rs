@@ -217,6 +217,7 @@ use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::convention::explicit_column_alias::ExplicitColumnAlias;
 use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_rules::lint::merge_statement::MergeStatement;
+use sqrust_rules::structure::subquery_in_having::SubqueryInHaving;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -477,6 +478,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(ExplicitColumnAlias),
         Box::new(CreateSchemaStatement),
         Box::new(MergeStatement),
+        Box::new(SubqueryInHaving),
     ]
 }
 
