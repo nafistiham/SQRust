@@ -214,6 +214,7 @@ use sqrust_rules::structure::update_with_join::UpdateWithJoin;
 use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 // Wave 22
+use sqrust_rules::convention::explicit_column_alias::ExplicitColumnAlias;
 use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
@@ -472,6 +473,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NoSpaceAfterUnaryMinus),
         // Wave 22
         Box::new(GetDate),
+        Box::new(ExplicitColumnAlias),
         Box::new(CreateSchemaStatement),
     ]
 }

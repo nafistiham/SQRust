@@ -40,5 +40,6 @@ pub mod negated_not_like;
 pub mod avoid_iif;
 pub mod cast_vs_convert;
 pub mod get_date;
+pub mod explicit_column_alias;
 pub mod len_function;
 pub mod upper_lower;
