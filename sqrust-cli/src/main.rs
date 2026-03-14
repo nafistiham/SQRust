@@ -203,6 +203,8 @@ use sqrust_rules::convention::avoid_iif::AvoidIif;
 use sqrust_rules::convention::cast_vs_convert::CastVsConvert;
 // Wave 21
 use sqrust_rules::convention::len_function::LenFunction;
+use sqrust_rules::lint::alter_table_rename_column::AlterTableRenameColumn;
+use sqrust_rules::ambiguous::concat_function_null_arg::ConcatFunctionNullArg;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -449,6 +451,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(CastVsConvert),
         // Wave 21
         Box::new(LenFunction),
+        Box::new(AlterTableRenameColumn),
+        Box::new(ConcatFunctionNullArg),
     ]
 }
 
