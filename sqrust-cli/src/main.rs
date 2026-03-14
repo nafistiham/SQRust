@@ -213,12 +213,15 @@ use sqrust_rules::structure::too_many_window_functions::TooManyWindowFunctions;
 use sqrust_rules::structure::update_with_join::UpdateWithJoin;
 use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
+use sqrust_rules::layout::space_after_not::SpaceAfterNot;
+use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 // Wave 22
 use sqrust_rules::ambiguous::integer_division::IntegerDivision;
 use sqrust_rules::convention::explicit_column_alias::ExplicitColumnAlias;
 use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_rules::lint::merge_statement::MergeStatement;
 use sqrust_rules::structure::subquery_in_having::SubqueryInHaving;
+use sqrust_rules::structure::union_branch_limit::UnionBranchLimit;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -474,6 +477,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(UpdateWithJoin),
         Box::new(MaxLineCount::default()),
         Box::new(NoSpaceAfterUnaryMinus),
+        Box::new(SpaceAfterNot),
+        Box::new(SpaceBeforeIn),
         // Wave 22
         Box::new(IntegerDivision),
         Box::new(GetDate),
@@ -481,6 +486,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(CreateSchemaStatement),
         Box::new(MergeStatement),
         Box::new(SubqueryInHaving),
+        Box::new(UnionBranchLimit),
     ]
 }
 
