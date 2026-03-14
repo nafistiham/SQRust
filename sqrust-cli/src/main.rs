@@ -450,10 +450,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(CastVsConvert),
         // Wave 21
         Box::new(LenFunction),
-        Box::new(AlterTableRenameColumn),
-        Box::new(ConcatFunctionNullArg),
-        Box::new(TooManyWindowFunctions::default()),
-        Box::new(MaxLineCount::default()),
+        Box::new(UpperLower),
     ]
 }
 
