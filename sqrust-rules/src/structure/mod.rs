@@ -47,3 +47,4 @@ pub mod window_function_in_where;
 pub mod count_distinct_in_group;
 pub mod having_without_select_agg;
 pub mod correlated_subquery;
+pub mod anti_join_pattern;
