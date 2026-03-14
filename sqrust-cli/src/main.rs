@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::try_cast::TryCast;
 use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
 use sqrust_rules::lint::create_index_if_not_exists::CreateIndexIfNotExists;
+use sqrust_rules::lint::select_for_update::SelectForUpdate;
 // Wave 24
 use sqrust_rules::convention::pivot_unpivot::PivotUnpivot;
 use sqrust_rules::convention::n_string_literal::NStringLiteral;
@@ -532,6 +533,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(TryCast),
         Box::new(StringAggSeparator),
         Box::new(CreateIndexIfNotExists),
+        Box::new(SelectForUpdate),
         // Wave 24
         Box::new(PivotUnpivot),
         Box::new(NStringLiteral),
