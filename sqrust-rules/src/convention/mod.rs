@@ -43,3 +43,4 @@ pub mod get_date;
 pub mod explicit_column_alias;
 pub mod len_function;
 pub mod upper_lower;
+pub mod prefer_extract;

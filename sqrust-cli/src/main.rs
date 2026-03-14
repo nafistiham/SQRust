@@ -215,6 +215,8 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 23
+use sqrust_rules::convention::prefer_extract::PreferExtract;
 // Wave 22
 use sqrust_rules::ambiguous::date_arithmetic::DateArithmetic;
 use sqrust_rules::ambiguous::integer_division::IntegerDivision;
@@ -489,6 +491,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(MergeStatement),
         Box::new(SubqueryInHaving),
         Box::new(UnionBranchLimit),
+        // Wave 23
+        Box::new(PreferExtract),
     ]
 }
 
