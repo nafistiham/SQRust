@@ -220,6 +220,7 @@ use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 use sqrust_rules::lint::set_variable_statement::SetVariableStatement;
 use sqrust_rules::structure::scalar_subquery_in_select::ScalarSubqueryInSelect;
 use sqrust_rules::ambiguous::date_trunc_function::DateTruncFunction;
+use sqrust_rules::convention::use_current_date::UseCurrentDate;
 // Wave 27
 use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 use sqrust_rules::lint::drop_column_if_exists::DropColumnIfExists;
@@ -570,6 +571,8 @@ Box::new(SetVariableStatement),
 Box::new(ScalarSubqueryInSelect),
 Box::new(DateTruncFunction),
 Box::new(JoinOnNewLine),
+Box::new(NoCharindexFunction),
+        Box::new(UseCurrentDate),
         // Wave 27
 Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
