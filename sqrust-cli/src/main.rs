@@ -217,6 +217,7 @@ use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 // Wave 29
 use sqrust_rules::convention::no_rownum::NoRownum;
+use sqrust_rules::lint::insert_overwrite::InsertOverwrite;
 // Wave 28
 use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 use sqrust_rules::lint::set_variable_statement::SetVariableStatement;
@@ -572,7 +573,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
         // Wave 29
-        Box::new(NoRownum),
+Box::new(NoRownum),
+Box::new(InsertOverwrite),
         // Wave 28
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
