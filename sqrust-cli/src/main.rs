@@ -222,6 +222,7 @@ use sqrust_rules::structure::subquery_in_join_condition::SubqueryInJoinCondition
 use sqrust_rules::ambiguous::year_month_day_function::YearMonthDayFunction;
 use sqrust_rules::convention::no_minus_operator::NoMinusOperator;
 use sqrust_rules::lint::on_conflict_clause::OnConflictClause;
+use sqrust_rules::structure::excessive_union_chain::ExcessiveUnionChain;
 // Wave 28
 use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 use sqrust_rules::lint::set_variable_statement::SetVariableStatement;
@@ -588,6 +589,8 @@ Box::new(NoRownum),
         Box::new(NoMinusOperator),
 Box::new(InsertOverwrite),
         Box::new(OnConflictClause),
+Box::new(SubqueryInJoinCondition),
+        Box::new(ExcessiveUnionChain),
         // Wave 28
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
