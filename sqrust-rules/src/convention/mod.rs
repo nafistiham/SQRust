@@ -55,3 +55,4 @@ pub mod no_decode_function;
 pub mod no_charindex_function;
 pub mod use_current_date;
 pub mod nvl_function;
+pub mod no_rownum;
