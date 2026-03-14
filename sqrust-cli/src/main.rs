@@ -215,6 +215,8 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 26
+use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 // Wave 25
 use sqrust_rules::convention::try_cast::TryCast;
 use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
@@ -535,6 +537,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NestedAggregate),
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
+        // Wave 26
+        Box::new(TopNWithoutOrder),
         // Wave 25
         Box::new(TryCast),
         Box::new(StringAggSeparator),
