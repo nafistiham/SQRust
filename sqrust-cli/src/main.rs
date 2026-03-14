@@ -202,6 +202,7 @@ use sqrust_rules::ambiguous::between_null_boundary::BetweenNullBoundary;
 use sqrust_rules::convention::avoid_iif::AvoidIif;
 use sqrust_rules::convention::cast_vs_convert::CastVsConvert;
 // Wave 21
+use sqrust_rules::convention::get_date::GetDate;
 use sqrust_rules::convention::len_function::LenFunction;
 use sqrust_rules::convention::upper_lower::UpperLower;
 use sqrust_rules::lint::alter_table_rename_column::AlterTableRenameColumn;
@@ -212,6 +213,8 @@ use sqrust_rules::structure::too_many_window_functions::TooManyWindowFunctions;
 use sqrust_rules::structure::update_with_join::UpdateWithJoin;
 use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
+// Wave 22
+use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -467,6 +470,9 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(UpdateWithJoin),
         Box::new(MaxLineCount::default()),
         Box::new(NoSpaceAfterUnaryMinus),
+        // Wave 22
+        Box::new(GetDate),
+        Box::new(CreateSchemaStatement),
     ]
 }
 
