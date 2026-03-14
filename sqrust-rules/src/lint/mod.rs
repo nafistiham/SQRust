@@ -36,3 +36,4 @@ pub mod select_into_table;
 pub mod order_by_in_view;
 pub mod alter_table_rename_column;
 pub mod drop_index;
+pub mod create_schema_statement;
