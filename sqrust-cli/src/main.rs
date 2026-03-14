@@ -223,6 +223,7 @@ use sqrust_rules::ambiguous::year_month_day_function::YearMonthDayFunction;
 use sqrust_rules::convention::no_minus_operator::NoMinusOperator;
 use sqrust_rules::lint::on_conflict_clause::OnConflictClause;
 use sqrust_rules::structure::excessive_union_chain::ExcessiveUnionChain;
+use sqrust_rules::ambiguous::convert_function::ConvertFunction;
 // Wave 28
 use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 use sqrust_rules::lint::set_variable_statement::SetVariableStatement;
@@ -591,6 +592,8 @@ Box::new(InsertOverwrite),
         Box::new(OnConflictClause),
 Box::new(SubqueryInJoinCondition),
         Box::new(ExcessiveUnionChain),
+Box::new(YearMonthDayFunction),
+        Box::new(ConvertFunction),
         // Wave 28
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),

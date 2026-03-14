@@ -53,3 +53,4 @@ pub mod string_to_number_comparison;
 pub mod date_trunc_function;
 pub mod unsafe_division;
 pub mod year_month_day_function;
+pub mod convert_function;
