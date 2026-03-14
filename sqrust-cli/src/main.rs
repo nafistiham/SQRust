@@ -222,6 +222,7 @@ use sqrust_rules::lint::insert_ignore::InsertIgnore;
 use sqrust_rules::lint::create_temp_table::CreateTempTable;
 use sqrust_rules::structure::large_offset::LargeOffset;
 use sqrust_rules::structure::nested_aggregate::NestedAggregate;
+use sqrust_rules::layout::space_after_keyword::SpaceAfterKeyword;
 // Wave 22
 use sqrust_rules::ambiguous::date_arithmetic::DateArithmetic;
 use sqrust_rules::ambiguous::integer_division::IntegerDivision;
@@ -509,6 +510,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(CreateTempTable),
         Box::new(LargeOffset),
         Box::new(NestedAggregate),
+        Box::new(SpaceAfterKeyword),
     ]
 }
 
