@@ -221,6 +221,9 @@ use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
 use sqrust_rules::lint::create_index_if_not_exists::CreateIndexIfNotExists;
 use sqrust_rules::lint::select_for_update::SelectForUpdate;
 use sqrust_rules::structure::select_star_in_cte::SelectStarInCTE;// Wave 24
+use sqrust_rules::structure::select_star_in_cte::SelectStarInCTE;
+use sqrust_rules::structure::window_function_in_where::WindowFunctionInWhere;
+// Wave 24
 use sqrust_rules::convention::pivot_unpivot::PivotUnpivot;
 use sqrust_rules::convention::n_string_literal::NStringLiteral;
 use sqrust_rules::lint::drop_view_if_exists::DropViewIfExists;
@@ -535,6 +538,9 @@ Box::new(TryCast),
         Box::new(CreateIndexIfNotExists),
         Box::new(SelectForUpdate),
 Box::new(SelectStarInCTE),        // Wave 24
+Box::new(SelectStarInCTE),
+        Box::new(WindowFunctionInWhere),
+        // Wave 24
         Box::new(PivotUnpivot),
         Box::new(NStringLiteral),
         Box::new(DropViewIfExists),

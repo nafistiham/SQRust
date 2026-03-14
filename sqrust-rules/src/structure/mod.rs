@@ -43,3 +43,4 @@ pub mod nested_aggregate;
 pub mod insert_values_limit;
 pub mod aggregate_star;
 pub mod select_star_in_cte;
+pub mod window_function_in_where;
