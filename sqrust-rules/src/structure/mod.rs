@@ -41,3 +41,4 @@ pub mod union_branch_limit;
 pub mod large_offset;
 pub mod nested_aggregate;
 pub mod insert_values_limit;
+pub mod aggregate_star;
