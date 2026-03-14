@@ -215,6 +215,8 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 24
+use sqrust_rules::convention::pivot_unpivot::PivotUnpivot;
 // Wave 23
 use sqrust_rules::convention::prefer_extract::PreferExtract;
 use sqrust_rules::convention::no_if_function::NoIFFunction;
@@ -513,6 +515,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NestedAggregate),
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
+        // Wave 24
+        Box::new(PivotUnpivot),
     ]
 }
 
