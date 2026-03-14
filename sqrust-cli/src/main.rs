@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
 use sqrust_rules::lint::multiple_primary_keys::MultiplePrimaryKeys;
+use sqrust_rules::structure::count_distinct_in_group::CountDistinctInGroup;
 // Wave 25
 use sqrust_rules::convention::try_cast::TryCast;
 use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
@@ -543,6 +544,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
 Box::new(TopNWithoutOrder),
 Box::new(CommentWithoutSpace),
         Box::new(MultiplePrimaryKeys),
+Box::new(CountDistinctInGroup),
         // Wave 25
         Box::new(TryCast),
         Box::new(StringAggSeparator),
