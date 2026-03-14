@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::prefer_extract::PreferExtract;
 use sqrust_rules::convention::no_if_function::NoIFFunction;
 use sqrust_rules::lint::insert_ignore::InsertIgnore;
+use sqrust_rules::lint::create_temp_table::CreateTempTable;
 // Wave 22
 use sqrust_rules::ambiguous::date_arithmetic::DateArithmetic;
 use sqrust_rules::ambiguous::integer_division::IntegerDivision;
@@ -497,6 +498,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(PreferExtract),
         Box::new(NoIFFunction),
         Box::new(InsertIgnore),
+        Box::new(CreateTempTable),
     ]
 }
 
