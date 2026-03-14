@@ -45,3 +45,4 @@ pub mod aggregate_star;
 pub mod select_star_in_cte;
 pub mod window_function_in_where;
 pub mod count_distinct_in_group;
+pub mod having_without_select_agg;
