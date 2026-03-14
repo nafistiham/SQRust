@@ -49,3 +49,4 @@ pub mod null_safe_equality;
 pub mod substring_function;
 pub mod format_function;
 pub mod implicit_boolean_comparison;
+pub mod string_to_number_comparison;

@@ -224,6 +224,7 @@ use sqrust_rules::layout::closing_paren_new_line::ClosingParenNewLine;
 use sqrust_rules::convention::nvl_function::NvlFunction;
 use sqrust_rules::lint::create_view_with_select_star::CreateViewWithSelectStar;
 use sqrust_rules::structure::anti_join_pattern::AntiJoinPattern;
+use sqrust_rules::ambiguous::string_to_number_comparison::StringToNumberComparison;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
@@ -567,6 +568,8 @@ Box::new(DropColumnIfExists),
         Box::new(CreateViewWithSelectStar),
 Box::new(CorrelatedSubquery),
         Box::new(AntiJoinPattern),
+Box::new(ImplicitBooleanComparison),
+        Box::new(StringToNumberComparison),
         // Wave 26
 Box::new(TopNWithoutOrder),
 Box::new(CommentWithoutSpace),
