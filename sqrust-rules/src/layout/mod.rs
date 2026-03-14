@@ -42,3 +42,4 @@ pub mod no_space_after_unary_minus;
 pub mod space_after_not;
 pub mod space_before_in;
 pub mod space_after_keyword;
+pub mod no_space_inside_brackets;
