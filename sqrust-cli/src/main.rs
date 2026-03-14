@@ -215,6 +215,8 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 27
+use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
@@ -546,6 +548,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NestedAggregate),
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
+        // Wave 27
+        Box::new(NoDecodeFunction),
         // Wave 26
 Box::new(TopNWithoutOrder),
 Box::new(CommentWithoutSpace),

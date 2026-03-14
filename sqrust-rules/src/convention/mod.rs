@@ -51,3 +51,4 @@ pub mod try_cast;
 pub mod string_agg_separator;
 pub mod top_n_without_order;
 pub mod no_values_function;
+pub mod no_decode_function;
