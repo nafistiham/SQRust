@@ -40,3 +40,4 @@ pub mod unnecessary_alias_quoting;
 pub mod max_line_count;
 pub mod no_space_after_unary_minus;
 pub mod space_after_not;
+pub mod space_before_in;

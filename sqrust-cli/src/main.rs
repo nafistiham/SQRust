@@ -479,6 +479,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(MaxLineCount::default()),
         Box::new(NoSpaceAfterUnaryMinus),
         Box::new(SpaceAfterNot),
+        Box::new(SpaceBeforeIn),
         // Wave 22
         Box::new(IntegerDivision),
         Box::new(DateArithmetic),
