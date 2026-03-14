@@ -38,3 +38,4 @@ pub mod alter_table_rename_column;
 pub mod drop_index;
 pub mod create_schema_statement;
 pub mod merge_statement;
+pub mod insert_ignore;
