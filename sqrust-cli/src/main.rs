@@ -225,6 +225,8 @@ use sqrust_rules::structure::nested_aggregate::NestedAggregate;
 // Wave 22
 use sqrust_rules::ambiguous::date_arithmetic::DateArithmetic;
 use sqrust_rules::ambiguous::integer_division::IntegerDivision;
+// Wave 23
+use sqrust_rules::ambiguous::select_distinct_order_by::SelectDistinctOrderBy;
 use sqrust_rules::convention::explicit_column_alias::ExplicitColumnAlias;
 use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_rules::lint::merge_statement::MergeStatement;
@@ -490,6 +492,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         // Wave 22
         Box::new(IntegerDivision),
         Box::new(DateArithmetic),
+        // Wave 23
+        Box::new(SelectDistinctOrderBy),
         Box::new(GetDate),
         Box::new(ExplicitColumnAlias),
         Box::new(CreateSchemaStatement),

@@ -40,3 +40,4 @@ pub mod concat_function_null_arg;
 pub mod distinct_with_window_function;
 pub mod integer_division;
 pub mod date_arithmetic;
+pub mod select_distinct_order_by;
