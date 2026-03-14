@@ -210,6 +210,8 @@ use sqrust_rules::ambiguous::concat_function_null_arg::ConcatFunctionNullArg;
 use sqrust_rules::ambiguous::distinct_with_window_function::DistinctWithWindowFunction;
 use sqrust_rules::structure::too_many_window_functions::TooManyWindowFunctions;
 use sqrust_rules::structure::update_with_join::UpdateWithJoin;
+use sqrust_rules::layout::max_line_count::MaxLineCount;
+use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -463,6 +465,8 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(DistinctWithWindowFunction),
         Box::new(TooManyWindowFunctions::default()),
         Box::new(UpdateWithJoin),
+        Box::new(MaxLineCount::default()),
+        Box::new(NoSpaceAfterUnaryMinus),
     ]
 }
 
