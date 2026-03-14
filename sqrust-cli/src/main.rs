@@ -225,6 +225,7 @@ use sqrust_rules::structure::aggregate_star::AggregateStar;
 use sqrust_rules::ambiguous::regexp_function::RegexpFunction;
 use sqrust_rules::ambiguous::interval_expression::IntervalExpression;
 use sqrust_rules::layout::space_after_as::SpaceAfterAs;
+use sqrust_rules::layout::blank_line_between_ctes::BlankLineBetweenCTEs;
 // Wave 23
 use sqrust_rules::convention::prefer_extract::PreferExtract;
 use sqrust_rules::convention::no_if_function::NoIFFunction;
@@ -533,6 +534,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(RegexpFunction),
         Box::new(IntervalExpression),
         Box::new(SpaceAfterAs),
+        Box::new(BlankLineBetweenCTEs),
     ]
 }
 

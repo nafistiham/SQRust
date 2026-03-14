@@ -44,3 +44,4 @@ pub mod space_before_in;
 pub mod space_after_keyword;
 pub mod no_space_inside_brackets;
 pub mod space_after_as;
+pub mod blank_line_between_ctes;
