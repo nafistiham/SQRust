@@ -222,6 +222,7 @@ use sqrust_rules::lint::drop_view_if_exists::DropViewIfExists;
 use sqrust_rules::lint::alter_table_set_not_null::AlterTableSetNotNull;
 use sqrust_rules::structure::insert_values_limit::InsertValuesLimit;
 use sqrust_rules::structure::aggregate_star::AggregateStar;
+use sqrust_rules::ambiguous::regexp_function::RegexpFunction;
 // Wave 23
 use sqrust_rules::convention::prefer_extract::PreferExtract;
 use sqrust_rules::convention::no_if_function::NoIFFunction;
@@ -527,6 +528,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(AlterTableSetNotNull),
         Box::new(InsertValuesLimit),
         Box::new(AggregateStar),
+        Box::new(RegexpFunction),
     ]
 }
 
