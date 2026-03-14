@@ -47,3 +47,4 @@ pub mod select_for_update;
 pub mod comment_without_space;
 pub mod multiple_primary_keys;
 pub mod drop_column_if_exists;
+pub mod create_view_with_select_star;

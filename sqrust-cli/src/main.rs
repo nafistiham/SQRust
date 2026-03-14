@@ -222,6 +222,7 @@ use sqrust_rules::structure::correlated_subquery::CorrelatedSubquery;
 use sqrust_rules::ambiguous::implicit_boolean_comparison::ImplicitBooleanComparison;
 use sqrust_rules::layout::closing_paren_new_line::ClosingParenNewLine;
 use sqrust_rules::convention::nvl_function::NvlFunction;
+use sqrust_rules::lint::create_view_with_select_star::CreateViewWithSelectStar;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
@@ -561,6 +562,8 @@ Box::new(ImplicitBooleanComparison),
 Box::new(ClosingParenNewLine),
 Box::new(NoDecodeFunction),
         Box::new(NvlFunction),
+Box::new(DropColumnIfExists),
+        Box::new(CreateViewWithSelectStar),
         // Wave 26
 Box::new(TopNWithoutOrder),
 Box::new(CommentWithoutSpace),
