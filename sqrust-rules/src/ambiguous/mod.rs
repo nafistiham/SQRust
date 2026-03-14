@@ -45,3 +45,4 @@ pub mod cast_to_varchar;
 pub mod regexp_function;
 pub mod interval_expression;
 pub mod implicit_order_direction;
+pub mod null_safe_equality;

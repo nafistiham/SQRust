@@ -224,6 +224,7 @@ use sqrust_rules::structure::select_star_in_cte::SelectStarInCTE;// Wave 24
 use sqrust_rules::structure::select_star_in_cte::SelectStarInCTE;
 use sqrust_rules::structure::window_function_in_where::WindowFunctionInWhere;
 use sqrust_rules::ambiguous::implicit_order_direction::ImplicitOrderDirection;
+use sqrust_rules::ambiguous::null_safe_equality::NullSafeEquality;
 // Wave 24
 use sqrust_rules::convention::pivot_unpivot::PivotUnpivot;
 use sqrust_rules::convention::n_string_literal::NStringLiteral;
@@ -542,6 +543,8 @@ Box::new(SelectStarInCTE),        // Wave 24
 Box::new(SelectStarInCTE),
         Box::new(WindowFunctionInWhere),
 Box::new(ImplicitOrderDirection),
+Box::new(ImplicitOrderDirection),
+        Box::new(NullSafeEquality),
         // Wave 24
         Box::new(PivotUnpivot),
         Box::new(NStringLiteral),
