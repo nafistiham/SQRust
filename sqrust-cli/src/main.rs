@@ -218,6 +218,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 // Wave 27
 use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 use sqrust_rules::lint::drop_column_if_exists::DropColumnIfExists;
+use sqrust_rules::structure::correlated_subquery::CorrelatedSubquery;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
@@ -552,6 +553,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         // Wave 27
 Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
+Box::new(CorrelatedSubquery),
         // Wave 26
 Box::new(TopNWithoutOrder),
 Box::new(CommentWithoutSpace),
