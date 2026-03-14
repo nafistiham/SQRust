@@ -220,6 +220,7 @@ use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 use sqrust_rules::lint::drop_column_if_exists::DropColumnIfExists;
 use sqrust_rules::structure::correlated_subquery::CorrelatedSubquery;
 use sqrust_rules::ambiguous::implicit_boolean_comparison::ImplicitBooleanComparison;
+use sqrust_rules::layout::closing_paren_new_line::ClosingParenNewLine;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
@@ -556,6 +557,7 @@ Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
 Box::new(CorrelatedSubquery),
 Box::new(ImplicitBooleanComparison),
+Box::new(ClosingParenNewLine),
         // Wave 26
 Box::new(TopNWithoutOrder),
 Box::new(CommentWithoutSpace),
