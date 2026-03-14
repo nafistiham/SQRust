@@ -35,3 +35,4 @@ pub mod window_frame_all_rows;
 pub mod except_all;
 pub mod lateral_column_alias;
 pub mod too_many_window_functions;
+pub mod update_with_join;
