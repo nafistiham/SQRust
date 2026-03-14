@@ -47,3 +47,4 @@ pub mod interval_expression;
 pub mod implicit_order_direction;
 pub mod null_safe_equality;
 pub mod substring_function;
+pub mod format_function;
