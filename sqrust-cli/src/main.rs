@@ -217,6 +217,8 @@ use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
+use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
+use sqrust_rules::lint::multiple_primary_keys::MultiplePrimaryKeys;
 // Wave 25
 use sqrust_rules::convention::try_cast::TryCast;
 use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
@@ -538,7 +540,9 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
         // Wave 26
-        Box::new(TopNWithoutOrder),
+Box::new(TopNWithoutOrder),
+Box::new(CommentWithoutSpace),
+        Box::new(MultiplePrimaryKeys),
         // Wave 25
         Box::new(TryCast),
         Box::new(StringAggSeparator),

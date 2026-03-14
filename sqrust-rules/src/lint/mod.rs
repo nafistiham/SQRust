@@ -44,3 +44,5 @@ pub mod drop_view_if_exists;
 pub mod alter_table_set_not_null;
 pub mod create_index_if_not_exists;
 pub mod select_for_update;
+pub mod comment_without_space;
+pub mod multiple_primary_keys;
