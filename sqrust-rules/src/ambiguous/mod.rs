@@ -51,3 +51,4 @@ pub mod format_function;
 pub mod implicit_boolean_comparison;
 pub mod string_to_number_comparison;
 pub mod date_trunc_function;
+pub mod unsafe_division;

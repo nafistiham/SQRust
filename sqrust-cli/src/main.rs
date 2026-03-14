@@ -223,6 +223,7 @@ use sqrust_rules::ambiguous::date_trunc_function::DateTruncFunction;
 use sqrust_rules::convention::use_current_date::UseCurrentDate;
 use sqrust_rules::lint::execute_statement::ExecuteStatement;
 use sqrust_rules::structure::cross_apply::CrossApply;
+use sqrust_rules::ambiguous::unsafe_division::UnsafeDivision;
 // Wave 27
 use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 use sqrust_rules::lint::drop_column_if_exists::DropColumnIfExists;
@@ -579,6 +580,8 @@ Box::new(SetVariableStatement),
         Box::new(ExecuteStatement),
 Box::new(ScalarSubqueryInSelect),
         Box::new(CrossApply),
+Box::new(DateTruncFunction),
+        Box::new(UnsafeDivision),
         // Wave 27
 Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
