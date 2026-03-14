@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::no_rownum::NoRownum;
 use sqrust_rules::lint::insert_overwrite::InsertOverwrite;
 use sqrust_rules::structure::subquery_in_join_condition::SubqueryInJoinCondition;
+use sqrust_rules::ambiguous::year_month_day_function::YearMonthDayFunction;
 // Wave 28
 use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 use sqrust_rules::lint::set_variable_statement::SetVariableStatement;
@@ -577,6 +578,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
 Box::new(NoRownum),
 Box::new(InsertOverwrite),
 Box::new(SubqueryInJoinCondition),
+Box::new(YearMonthDayFunction),
         // Wave 28
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
