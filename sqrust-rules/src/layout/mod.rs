@@ -50,3 +50,4 @@ pub mod select_star_spacing;
 pub mod alias_on_new_line;
 pub mod no_space_before_open_paren;
 pub mod closing_paren_new_line;
+pub mod operator_at_line_start;
