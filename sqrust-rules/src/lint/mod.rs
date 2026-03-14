@@ -40,3 +40,4 @@ pub mod create_schema_statement;
 pub mod merge_statement;
 pub mod insert_ignore;
 pub mod create_temp_table;
+pub mod drop_view_if_exists;
