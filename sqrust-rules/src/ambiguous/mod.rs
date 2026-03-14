@@ -43,3 +43,4 @@ pub mod date_arithmetic;
 pub mod select_distinct_order_by;
 pub mod cast_to_varchar;
 pub mod regexp_function;
+pub mod interval_expression;
