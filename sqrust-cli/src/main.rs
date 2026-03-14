@@ -225,6 +225,7 @@ use sqrust_rules::layout::alias_on_new_line::AliasOnNewLine;
 use sqrust_rules::convention::no_values_function::NoValuesFunction;
 use sqrust_rules::structure::having_without_select_agg::HavingWithoutSelectAgg;
 use sqrust_rules::ambiguous::format_function::FormatFunction;
+use sqrust_rules::layout::no_space_before_open_paren::NoSpaceBeforeOpenParen;
 // Wave 25
 use sqrust_rules::convention::try_cast::TryCast;
 use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
@@ -558,6 +559,8 @@ Box::new(CountDistinctInGroup),
         Box::new(HavingWithoutSelectAgg),
 Box::new(SubstringFunction),
         Box::new(FormatFunction),
+Box::new(AliasOnNewLine),
+        Box::new(NoSpaceBeforeOpenParen),
         // Wave 25
         Box::new(TryCast),
         Box::new(StringAggSeparator),
