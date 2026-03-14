@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::no_charindex_function::NoCharindexFunction;
 use sqrust_rules::lint::set_variable_statement::SetVariableStatement;
 use sqrust_rules::structure::scalar_subquery_in_select::ScalarSubqueryInSelect;
+use sqrust_rules::ambiguous::date_trunc_function::DateTruncFunction;
 // Wave 27
 use sqrust_rules::convention::no_decode_function::NoDecodeFunction;
 use sqrust_rules::lint::drop_column_if_exists::DropColumnIfExists;
@@ -565,6 +566,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
 Box::new(ScalarSubqueryInSelect),
+Box::new(DateTruncFunction),
         // Wave 27
 Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
