@@ -34,3 +34,4 @@ pub mod set_op_precedence;
 pub mod window_frame_all_rows;
 pub mod except_all;
 pub mod lateral_column_alias;
+pub mod too_many_window_functions;
