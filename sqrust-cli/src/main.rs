@@ -231,6 +231,8 @@ use sqrust_rules::lint::create_view_with_select_star::CreateViewWithSelectStar;
 use sqrust_rules::structure::anti_join_pattern::AntiJoinPattern;
 use sqrust_rules::ambiguous::string_to_number_comparison::StringToNumberComparison;
 use sqrust_rules::layout::operator_at_line_start::OperatorAtLineStart;
+// Wave 28
+use sqrust_rules::layout::join_on_new_line::JoinOnNewLine;
 // Wave 26
 use sqrust_rules::convention::top_n_without_order::TopNWithoutOrder;
 use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
@@ -567,6 +569,7 @@ Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
 Box::new(ScalarSubqueryInSelect),
 Box::new(DateTruncFunction),
+Box::new(JoinOnNewLine),
         // Wave 27
 Box::new(NoDecodeFunction),
 Box::new(DropColumnIfExists),
