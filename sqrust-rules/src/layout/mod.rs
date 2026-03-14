@@ -37,3 +37,4 @@ pub mod function_call_spacing;
 pub mod indentation_consistency;
 pub mod no_space_around_dot;
 pub mod unnecessary_alias_quoting;
+pub mod max_line_count;
