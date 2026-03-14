@@ -47,3 +47,4 @@ pub mod space_after_as;
 pub mod blank_line_between_ctes;
 pub mod comma_after_last_column;
 pub mod select_star_spacing;
+pub mod alias_on_new_line;

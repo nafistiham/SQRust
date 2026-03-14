@@ -221,6 +221,7 @@ use sqrust_rules::lint::comment_without_space::CommentWithoutSpace;
 use sqrust_rules::lint::multiple_primary_keys::MultiplePrimaryKeys;
 use sqrust_rules::structure::count_distinct_in_group::CountDistinctInGroup;
 use sqrust_rules::ambiguous::substring_function::SubstringFunction;
+use sqrust_rules::layout::alias_on_new_line::AliasOnNewLine;
 // Wave 25
 use sqrust_rules::convention::try_cast::TryCast;
 use sqrust_rules::convention::string_agg_separator::StringAggSeparator;
@@ -547,6 +548,7 @@ Box::new(CommentWithoutSpace),
         Box::new(MultiplePrimaryKeys),
 Box::new(CountDistinctInGroup),
 Box::new(SubstringFunction),
+Box::new(AliasOnNewLine),
         // Wave 25
         Box::new(TryCast),
         Box::new(StringAggSeparator),
