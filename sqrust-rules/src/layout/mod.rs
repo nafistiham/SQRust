@@ -52,3 +52,4 @@ pub mod no_space_before_open_paren;
 pub mod closing_paren_new_line;
 pub mod operator_at_line_start;
 pub mod join_on_new_line;
+pub mod select_column_per_line;
