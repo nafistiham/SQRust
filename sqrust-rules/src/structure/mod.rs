@@ -38,3 +38,4 @@ pub mod too_many_window_functions;
 pub mod update_with_join;
 pub mod subquery_in_having;
 pub mod union_branch_limit;
+pub mod large_offset;
