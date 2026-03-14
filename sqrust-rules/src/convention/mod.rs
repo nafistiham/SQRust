@@ -47,3 +47,5 @@ pub mod prefer_extract;
 pub mod no_if_function;
 pub mod pivot_unpivot;
 pub mod n_string_literal;
+pub mod try_cast;
+pub mod string_agg_separator;
