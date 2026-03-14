@@ -51,3 +51,4 @@ pub mod create_view_with_select_star;
 pub mod set_variable_statement;
 pub mod execute_statement;
 pub mod insert_overwrite;
+pub mod on_conflict_clause;
