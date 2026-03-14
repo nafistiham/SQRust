@@ -240,6 +240,8 @@ use sqrust_rules::lint::create_view_with_select_star::CreateViewWithSelectStar;
 use sqrust_rules::structure::anti_join_pattern::AntiJoinPattern;
 use sqrust_rules::ambiguous::string_to_number_comparison::StringToNumberComparison;
 use sqrust_rules::layout::operator_at_line_start::OperatorAtLineStart;
+// Wave 29
+use sqrust_rules::layout::where_on_new_line::WhereOnNewLine;
 // Wave 28
 use sqrust_rules::layout::join_on_new_line::JoinOnNewLine;
 use sqrust_rules::layout::select_column_per_line::SelectColumnPerLine;
@@ -579,6 +581,7 @@ Box::new(NoRownum),
 Box::new(InsertOverwrite),
 Box::new(SubqueryInJoinCondition),
 Box::new(YearMonthDayFunction),
+Box::new(WhereOnNewLine),
         // Wave 28
 Box::new(NoCharindexFunction),
 Box::new(SetVariableStatement),
