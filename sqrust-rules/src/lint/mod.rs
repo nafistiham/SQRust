@@ -41,3 +41,4 @@ pub mod merge_statement;
 pub mod insert_ignore;
 pub mod create_temp_table;
 pub mod drop_view_if_exists;
+pub mod alter_table_set_not_null;

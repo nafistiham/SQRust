@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::pivot_unpivot::PivotUnpivot;
 use sqrust_rules::convention::n_string_literal::NStringLiteral;
 use sqrust_rules::lint::drop_view_if_exists::DropViewIfExists;
+use sqrust_rules::lint::alter_table_set_not_null::AlterTableSetNotNull;
 // Wave 23
 use sqrust_rules::convention::prefer_extract::PreferExtract;
 use sqrust_rules::convention::no_if_function::NoIFFunction;
@@ -521,6 +522,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(PivotUnpivot),
         Box::new(NStringLiteral),
         Box::new(DropViewIfExists),
+        Box::new(AlterTableSetNotNull),
     ]
 }
 
