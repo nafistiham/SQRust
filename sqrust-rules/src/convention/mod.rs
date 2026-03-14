@@ -44,3 +44,4 @@ pub mod explicit_column_alias;
 pub mod len_function;
 pub mod upper_lower;
 pub mod prefer_extract;
+pub mod no_if_function;
