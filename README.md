@@ -94,6 +94,9 @@ sqrust check models/
 # Lint a single file
 sqrust check query.sql
 
+# JSON output (for CI integration)
+sqrust check models/ --format json
+
 # Auto-fix layout issues
 sqrust fmt models/
 
@@ -124,12 +127,12 @@ models/payments.sql:41:1: [Layout/LongLines] Line exceeds 120 characters (was 14
 |----------|-------|---------|
 | **Convention** | 63 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `NoIsnullFunction`, `NoDualTable`, `NoNvl2` |
 | **Layout** | 60 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `GroupByOnNewLine`, `OrderByOnNewLine` |
-| **Lint** | 58 | `UnreferencedCTE`, `DuplicateCteNames`, `UnusedCte`, `SelectWithoutFrom`, `AddColumnWithoutDefault` |
+| **Lint** | 58 | `UnusedCte`, `DuplicateCteNames`, `DuplicateJoin`, `SelectWithoutFrom`, `AddColumnWithoutDefault` |
 | **Structure** | 57 | `WildcardInUnion`, `NaturalJoin`, `MaxSelectColumns`, `LateralJoin`, `WindowFrameFullPartition` |
 | **Ambiguous** | 58 | `FloatingPointComparison`, `CastWithoutLength`, `UnsafeDivision`, `ConvertFunction` |
-| **Capitalisation** | 4 | `KeywordCase`, `IdentifierCase` |
+| **Capitalisation** | 4 | `Keywords`, `Functions`, `Literals`, `Types` |
 
-Full rule list → [docs/rules.md](docs/rules.md)
+Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](docs/migration.md) · [Architecture](docs/architecture.md)
 
 ---
 
@@ -178,7 +181,7 @@ See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/nafistiham/SQRust
-    rev: v0.1.0
+    rev: v0.1.1
     hooks:
       - id: sqrust
         args: [check]
