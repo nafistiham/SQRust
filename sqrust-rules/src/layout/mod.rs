@@ -57,3 +57,4 @@ pub mod where_on_new_line;
 pub mod having_on_new_line;
 pub mod order_by_on_new_line;
 pub mod limit_on_new_line;
+pub mod group_by_on_new_line;

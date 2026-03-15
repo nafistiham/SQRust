@@ -215,6 +215,9 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 31
+use sqrust_rules::layout::group_by_on_new_line::GroupByOnNewLine;
+use sqrust_rules::convention::no_sysdate::NoSysdate;
 // Wave 30
 use sqrust_rules::convention::no_isnull_function::NoIsnullFunction;
 use sqrust_rules::lint::add_column_without_default::AddColumnWithoutDefault;
@@ -338,6 +341,18 @@ enum Commands {
     Fmt {
         #[arg(value_name = "PATH", default_value = ".")]
         paths: Vec<PathBuf>,
+    },
+    /// List all rules and their enabled/disabled status
+    Rules {
+        /// Filter by category (e.g. Convention, Layout, Lint)
+        #[arg(long, value_name = "CATEGORY")]
+        category: Option<String>,
+        /// Enable a rule — removes it from the disable list in sqrust.toml
+        #[arg(long, value_name = "RULE")]
+        enable: Option<String>,
+        /// Disable a rule — adds it to the disable list in sqrust.toml
+        #[arg(long, value_name = "RULE")]
+        disable: Option<String>,
     },
 }
 
@@ -593,6 +608,9 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NestedAggregate),
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
+        // Wave 31
+        Box::new(GroupByOnNewLine),
+        Box::new(NoSysdate),
         // Wave 30
         Box::new(NoIsnullFunction),
         Box::new(AddColumnWithoutDefault),
@@ -721,6 +739,89 @@ fn is_excluded(path: &Path, exclude: &[String]) -> bool {
     false
 }
 
+/// Locate sqrust.toml by walking up from cwd, or return a path in cwd to create.
+fn find_or_default_config_path() -> PathBuf {
+    let cwd = std::env::current_dir().unwrap_or_else(|_| PathBuf::from("."));
+    let mut dir = cwd.clone();
+    loop {
+        let candidate = dir.join("sqrust.toml");
+        if candidate.exists() {
+            return candidate;
+        }
+        match dir.parent() {
+            Some(p) => dir = p.to_path_buf(),
+            None => break,
+        }
+    }
+    cwd.join("sqrust.toml")
+}
+
+/// Add or remove a rule name from the `[rules] disable` array in sqrust.toml.
+/// Creates the file if it doesn't exist.
+fn modify_disable_list(rule: &str, add: bool) {
+    let path = find_or_default_config_path();
+
+    let raw = if path.exists() {
+        std::fs::read_to_string(&path).unwrap_or_default()
+    } else {
+        String::new()
+    };
+
+    let mut doc: toml::Value = if raw.is_empty() {
+        toml::Value::Table(toml::map::Map::new())
+    } else {
+        match toml::from_str(&raw) {
+            Ok(v) => v,
+            Err(e) => {
+                eprintln!("sqrust: cannot parse {}: {}", path.display(), e);
+                process::exit(2);
+            }
+        }
+    };
+
+    // Ensure [rules] table exists.
+    let rules_table = doc
+        .as_table_mut()
+        .unwrap()
+        .entry("rules")
+        .or_insert_with(|| toml::Value::Table(toml::map::Map::new()))
+        .as_table_mut()
+        .unwrap();
+
+    // Get or create the disable array.
+    let disable = rules_table
+        .entry("disable")
+        .or_insert_with(|| toml::Value::Array(Vec::new()))
+        .as_array_mut()
+        .unwrap();
+
+    let rule_val = toml::Value::String(rule.to_string());
+
+    if add {
+        if !disable.contains(&rule_val) {
+            disable.push(rule_val);
+            println!("Disabled: {}", rule);
+        } else {
+            println!("{} is already disabled.", rule);
+        }
+    } else {
+        let before = disable.len();
+        disable.retain(|v| v != &rule_val);
+        if disable.len() < before {
+            println!("Enabled: {}", rule);
+        } else {
+            println!("{} was not in the disable list.", rule);
+        }
+    }
+
+    let out = toml::to_string_pretty(&doc).expect("serialise toml");
+    std::fs::write(&path, out).unwrap_or_else(|e| {
+        eprintln!("sqrust: cannot write {}: {}", path.display(), e);
+        process::exit(2);
+    });
+    println!("Updated: {}", path.display());
+}
+
 fn main() {
     let cli = Cli::parse();
 
@@ -814,7 +915,56 @@ fn main() {
                         }
                     }
                 }
+                Commands::Rules { .. } => unreachable!(),
             }
+        }
+
+        Commands::Rules { category, enable, disable } => {
+            if let Some(rule) = enable {
+                modify_disable_list(&rule, false);
+                return;
+            }
+            if let Some(rule) = disable {
+                modify_disable_list(&rule, true);
+                return;
+            }
+
+            // List all rules with their enabled/disabled status.
+            let config_start = Path::new(".");
+            let config = Config::load(config_start).unwrap_or_default();
+
+            let all_rules = rules();
+            let cat_filter = category.as_deref().map(|c| c.to_lowercase());
+
+            let filtered: Vec<_> = all_rules
+                .iter()
+                .filter(|r| {
+                    if let Some(ref cat) = cat_filter {
+                        r.name().to_lowercase().starts_with(&format!("{}/", cat))
+                            || r.name().to_lowercase() == cat.as_str()
+                    } else {
+                        true
+                    }
+                })
+                .collect();
+
+            let total = filtered.len();
+            let mut enabled_count = 0usize;
+
+            for rule in &filtered {
+                let on = config.rule_enabled(rule.name());
+                if on { enabled_count += 1; }
+                let mark = if on { "✓" } else { "✗" };
+                let suffix = if on { String::new() } else { "  (disabled)".to_string() };
+                println!("{}  {}{}", mark, rule.name(), suffix);
+            }
+
+            let disabled_count = total - enabled_count;
+            println!();
+            println!(
+                "{} rules total — {} enabled, {} disabled",
+                total, enabled_count, disabled_count
+            );
         }
     }
 }
