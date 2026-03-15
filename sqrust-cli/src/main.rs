@@ -221,6 +221,7 @@ use sqrust_rules::lint::add_column_without_default::AddColumnWithoutDefault;
 use sqrust_rules::structure::lateral_join::LateralJoin;
 use sqrust_rules::ambiguous::dateadd_function::DateaddFunction;
 use sqrust_rules::convention::no_dual_table::NoDualTable;
+use sqrust_rules::lint::create_sequence_statement::CreateSequenceStatement;
 // Wave 29
 use sqrust_rules::convention::no_rownum::NoRownum;
 use sqrust_rules::lint::insert_overwrite::InsertOverwrite;
@@ -597,6 +598,8 @@ Box::new(DateaddFunction),
 Box::new(OrderByOnNewLine),
 Box::new(NoIsnullFunction),
         Box::new(NoDualTable),
+Box::new(AddColumnWithoutDefault),
+        Box::new(CreateSequenceStatement),
         // Wave 29
 Box::new(NoRownum),
 Box::new(InsertOverwrite),

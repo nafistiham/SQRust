@@ -53,3 +53,4 @@ pub mod execute_statement;
 pub mod insert_overwrite;
 pub mod on_conflict_clause;
 pub mod add_column_without_default;
+pub mod create_sequence_statement;
