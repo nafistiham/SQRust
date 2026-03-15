@@ -52,3 +52,4 @@ pub mod set_variable_statement;
 pub mod execute_statement;
 pub mod insert_overwrite;
 pub mod on_conflict_clause;
+pub mod add_column_without_default;
