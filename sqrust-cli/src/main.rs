@@ -219,6 +219,7 @@ use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
 use sqrust_rules::convention::no_isnull_function::NoIsnullFunction;
 use sqrust_rules::lint::add_column_without_default::AddColumnWithoutDefault;
 use sqrust_rules::structure::lateral_join::LateralJoin;
+use sqrust_rules::ambiguous::dateadd_function::DateaddFunction;
 // Wave 29
 use sqrust_rules::convention::no_rownum::NoRownum;
 use sqrust_rules::lint::insert_overwrite::InsertOverwrite;
@@ -589,6 +590,7 @@ fn rules() -> Vec<Box<dyn Rule>> {
 Box::new(NoIsnullFunction),
 Box::new(AddColumnWithoutDefault),
 Box::new(LateralJoin),
+Box::new(DateaddFunction),
         // Wave 29
 Box::new(NoRownum),
 Box::new(InsertOverwrite),
