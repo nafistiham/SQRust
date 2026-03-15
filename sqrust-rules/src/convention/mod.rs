@@ -57,3 +57,4 @@ pub mod use_current_date;
 pub mod nvl_function;
 pub mod no_rownum;
 pub mod no_minus_operator;
+pub mod no_isnull_function;
