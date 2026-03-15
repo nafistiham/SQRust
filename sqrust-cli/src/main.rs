@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use serde::Serialize;
 use rayon::prelude::*;
 use sqrust_core::{FileContext, Rule};
 use sqrust_rules::ambiguous::column_name_conflict::ColumnNameConflict;
@@ -328,6 +329,15 @@ use std::path::{Path, PathBuf};
 use std::process;
 use walkdir::WalkDir;
 
+#[derive(Serialize)]
+struct JsonViolation {
+    file: String,
+    line: usize,
+    col: usize,
+    rule: String,
+    message: String,
+}
+
 #[derive(Parser)]
 #[command(name = "sqrust", version, about = "Fast SQL linter and formatter")]
 struct Cli {
@@ -341,6 +351,9 @@ enum Commands {
     Check {
         #[arg(value_name = "PATH", default_value = ".")]
         paths: Vec<PathBuf>,
+        /// Output format: "text" (default) or "json"
+        #[arg(long, value_name = "FORMAT", default_value = "text")]
+        format: String,
     },
     /// Format SQL files (auto-fix violations)
     Fmt {
@@ -836,7 +849,7 @@ fn main() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Check { ref paths } | Commands::Fmt { ref paths } => {
+        Commands::Check { ref paths, .. } | Commands::Fmt { ref paths } => {
             // Load config from first path arg, or current dir.
             let config_start = paths.first().map(PathBuf::as_path).unwrap_or(Path::new("."));
             let config = match Config::load(config_start) {
@@ -859,13 +872,15 @@ fn main() {
                 .collect();
 
             match cli.command {
-                Commands::Check { .. } => {
+                Commands::Check { ref format, .. } => {
                     if files.is_empty() {
                         eprintln!("No SQL files found.");
                         process::exit(0);
                     }
 
-                    let violations: Vec<String> = files
+                    let use_json = format == "json";
+
+                    let violations: Vec<JsonViolation> = files
                         .par_iter()
                         .flat_map(|path| {
                             let source = match std::fs::read_to_string(path) {
@@ -879,22 +894,23 @@ fn main() {
                             active_rules
                                 .iter()
                                 .flat_map(|rule| rule.check(&ctx))
-                                .map(|d| {
-                                    format!(
-                                        "{}:{}:{}: [{}] {}",
-                                        path.display(),
-                                        d.line,
-                                        d.col,
-                                        d.rule,
-                                        d.message
-                                    )
+                                .map(|d| JsonViolation {
+                                    file: path.display().to_string(),
+                                    line: d.line,
+                                    col: d.col,
+                                    rule: d.rule.to_string(),
+                                    message: d.message,
                                 })
                                 .collect::<Vec<_>>()
                         })
                         .collect();
 
-                    for v in &violations {
-                        println!("{}", v);
+                    if use_json {
+                        println!("{}", serde_json::to_string_pretty(&violations).unwrap_or_else(|_| "[]".to_string()));
+                    } else {
+                        for v in &violations {
+                            println!("{}:{}:{}: [{}] {}", v.file, v.line, v.col, v.rule, v.message);
+                        }
                     }
 
                     if !violations.is_empty() {
