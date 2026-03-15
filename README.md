@@ -18,8 +18,8 @@ Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playb
 | Tool | Time | Rules |
 |------|------|-------|
 | **SQRust** | **42 ms** | **300** |
-| sqruff | 79 ms | ~30 |
-| sqlfluff 4.0.4 | 10,925 ms | ~80 |
+| sqruff | 79 ms | ~62 |
+| sqlfluff 4.0.4 | 10,925 ms | ~89 |
 
 > **2× faster than sqruff. 260× faster than sqlfluff. More rules than both combined.**
 
@@ -138,7 +138,7 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 |  | SQRust | sqruff | sqlfluff |
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
-| Rules | **300** | ~30 | ~80 |
+| Rules | **300** | ~62 | ~89 |
 | Speed (495 files) | **42 ms** | 79 ms | 10,925 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | ✅ | ✅ | ✅ |
