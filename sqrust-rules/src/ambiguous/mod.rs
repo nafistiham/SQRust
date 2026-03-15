@@ -56,3 +56,4 @@ pub mod year_month_day_function;
 pub mod convert_function;
 pub mod dateadd_function;
 pub mod add_months_function;
+pub mod cast_without_length;

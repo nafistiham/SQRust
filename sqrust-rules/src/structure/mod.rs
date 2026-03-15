@@ -54,3 +54,4 @@ pub mod subquery_in_join_condition;
 pub mod excessive_union_chain;
 pub mod lateral_join;
 pub mod window_frame_full_partition;
+pub mod max_select_columns;
