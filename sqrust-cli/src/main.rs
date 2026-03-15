@@ -255,6 +255,7 @@ use sqrust_rules::ambiguous::string_to_number_comparison::StringToNumberComparis
 use sqrust_rules::layout::operator_at_line_start::OperatorAtLineStart;
 // Wave 30
 use sqrust_rules::layout::order_by_on_new_line::OrderByOnNewLine;
+use sqrust_rules::layout::limit_on_new_line::LimitOnNewLine;
 // Wave 29
 use sqrust_rules::layout::where_on_new_line::WhereOnNewLine;
 use sqrust_rules::layout::having_on_new_line::HavingOnNewLine;
@@ -606,6 +607,8 @@ Box::new(LateralJoin),
         Box::new(WindowFrameFullPartition),
 Box::new(DateaddFunction),
         Box::new(AddMonthsFunction),
+Box::new(OrderByOnNewLine),
+        Box::new(LimitOnNewLine),
         // Wave 29
 Box::new(NoRownum),
 Box::new(InsertOverwrite),
