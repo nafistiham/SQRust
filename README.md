@@ -5,7 +5,7 @@
 
 **A fast SQL linter written in Rust.** The Ruff for SQL.
 
-294 rules. Single binary. No Python required.
+300 rules. Single binary. No Python required.
 
 ---
 
@@ -13,18 +13,40 @@
 
 If you use sqlfluff, you know the pain: linting a 200-file dbt project takes minutes in CI. SQRust solves that.
 
-Benchmarked on **483 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus):
+Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus):
 
 | Tool | Time | Rules |
 |------|------|-------|
-| **SQRust** | **95 ms** | **294** |
-| sqruff | 448 ms | ~30 |
-| sqlfluff 4.0.4 | 88,962 ms | ~80 |
+| **SQRust** | **42 ms** | **300** |
+| sqruff | 79 ms | ~30 |
+| sqlfluff 4.0.4 | 10,925 ms | ~80 |
 
-> **5× faster than sqruff. 935× faster than sqlfluff. More rules than both combined.**
+> **2× faster than sqruff. 260× faster than sqlfluff. More rules than both combined.**
 
-Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5 runs, real corpus, all tools in ANSI mode).
+Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, real corpus, all tools in ANSI mode).
 [Run the benchmark yourself](#run-the-benchmark-yourself).
+
+### Selective mode: top 50 rules
+
+Don't need all 300 rules? Use `sqrust rules --disable` to trim to your essentials. Running just the top 50 most-used rules cuts the time in half:
+
+| Config | Time | vs sqruff | vs sqlfluff |
+|--------|------|-----------|-------------|
+| SQRust — all 300 rules | **42 ms** | 1.9× faster | 260× faster |
+| SQRust — top 50 rules | **21 ms** | 3.8× faster | 520× faster |
+| sqruff | 79 ms | baseline | — |
+| sqlfluff 4.0.4 | 10,925 ms | — | baseline |
+
+```bash
+# See all rules and their current status
+sqrust rules
+
+# Disable rules you don't need
+sqrust rules --disable Convention/SelectStar
+
+# Filter by category
+sqrust rules --category Layout
+```
 
 ---
 
@@ -74,6 +96,13 @@ sqrust check query.sql
 
 # Auto-fix layout issues
 sqrust fmt models/
+
+# List all rules with enabled/disabled status
+sqrust rules
+
+# Enable or disable a specific rule
+sqrust rules --disable Convention/SelectStar
+sqrust rules --enable Convention/SelectStar
 ```
 
 **Output:**
@@ -89,15 +118,15 @@ models/payments.sql:41:1: [Layout/LongLines] Line exceeds 120 characters (was 14
 
 ## Rules
 
-294 rules across 6 categories, mapped to sqlfluff's catalog where applicable.
+300 rules across 6 categories, mapped to sqlfluff's catalog where applicable.
 
 | Category | Rules | Examples |
 |----------|-------|---------|
-| **Convention** | 61 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `NoIsnullFunction`, `NoDualTable` |
-| **Layout** | 59 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `OrderByOnNewLine`, `LimitOnNewLine` |
-| **Lint** | 56 | `UnreferencedCTE`, `DuplicateCteNames`, `UnusedCte`, `AddColumnWithoutDefault` |
-| **Structure** | 56 | `WildcardInUnion`, `NaturalJoin`, `FunctionCallDepth`, `LateralJoin`, `WindowFrameFullPartition` |
-| **Ambiguous** | 58 | `FloatingPointComparison`, `DateaddFunction`, `UnsafeDivision`, `ConvertFunction` |
+| **Convention** | 63 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `NoIsnullFunction`, `NoDualTable`, `NoNvl2` |
+| **Layout** | 60 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `GroupByOnNewLine`, `OrderByOnNewLine` |
+| **Lint** | 58 | `UnreferencedCTE`, `DuplicateCteNames`, `UnusedCte`, `SelectWithoutFrom`, `AddColumnWithoutDefault` |
+| **Structure** | 57 | `WildcardInUnion`, `NaturalJoin`, `MaxSelectColumns`, `LateralJoin`, `WindowFrameFullPartition` |
+| **Ambiguous** | 58 | `FloatingPointComparison`, `CastWithoutLength`, `UnsafeDivision`, `ConvertFunction` |
 | **Capitalisation** | 4 | `KeywordCase`, `IdentifierCase` |
 
 Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
@@ -109,11 +138,12 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 |  | SQRust | sqruff | sqlfluff |
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
-| Rules | **294** | ~30 | ~80 |
-| Speed (483 files) | **95 ms** | 448 ms | 88,962 ms |
+| Rules | **300** | ~30 | ~80 |
+| Speed (495 files) | **42 ms** | 79 ms | 10,925 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | ✅ | ✅ | ✅ |
 | Config file | ✅ | ✅ | ✅ |
+| Rule browser CLI | ✅ | ❌ | ❌ |
 | Dialect support | ANSI | ANSI+ | Many |
 | dbt-ready | ✅ | ✅ | ✅ |
 
@@ -134,7 +164,7 @@ disable = [
 ]
 ```
 
-All 294 rules are enabled by default. Use `disable` to turn off specific rules by name.
+All 300 rules are enabled by default. Use `disable` to turn off specific rules by name, or use `sqrust rules --disable <rule>` to have it written automatically.
 
 See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
 
