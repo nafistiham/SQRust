@@ -5,7 +5,7 @@
 
 **A fast SQL linter written in Rust.** The Ruff for SQL.
 
-165 rules. Single binary. No Python required.
+294 rules. Single binary. No Python required.
 
 ---
 
@@ -17,7 +17,7 @@ Benchmarked on **500 real SQL files** from [GitLab's public dbt project](https:/
 
 | Tool | Time | Rules |
 |------|------|-------|
-| **SQRust** | **57 ms** | **165** |
+| **SQRust** | **57 ms** | **294** |
 | sqruff 0.34.1 | 588 ms | ~30 |
 | sqlfluff 4.0.4 | 38,409 ms | ~80 |
 
@@ -89,15 +89,16 @@ models/payments.sql:41:1: [Layout/LongLines] Line exceeds 120 characters (was 14
 
 ## Rules
 
-165 rules across 5 categories, mapped to sqlfluff's catalog where applicable.
+294 rules across 6 categories, mapped to sqlfluff's catalog where applicable.
 
 | Category | Rules | Examples |
 |----------|-------|---------|
-| **Convention** | 35 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `TrailingComma` |
-| **Layout** | 33 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `LeadingComma` |
-| **Lint** | 27 | `UnreferencedCTE`, `ColumnAliasInWhere`, `DuplicateJoin` |
-| **Structure** | 22 | `WildcardInUnion`, `NaturalJoin`, `UnqualifiedColumnInJoin` |
-| **Ambiguous** | 31 | `FloatingPointComparison`, `AmbiguousDateFormat`, `ImplicitCrossJoin` |
+| **Convention** | 61 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `NoIsnullFunction`, `NoDualTable` |
+| **Layout** | 59 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `OrderByOnNewLine`, `LimitOnNewLine` |
+| **Lint** | 56 | `UnreferencedCTE`, `DuplicateCteNames`, `UnusedCte`, `AddColumnWithoutDefault` |
+| **Structure** | 56 | `WildcardInUnion`, `NaturalJoin`, `FunctionCallDepth`, `LateralJoin`, `WindowFrameFullPartition` |
+| **Ambiguous** | 58 | `FloatingPointComparison`, `DateaddFunction`, `UnsafeDivision`, `ConvertFunction` |
+| **Capitalisation** | 4 | `KeywordCase`, `IdentifierCase` |
 
 Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 
@@ -108,7 +109,7 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 |  | SQRust | sqruff | sqlfluff |
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
-| Rules | **165** | ~30 | ~80 |
+| Rules | **294** | ~30 | ~80 |
 | Speed (500 files) | **62 ms** | 569 ms | 38,000 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | ✅ | ✅ | ✅ |
@@ -133,7 +134,7 @@ disable = [
 ]
 ```
 
-All 165 rules are enabled by default. Use `disable` to turn off specific rules by name.
+All 294 rules are enabled by default. Use `disable` to turn off specific rules by name.
 
 See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
 
