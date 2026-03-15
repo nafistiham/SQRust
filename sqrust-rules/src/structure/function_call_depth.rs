@@ -167,24 +167,29 @@ fn find_function_position(source: &str, func: &Function) -> (usize, usize) {
 }
 
 fn find_keyword_position(source: &str, keyword: &str) -> (usize, usize) {
-    let upper = source.to_uppercase();
-    let kw_upper = keyword.to_uppercase();
-    let bytes = upper.as_bytes();
-    let kw_bytes = kw_upper.as_bytes();
-    let kw_len = kw_bytes.len();
+    // Operate on original source bytes with per-byte ASCII uppercase comparison.
+    // This keeps byte offsets valid even when `source` contains non-ASCII characters,
+    // avoiding the panic that can occur when to_uppercase() changes multi-byte lengths.
+    let src = source.as_bytes();
+    let kw: Vec<u8> = keyword.bytes().map(|b| b.to_ascii_uppercase()).collect();
+    let kw_len = kw.len();
 
     if kw_len == 0 {
         return (1, 1);
     }
 
     let mut i = 0;
-    while i + kw_len <= bytes.len() {
-        if bytes[i..i + kw_len] == *kw_bytes {
+    while i + kw_len <= src.len() {
+        if src[i..i + kw_len]
+            .iter()
+            .zip(kw.iter())
+            .all(|(a, b)| a.to_ascii_uppercase() == *b)
+        {
             let before_ok =
-                i == 0 || (!bytes[i - 1].is_ascii_alphanumeric() && bytes[i - 1] != b'_');
+                i == 0 || (!src[i - 1].is_ascii_alphanumeric() && src[i - 1] != b'_');
             let after = i + kw_len;
-            let after_ok = after >= bytes.len()
-                || (!bytes[after].is_ascii_alphanumeric() && bytes[after] != b'_');
+            let after_ok = after >= src.len()
+                || (!src[after].is_ascii_alphanumeric() && src[after] != b'_');
             if before_ok && after_ok {
                 return offset_to_line_col(source, i);
             }

@@ -91,39 +91,38 @@ fn check_table_factor(tf: &TableFactor, source: &str, diags: &mut Vec<Diagnostic
     }
 }
 
-/// Finds the first occurrence of `name` (case-insensitive) as a whole word in
-/// `source` and returns its 1-indexed (line, col). Falls back to (1, 1).
+/// Finds the first occurrence of `name` as a whole word in `source` using ASCII
+/// case-insensitive comparison. Operates on original bytes to keep offsets valid
+/// even when `source` contains non-ASCII characters.
 fn find_name_position(source: &str, name: &str) -> (usize, usize) {
-    let source_lower = source.to_lowercase();
-    let name_lower = name.to_lowercase();
-    let name_bytes = name_lower.as_bytes();
-    let name_len = name_bytes.len();
-    let bytes = source_lower.as_bytes();
-    let src_len = bytes.len();
-
-    let mut search_from = 0usize;
-    while search_from < src_len {
-        let Some(rel) = source_lower[search_from..].find(&name_lower) else {
-            break;
-        };
-        let abs = search_from + rel;
-
-        let before_ok = abs == 0 || {
-            let b = bytes[abs - 1];
-            !b.is_ascii_alphanumeric() && b != b'_'
-        };
-        let after = abs + name_len;
-        let after_ok = after >= src_len || {
-            let b = bytes[after];
-            !b.is_ascii_alphanumeric() && b != b'_'
-        };
-
-        if before_ok && after_ok {
-            return offset_to_line_col(source, abs);
-        }
-        search_from = abs + 1;
+    let src = source.as_bytes();
+    let wrd: Vec<u8> = name.bytes().map(|b| b.to_ascii_uppercase()).collect();
+    let wlen = wrd.len();
+    if wlen == 0 {
+        return (1, 1);
     }
-
+    let mut pos = 0usize;
+    while pos + wlen <= src.len() {
+        if src[pos..pos + wlen]
+            .iter()
+            .zip(wrd.iter())
+            .all(|(a, b)| a.to_ascii_uppercase() == *b)
+        {
+            let before_ok = pos == 0 || {
+                let b = src[pos - 1];
+                !b.is_ascii_alphanumeric() && b != b'_'
+            };
+            let after = pos + wlen;
+            let after_ok = after >= src.len() || {
+                let b = src[after];
+                !b.is_ascii_alphanumeric() && b != b'_'
+            };
+            if before_ok && after_ok {
+                return offset_to_line_col(source, pos);
+            }
+        }
+        pos += 1;
+    }
     (1, 1)
 }
 
