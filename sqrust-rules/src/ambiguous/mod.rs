@@ -55,3 +55,4 @@ pub mod unsafe_division;
 pub mod year_month_day_function;
 pub mod convert_function;
 pub mod dateadd_function;
+pub mod add_months_function;
