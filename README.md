@@ -129,7 +129,7 @@ models/payments.sql:41:1: [Layout/LongLines] Line exceeds 120 characters (was 14
 | **Ambiguous** | 58 | `FloatingPointComparison`, `CastWithoutLength`, `UnsafeDivision`, `ConvertFunction` |
 | **Capitalisation** | 4 | `KeywordCase`, `IdentifierCase` |
 
-Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
+Full rule list → [docs/rules.md](docs/rules.md)
 
 ---
 
@@ -141,7 +141,7 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 | Rules | **300** | ~62 | ~89 |
 | Speed (495 files) | **42 ms** | 79 ms | 10,925 ms |
 | Single binary | ✅ | ✅ | ❌ |
-| Auto-fix | ✅ | ✅ | ✅ |
+| Auto-fix | Partial (layout) | ✅ | ✅ |
 | Config file | ✅ | ✅ | ✅ |
 | Rule browser CLI | ✅ | ❌ | ❌ |
 | Dialect support | ANSI | ANSI+ | Many |
