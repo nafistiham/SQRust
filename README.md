@@ -13,15 +13,15 @@
 
 If you use sqlfluff, you know the pain: linting a 200-file dbt project takes minutes in CI. SQRust solves that.
 
-Benchmarked on **500 real SQL files** from [GitLab's public dbt project](https://gitlab.com/gitlab-data/analytics) (32,000 lines of production Snowflake SQL):
+Benchmarked on **483 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus):
 
 | Tool | Time | Rules |
 |------|------|-------|
-| **SQRust** | **57 ms** | **294** |
-| sqruff 0.34.1 | 588 ms | ~30 |
-| sqlfluff 4.0.4 | 38,409 ms | ~80 |
+| **SQRust** | **95 ms** | **294** |
+| sqruff | 448 ms | ~30 |
+| sqlfluff 4.0.4 | 88,962 ms | ~80 |
 
-> **10× faster than sqruff. 682× faster than sqlfluff. More rules than both combined.**
+> **5× faster than sqruff. 935× faster than sqlfluff. More rules than both combined.**
 
 Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5 runs, real corpus, all tools in ANSI mode).
 [Run the benchmark yourself](#run-the-benchmark-yourself).
@@ -110,7 +110,7 @@ Full rule list → [docs/rules.md](docs/rules.md) _(coming soon)_
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
 | Rules | **294** | ~30 | ~80 |
-| Speed (500 files) | **62 ms** | 569 ms | 38,000 ms |
+| Speed (483 files) | **95 ms** | 448 ms | 88,962 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | ✅ | ✅ | ✅ |
 | Config file | ✅ | ✅ | ✅ |
