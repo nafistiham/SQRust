@@ -249,6 +249,8 @@ use sqrust_rules::lint::create_view_with_select_star::CreateViewWithSelectStar;
 use sqrust_rules::structure::anti_join_pattern::AntiJoinPattern;
 use sqrust_rules::ambiguous::string_to_number_comparison::StringToNumberComparison;
 use sqrust_rules::layout::operator_at_line_start::OperatorAtLineStart;
+// Wave 30
+use sqrust_rules::layout::order_by_on_new_line::OrderByOnNewLine;
 // Wave 29
 use sqrust_rules::layout::where_on_new_line::WhereOnNewLine;
 use sqrust_rules::layout::having_on_new_line::HavingOnNewLine;
@@ -591,6 +593,7 @@ Box::new(NoIsnullFunction),
 Box::new(AddColumnWithoutDefault),
 Box::new(LateralJoin),
 Box::new(DateaddFunction),
+Box::new(OrderByOnNewLine),
         // Wave 29
 Box::new(NoRownum),
 Box::new(InsertOverwrite),
