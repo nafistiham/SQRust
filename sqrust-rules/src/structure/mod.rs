@@ -52,3 +52,4 @@ pub mod scalar_subquery_in_select;
 pub mod cross_apply;
 pub mod subquery_in_join_condition;
 pub mod excessive_union_chain;
+pub mod lateral_join;
