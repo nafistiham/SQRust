@@ -11,19 +11,22 @@
 
 ## Why SQRust?
 
-If you use sqlfluff, you know the pain: linting a 200-file dbt project takes minutes in CI. SQRust solves that.
+If you use sqlfluff, you know the pain: linting a 200-file dbt project takes minutes in CI. For teams writing ANSI-compatible SQL, SQRust is a faster alternative.
 
-Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus):
+Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus), all tools in ANSI mode:
 
-| Tool | Time | Rules |
-|------|------|-------|
+| Tool | Time | ANSI rules |
+|------|------|------------|
 | **SQRust** | **42 ms** | **300** |
 | sqruff | 79 ms | ~62 |
 | sqlfluff 4.0.4 | 10,925 ms | ~89 |
 
-> **2× faster than sqruff. 260× faster than sqlfluff. More rules than both combined.**
+> **2× faster than sqruff. 260× faster than sqlfluff.**
 
-Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, real corpus, all tools in ANSI mode).
+Speed numbers are directly comparable — same corpus, same ANSI mode. Rule counts are **not** directly comparable: sqlfluff and sqruff rules cover 20+ dialects each; SQRust rules are ANSI-only today and include granular dialect-specific checks (e.g. separate rules for Oracle's `SYSDATE`, `NVL2`, `DUAL` table) that won't fire on most projects.
+
+Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs).
+[Run the benchmark yourself](#run-the-benchmark-yourself).
 [Run the benchmark yourself](#run-the-benchmark-yourself).
 
 ### Selective mode: top 50 rules
@@ -141,14 +144,16 @@ Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](d
 |  | SQRust | sqruff | sqlfluff |
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
-| Rules | **300** | ~62 | ~89 |
-| Speed (495 files) | **42 ms** | 79 ms | 10,925 ms |
+| Rules (ANSI mode)¹ | **300** | ~62 | ~89 |
+| Speed (495 files, ANSI) | **42 ms** | 79 ms | 10,925 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | Partial (layout) | ✅ | ✅ |
 | Config file | ✅ | ✅ | ✅ |
 | Rule browser CLI | ✅ | ❌ | ❌ |
-| Dialect support | ANSI | ANSI+ | Many |
-| dbt-ready | ✅ | ✅ | ✅ |
+| Dialect support | ANSI only | ANSI+ | 20+ dialects |
+| dbt-ready (ANSI SQL) | ✅ | ✅ | ✅ |
+
+¹ Rule counts are not directly comparable across tools. sqlfluff and sqruff rules each apply across many dialects; SQRust's 300 rules are ANSI-only and include granular checks that competitors may combine into fewer, broader rules.
 
 ---
 
