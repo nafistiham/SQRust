@@ -60,3 +60,4 @@ pub mod no_minus_operator;
 pub mod no_isnull_function;
 pub mod no_dual_table;
 pub mod no_sysdate;
+pub mod no_nvl2;

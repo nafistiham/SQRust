@@ -215,6 +215,9 @@ use sqrust_rules::layout::max_line_count::MaxLineCount;
 use sqrust_rules::layout::no_space_after_unary_minus::NoSpaceAfterUnaryMinus;
 use sqrust_rules::layout::space_after_not::SpaceAfterNot;
 use sqrust_rules::layout::space_before_in::SpaceBeforeIn;
+// Wave 31 (continued)
+use sqrust_rules::convention::no_nvl2::NoNvl2;
+use sqrust_rules::lint::select_without_from::SelectWithoutFrom;
 // Wave 31
 use sqrust_rules::layout::group_by_on_new_line::GroupByOnNewLine;
 use sqrust_rules::convention::no_sysdate::NoSysdate;
@@ -608,6 +611,9 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(NestedAggregate),
         Box::new(SpaceAfterKeyword),
         Box::new(NoSpaceInsideBrackets),
+        // Wave 31 (continued)
+        Box::new(NoNvl2),
+        Box::new(SelectWithoutFrom),
         // Wave 31
         Box::new(GroupByOnNewLine),
         Box::new(NoSysdate),
