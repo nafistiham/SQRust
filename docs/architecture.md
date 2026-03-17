@@ -156,7 +156,7 @@ Default: one line per violation, sorted by file path then line number.
 models/orders.sql:12:5: [Convention/SelectStar] Avoid SELECT *; list columns explicitly
 ```
 
-Planned for v0.2.0: `--format json` for CI integration.
+JSON output: `sqrust check --format json` — available since v0.1.1.
 
 ---
 

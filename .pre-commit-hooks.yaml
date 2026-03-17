@@ -1,0 +1,8 @@
+- id: sqrust
+  name: sqrust
+  description: Fast SQL linter written in Rust — checks SQL files for lint violations
+  language: system
+  entry: sqrust
+  args: [check]
+  types: [sql]
+  pass_filenames: true

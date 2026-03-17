@@ -20,7 +20,7 @@ On 495 real SQL files from public dbt projects (jaffle-shop, attribution-playboo
 | sqruff | 79 ms | ~62 |
 | sqlfluff | 10,925 ms | ~89 |
 
-260× faster than sqlfluff. More rules than both competitors combined.
+260× faster than sqlfluff. Rule counts are not directly comparable — see README for context.
 
 **Selective mode** (top 50 rules only, using `sqrust rules --disable`):
 
@@ -85,7 +85,6 @@ repos:
 - **ANSI SQL only.** The parser (sqlparser-rs) supports multiple dialects, but SQRust currently uses ANSI mode. BigQuery support is next on the roadmap.
 - **Auto-fix is partial.** `sqrust fmt` fixes layout violations (whitespace, indentation). Semantic rules (Convention, Lint, etc.) are report-only.
 - **No VS Code extension yet.** CLI only.
-- **No `--format json` yet.** Plain text output only. JSON output is planned for v0.2.0.
 
 ---
 
@@ -94,7 +93,6 @@ repos:
 | Priority | Feature |
 |----------|---------|
 | Next | BigQuery dialect support |
-| Next | `--format json` output for CI integration |
 | v0.2.0 | Ruff-style `select` allowlist (opt-in rule selection) |
 | Later | Snowflake, DuckDB dialect support |
 | Later | VS Code / Language Server Protocol extension |
