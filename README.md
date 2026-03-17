@@ -28,7 +28,7 @@ Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playb
 
 Speed numbers are directly comparable — same corpus, same ANSI mode. Rule counts are **not** directly comparable: sqlfluff and sqruff rules cover 20+ dialects each; SQRust rules are ANSI-only today and include granular dialect-specific checks (e.g. separate rules for Oracle's `SYSDATE`, `NVL2`, `DUAL` table) that won't fire on most projects.
 
-Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, March 2026, Apple M-series, sqruff v0.x, sqlfluff v4.0.4).
+Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, March 2026, Apple M-series, sqruff v0.34.1, sqlfluff v4.0.4).
 [Run the benchmark yourself](#run-the-benchmark-yourself).
 
 ### Selective mode: top 50 rules
