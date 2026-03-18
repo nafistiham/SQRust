@@ -20,7 +20,7 @@ jobs:
             os: macos-latest
             archive: tar.gz
           - target: x86_64-apple-darwin
-            os: macos-13
+            os: macos-latest
             archive: tar.gz
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
@@ -45,6 +45,10 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ matrix.target }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Add cross-compile target (macOS x86_64 on arm64 runner)
+        if: matrix.target == 'x86_64-apple-darwin'
+        run: rustup target add x86_64-apple-darwin
 
       - name: Build release binary
         run: cargo build -p sqrust-cli --release --target ${{ matrix.target }}
