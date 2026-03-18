@@ -96,13 +96,16 @@ repos:
 | v0.2.0 | Ruff-style `select` allowlist (opt-in rule selection) |
 | Later | Snowflake, DuckDB dialect support |
 | Later | VS Code / Language Server Protocol extension |
-| Later | Homebrew formula |
+| ✅ Done | Homebrew tap (`brew install nafistiham/tap/sqrust`) |
 
 ---
 
 ## Installation
 
 ```bash
+# Homebrew (macOS)
+brew install nafistiham/tap/sqrust
+
 # Via cargo
 cargo install sqrust-cli
 

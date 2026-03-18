@@ -57,6 +57,12 @@ sqrust rules --category Layout
 
 ## Install
 
+**Homebrew (macOS):**
+
+```bash
+brew install nafistiham/tap/sqrust
+```
+
 **One-line installer (macOS / Linux — no Rust required):**
 
 ```bash
