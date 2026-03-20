@@ -8,6 +8,8 @@
 
 Catches unused CTEs, SELECT \*, unsafe casts, duplicate joins, and hundreds more — in 42ms.
 
+![sqrust demo](docs/demo.gif)
+
 ---
 
 ## Why SQRust?

@@ -1,0 +1,12 @@
+[rules]
+disable = [
+    "Layout/ClauseOnNewLine",
+    "Layout/JoinOnNewLine",
+    "Capitalisation/Keywords",
+    "Capitalisation/Functions",
+    "Capitalisation/Types",
+    "Structure/NestedSubquery",
+    "Structure/TooManySubqueries",
+    "Lint/KeywordIdentifier",
+    "Convention/ExplicitColumnAlias",
+]
