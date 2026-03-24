@@ -109,6 +109,30 @@ impl SkipMap {
                 continue;
             }
 
+            // Jinja/dbt template block: {{ ... }} and {% ... %} and {# ... #}
+            if i + 1 < len && bytes[i] == b'{' && (bytes[i + 1] == b'{' || bytes[i + 1] == b'%' || bytes[i + 1] == b'#') {
+                let closing_inner = match bytes[i + 1] {
+                    b'{' => b'}',
+                    b'%' => b'%',
+                    b'#' => b'#',
+                    _ => unreachable!(),
+                };
+                skip[i] = true;
+                skip[i + 1] = true;
+                i += 2;
+                while i < len {
+                    if bytes[i] == closing_inner && i + 1 < len && bytes[i + 1] == b'}' {
+                        skip[i] = true;
+                        skip[i + 1] = true;
+                        i += 2;
+                        break;
+                    }
+                    skip[i] = true;
+                    i += 1;
+                }
+                continue;
+            }
+
             i += 1;
         }
 

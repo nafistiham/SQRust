@@ -4,6 +4,17 @@ All notable changes to SQRust are documented here.
 
 ---
 
+## [0.1.2] — 2026-03-25
+
+### Added
+- **Dialect support** — set `dialect = "bigquery"` (or `snowflake`, `duckdb`, `postgres`, `mysql`, `ansi`) in `sqrust.toml` to use a dialect-aware SQL parser. Dialect is passed directly to sqlparser-rs.
+- **Jinja/dbt template awareness** — text-scan rules (layout, spacing) now skip `{{ }}`, `{% %}`, and `{# #}` blocks, eliminating false positives on dbt model files.
+
+### Fixed
+- `Layout/SpaceAroundEquals` and other text-scan rules no longer fire on content inside Jinja template blocks (e.g. `{{ dbt_date.get_base_dates(n_dateparts=365*10) }}`).
+
+---
+
 ## [0.1.1] — 2026-03-12
 
 ### Added

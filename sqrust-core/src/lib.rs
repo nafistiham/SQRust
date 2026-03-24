@@ -2,7 +2,7 @@ pub mod config;
 pub use config::Config;
 
 use sqlparser::ast::Statement;
-use sqlparser::dialect::GenericDialect;
+use sqlparser::dialect::{BigQueryDialect, GenericDialect, SnowflakeDialect, DuckDbDialect, PostgreSqlDialect, MySqlDialect, AnsiDialect};
 use sqlparser::parser::Parser;
 use std::path::PathBuf;
 
@@ -28,10 +28,18 @@ pub struct FileContext {
 
 impl FileContext {
     pub fn from_source(source: &str, path: &str) -> Self {
-        let dialect = GenericDialect {};
-        let (statements, parse_errors) = match Parser::parse_sql(&dialect, source) {
-            Ok(stmts) => (stmts, Vec::new()),
-            Err(e) => (Vec::new(), vec![e.to_string()]),
+        Self::from_source_with_dialect(source, path, None)
+    }
+
+    pub fn from_source_with_dialect(source: &str, path: &str, dialect: Option<&str>) -> Self {
+        let (statements, parse_errors) = match dialect {
+            Some("bigquery") => parse_with(&BigQueryDialect {}, source),
+            Some("snowflake") => parse_with(&SnowflakeDialect {}, source),
+            Some("duckdb") => parse_with(&DuckDbDialect {}, source),
+            Some("postgres") | Some("postgresql") => parse_with(&PostgreSqlDialect {}, source),
+            Some("mysql") => parse_with(&MySqlDialect {}, source),
+            Some("ansi") => parse_with(&AnsiDialect {}, source),
+            _ => parse_with(&GenericDialect {}, source),
         };
         FileContext {
             path: PathBuf::from(path),
@@ -44,6 +52,13 @@ impl FileContext {
     /// Returns (1-indexed line number, line content) for each line.
     pub fn lines(&self) -> impl Iterator<Item = (usize, &str)> {
         self.source.lines().enumerate().map(|(i, line)| (i + 1, line))
+    }
+}
+
+fn parse_with<D: sqlparser::dialect::Dialect>(dialect: &D, source: &str) -> (Vec<Statement>, Vec<String>) {
+    match Parser::parse_sql(dialect, source) {
+        Ok(stmts) => (stmts, Vec::new()),
+        Err(e) => (Vec::new(), vec![e.to_string()]),
     }
 }
 

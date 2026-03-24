@@ -890,7 +890,8 @@ fn main() {
                                     return Vec::new();
                                 }
                             };
-                            let ctx = FileContext::from_source(&source, &path.to_string_lossy());
+                            let dialect = config.sqrust.dialect.as_deref();
+                            let ctx = FileContext::from_source_with_dialect(&source, &path.to_string_lossy(), dialect);
                             active_rules
                                 .iter()
                                 .flat_map(|rule| rule.check(&ctx))
@@ -927,7 +928,8 @@ fn main() {
                                 continue;
                             }
                         };
-                        let ctx = FileContext::from_source(&source, &path.to_string_lossy());
+                        let dialect = config.sqrust.dialect.as_deref();
+                        let ctx = FileContext::from_source_with_dialect(&source, &path.to_string_lossy(), dialect);
                         for rule in &active_rules {
                             if let Some(fixed) = rule.fix(&ctx) {
                                 if fixed != source {

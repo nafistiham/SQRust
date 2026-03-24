@@ -146,6 +146,24 @@ Fixed: models/orders.sql
 Fixed: models/payments.sql
 ```
 
+**Dialect support:**
+
+Set `dialect` in `sqrust.toml` to use a dialect-aware parser:
+
+```toml
+[sqrust]
+dialect = "bigquery"   # ansi (default) | bigquery | snowflake | duckdb | postgres | mysql
+```
+
+**GitHub Actions:**
+
+```yaml
+- name: Lint SQL
+  run: |
+    curl -sSL https://raw.githubusercontent.com/nafistiham/SQRust/main/install.sh | sh
+    sqrust check models/
+```
+
 ---
 
 ## Rules
@@ -212,7 +230,7 @@ See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/nafistiham/SQRust
-    rev: v0.1.1
+    rev: v0.1.2
     hooks:
       - id: sqrust
         args: [check]
