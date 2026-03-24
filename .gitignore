@@ -31,3 +31,13 @@ docs/plans/
 # Test artifacts
 *.profraw
 lcov.info
+
+# Benchmark corpus (local only)
+jaffle-shop/
+jaffle-classic/
+jaffle-bench/
+attribution-playbook/
+mrr-playbook/
+
+# Claude local state
+.claire/
