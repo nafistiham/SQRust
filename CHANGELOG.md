@@ -4,6 +4,16 @@ All notable changes to SQRust are documented here.
 
 ---
 
+## [0.1.3] — 2026-03-28
+
+### Fixed
+- `sqrust check` now reports parse errors as `[Parse/Error]` diagnostics and exits nonzero — invalid SQL no longer silently passes CI
+- `sqrust fmt` now applies all fixers in a composing pipeline (each fixer sees the output of the previous), preventing later fixes from overwriting earlier ones
+- `sqrust rules --disable/--enable` now validates the rule name against the registry and exits nonzero on typos
+- `[sqrust] include = [...]` in `sqrust.toml` is now applied during file filtering (was parsed but ignored)
+
+---
+
 ## [0.1.2] — 2026-03-25
 
 ### Added

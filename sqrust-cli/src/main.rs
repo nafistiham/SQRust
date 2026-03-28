@@ -731,22 +731,19 @@ fn collect_sql_files(paths: &[PathBuf]) -> Vec<PathBuf> {
     files
 }
 
-/// Returns true if the path matches any of the exclude glob patterns.
-/// Patterns are matched against the full path string and all path suffixes,
-/// so `dbt_packages/**` matches `/project/dbt_packages/foo.sql`.
-fn is_excluded(path: &Path, exclude: &[String]) -> bool {
-    if exclude.is_empty() {
+/// Match a path against a list of glob patterns (full path and all suffixes).
+fn matches_any_glob(path: &Path, patterns: &[String]) -> bool {
+    if patterns.is_empty() {
         return false;
     }
     let path_str = path.to_string_lossy();
-    // Collect suffix start positions (after each '/')
     let suffix_starts: Vec<usize> = path_str
         .char_indices()
         .filter(|(_, c)| *c == '/' || *c == '\\')
         .map(|(i, _)| i + 1)
         .collect();
 
-    for pattern_str in exclude {
+    for pattern_str in patterns {
         let Ok(pattern) = glob::Pattern::new(pattern_str) else {
             continue;
         };
@@ -760,6 +757,20 @@ fn is_excluded(path: &Path, exclude: &[String]) -> bool {
         }
     }
     false
+}
+
+/// Returns true if the path matches any of the exclude glob patterns.
+fn is_excluded(path: &Path, exclude: &[String]) -> bool {
+    matches_any_glob(path, exclude)
+}
+
+/// Returns true if the path is covered by the include list.
+/// When include is empty, all paths are included (opt-in behaviour).
+fn is_included(path: &Path, include: &[String]) -> bool {
+    if include.is_empty() {
+        return true;
+    }
+    matches_any_glob(path, include)
 }
 
 /// Locate sqrust.toml by walking up from cwd, or return a path in cwd to create.
@@ -782,6 +793,12 @@ fn find_or_default_config_path() -> PathBuf {
 /// Add or remove a rule name from the `[rules] disable` array in sqrust.toml.
 /// Creates the file if it doesn't exist.
 fn modify_disable_list(rule: &str, add: bool) {
+    let valid_names: std::collections::HashSet<&str> = rules().iter().map(|r| r.name()).collect();
+    if !valid_names.contains(rule) {
+        eprintln!("sqrust: unknown rule '{}'", rule);
+        eprintln!("Run `sqrust rules` to see all valid rule names.");
+        process::exit(1);
+    }
     let path = find_or_default_config_path();
 
     let raw = if path.exists() {
@@ -868,6 +885,7 @@ fn main() {
             let all_files = collect_sql_files(paths);
             let files: Vec<PathBuf> = all_files
                 .into_iter()
+                .filter(|p| is_included(p, &config.sqrust.include))
                 .filter(|p| !is_excluded(p, &config.sqrust.exclude))
                 .collect();
 
@@ -892,7 +910,14 @@ fn main() {
                             };
                             let dialect = config.sqrust.dialect.as_deref();
                             let ctx = FileContext::from_source_with_dialect(&source, &path.to_string_lossy(), dialect);
-                            active_rules
+                            let mut diags: Vec<JsonViolation> = ctx.parse_errors.iter().map(|e| JsonViolation {
+                                file: path.display().to_string(),
+                                line: 1,
+                                col: 1,
+                                rule: "Parse/Error".to_string(),
+                                message: e.clone(),
+                            }).collect();
+                            diags.extend(active_rules
                                 .iter()
                                 .flat_map(|rule| rule.check(&ctx))
                                 .map(|d| JsonViolation {
@@ -901,8 +926,8 @@ fn main() {
                                     col: d.col,
                                     rule: d.rule.to_string(),
                                     message: d.message,
-                                })
-                                .collect::<Vec<_>>()
+                                }));
+                            diags
                         })
                         .collect();
 
@@ -921,7 +946,7 @@ fn main() {
 
                 Commands::Fmt { .. } => {
                     for path in &files {
-                        let source = match std::fs::read_to_string(path) {
+                        let original = match std::fs::read_to_string(path) {
                             Ok(s) => s,
                             Err(e) => {
                                 eprintln!("Error reading {}: {}", path.display(), e);
@@ -929,16 +954,20 @@ fn main() {
                             }
                         };
                         let dialect = config.sqrust.dialect.as_deref();
-                        let ctx = FileContext::from_source_with_dialect(&source, &path.to_string_lossy(), dialect);
+                        let mut current = original.clone();
                         for rule in &active_rules {
+                            let ctx = FileContext::from_source_with_dialect(&current, &path.to_string_lossy(), dialect);
                             if let Some(fixed) = rule.fix(&ctx) {
-                                if fixed != source {
-                                    if let Err(e) = std::fs::write(path, &fixed) {
-                                        eprintln!("Error writing {}: {}", path.display(), e);
-                                    } else {
-                                        println!("Fixed: {}", path.display());
-                                    }
+                                if fixed != current {
+                                    current = fixed;
                                 }
+                            }
+                        }
+                        if current != original {
+                            if let Err(e) = std::fs::write(path, &current) {
+                                eprintln!("Error writing {}: {}", path.display(), e);
+                            } else {
+                                println!("Fixed: {}", path.display());
                             }
                         }
                     }
