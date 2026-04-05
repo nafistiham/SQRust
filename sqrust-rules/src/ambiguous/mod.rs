@@ -57,3 +57,5 @@ pub mod convert_function;
 pub mod dateadd_function;
 pub mod add_months_function;
 pub mod cast_without_length;
+pub mod undelimited_date_string;
+pub mod overlapping_case_when;

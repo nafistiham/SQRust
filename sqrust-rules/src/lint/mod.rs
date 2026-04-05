@@ -55,3 +55,5 @@ pub mod on_conflict_clause;
 pub mod add_column_without_default;
 pub mod create_sequence_statement;
 pub mod select_without_from;
+pub mod lock_table_statement;
+pub mod call_statement;

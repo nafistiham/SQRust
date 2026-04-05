@@ -61,3 +61,5 @@ pub mod no_isnull_function;
 pub mod no_dual_table;
 pub mod no_sysdate;
 pub mod no_nvl2;
+pub mod no_table_hint;
+pub mod prefer_ansi_trim;

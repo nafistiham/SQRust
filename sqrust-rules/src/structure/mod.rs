@@ -55,3 +55,5 @@ pub mod excessive_union_chain;
 pub mod lateral_join;
 pub mod window_frame_full_partition;
 pub mod max_select_columns;
+pub mod multiple_statements_in_file;
+pub mod deeply_nested_case;

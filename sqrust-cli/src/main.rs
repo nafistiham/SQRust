@@ -324,6 +324,17 @@ use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_rules::lint::merge_statement::MergeStatement;
 use sqrust_rules::structure::subquery_in_having::SubqueryInHaving;
 use sqrust_rules::structure::union_branch_limit::UnionBranchLimit;
+// Wave 32
+use sqrust_rules::lint::lock_table_statement::LockTableStatement;
+use sqrust_rules::lint::call_statement::CallStatement;
+use sqrust_rules::convention::no_table_hint::NoTableHint;
+use sqrust_rules::convention::prefer_ansi_trim::PreferAnsiTrim;
+use sqrust_rules::layout::when_on_new_line::WhenOnNewLine;
+use sqrust_rules::layout::case_end_new_line::CaseEndNewLine;
+use sqrust_rules::ambiguous::undelimited_date_string::UndelimitedDateString;
+use sqrust_rules::ambiguous::overlapping_case_when::OverlappingCaseWhen;
+use sqrust_rules::structure::multiple_statements_in_file::MultipleStatementsInFile;
+use sqrust_rules::structure::deeply_nested_case::DeeplyNestedCase;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -711,6 +722,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(IntervalExpression),
         Box::new(SpaceAfterAs),
         Box::new(BlankLineBetweenCTEs),
+        // Wave 32
+        Box::new(LockTableStatement),
+        Box::new(CallStatement),
+        Box::new(NoTableHint),
+        Box::new(PreferAnsiTrim),
+        Box::new(WhenOnNewLine),
+        Box::new(CaseEndNewLine),
+        Box::new(UndelimitedDateString),
+        Box::new(OverlappingCaseWhen),
+        Box::new(MultipleStatementsInFile),
+        Box::new(DeeplyNestedCase::default()),
     ]
 }
 
