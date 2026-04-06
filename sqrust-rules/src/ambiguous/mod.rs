@@ -59,3 +59,5 @@ pub mod add_months_function;
 pub mod cast_without_length;
 pub mod undelimited_date_string;
 pub mod overlapping_case_when;
+pub mod like_escape_char;
+pub mod string_literal_newline;

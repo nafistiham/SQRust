@@ -57,3 +57,5 @@ pub mod create_sequence_statement;
 pub mod select_without_from;
 pub mod lock_table_statement;
 pub mod call_statement;
+pub mod explain_statement;
+pub mod self_alias;

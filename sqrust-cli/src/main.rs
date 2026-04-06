@@ -324,6 +324,17 @@ use sqrust_rules::lint::create_schema_statement::CreateSchemaStatement;
 use sqrust_rules::lint::merge_statement::MergeStatement;
 use sqrust_rules::structure::subquery_in_having::SubqueryInHaving;
 use sqrust_rules::structure::union_branch_limit::UnionBranchLimit;
+// Wave 33
+use sqrust_rules::lint::explain_statement::ExplainStatement;
+use sqrust_rules::lint::self_alias::SelfAlias;
+use sqrust_rules::convention::no_ilike::NoIlike;
+use sqrust_rules::convention::prefer_coalesce_over_null_case::PreferCoalesceOverNullCase;
+use sqrust_rules::layout::order_by_column_per_line::OrderByColumnPerLine;
+use sqrust_rules::layout::group_by_column_per_line::GroupByColumnPerLine;
+use sqrust_rules::ambiguous::like_escape_char::LikeEscapeChar;
+use sqrust_rules::ambiguous::string_literal_newline::StringLiteralNewline;
+use sqrust_rules::structure::duplicate_order_by_column::DuplicateOrderByColumn;
+use sqrust_rules::structure::duplicate_group_by_column::DuplicateGroupByColumn;
 // Wave 32
 use sqrust_rules::lint::lock_table_statement::LockTableStatement;
 use sqrust_rules::lint::call_statement::CallStatement;
@@ -733,6 +744,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(OverlappingCaseWhen),
         Box::new(MultipleStatementsInFile),
         Box::new(DeeplyNestedCase::default()),
+        // Wave 33
+        Box::new(ExplainStatement),
+        Box::new(SelfAlias),
+        Box::new(NoIlike),
+        Box::new(PreferCoalesceOverNullCase),
+        Box::new(OrderByColumnPerLine),
+        Box::new(GroupByColumnPerLine),
+        Box::new(LikeEscapeChar),
+        Box::new(StringLiteralNewline),
+        Box::new(DuplicateOrderByColumn),
+        Box::new(DuplicateGroupByColumn),
     ]
 }
 

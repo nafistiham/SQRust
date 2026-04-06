@@ -63,3 +63,5 @@ pub mod no_sysdate;
 pub mod no_nvl2;
 pub mod no_table_hint;
 pub mod prefer_ansi_trim;
+pub mod no_ilike;
+pub mod prefer_coalesce_over_null_case;

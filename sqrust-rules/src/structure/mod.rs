@@ -57,3 +57,5 @@ pub mod window_frame_full_partition;
 pub mod max_select_columns;
 pub mod multiple_statements_in_file;
 pub mod deeply_nested_case;
+pub mod duplicate_order_by_column;
+pub mod duplicate_group_by_column;

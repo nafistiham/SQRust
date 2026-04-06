@@ -60,3 +60,5 @@ pub mod limit_on_new_line;
 pub mod group_by_on_new_line;
 pub mod when_on_new_line;
 pub mod case_end_new_line;
+pub mod order_by_column_per_line;
+pub mod group_by_column_per_line;
