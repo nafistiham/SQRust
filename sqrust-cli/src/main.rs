@@ -346,6 +346,17 @@ use sqrust_rules::ambiguous::undelimited_date_string::UndelimitedDateString;
 use sqrust_rules::ambiguous::overlapping_case_when::OverlappingCaseWhen;
 use sqrust_rules::structure::multiple_statements_in_file::MultipleStatementsInFile;
 use sqrust_rules::structure::deeply_nested_case::DeeplyNestedCase;
+// Wave 34
+use sqrust_rules::lint::create_trigger_statement::CreateTriggerStatement;
+use sqrust_rules::lint::alter_view_statement::AlterViewStatement;
+use sqrust_rules::convention::no_similar_to::NoSimilarTo;
+use sqrust_rules::convention::no_money_type::NoMoneyType;
+use sqrust_rules::layout::space_around_modulo::SpaceAroundModulo;
+use sqrust_rules::layout::space_around_bitwise_operator::SpaceAroundBitwiseOperator;
+use sqrust_rules::ambiguous::between_reversed_bounds::BetweenReversedBounds;
+use sqrust_rules::ambiguous::case_when_same_result::CaseWhenSameResult;
+use sqrust_rules::structure::order_by_in_cte::OrderByInCte;
+use sqrust_rules::structure::union_column_alias::UnionColumnAlias;
 use sqrust_core::Config;
 use std::path::{Path, PathBuf};
 use std::process;
@@ -755,6 +766,17 @@ fn rules() -> Vec<Box<dyn Rule>> {
         Box::new(StringLiteralNewline),
         Box::new(DuplicateOrderByColumn),
         Box::new(DuplicateGroupByColumn),
+        // Wave 34
+        Box::new(CreateTriggerStatement),
+        Box::new(AlterViewStatement),
+        Box::new(NoSimilarTo),
+        Box::new(NoMoneyType),
+        Box::new(SpaceAroundModulo),
+        Box::new(SpaceAroundBitwiseOperator),
+        Box::new(BetweenReversedBounds),
+        Box::new(CaseWhenSameResult),
+        Box::new(OrderByInCte),
+        Box::new(UnionColumnAlias),
     ]
 }
 

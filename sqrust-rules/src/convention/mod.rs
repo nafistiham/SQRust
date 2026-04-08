@@ -65,3 +65,5 @@ pub mod no_table_hint;
 pub mod prefer_ansi_trim;
 pub mod no_ilike;
 pub mod prefer_coalesce_over_null_case;
+pub mod no_similar_to;
+pub mod no_money_type;

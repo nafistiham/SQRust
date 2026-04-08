@@ -59,3 +59,5 @@ pub mod lock_table_statement;
 pub mod call_statement;
 pub mod explain_statement;
 pub mod self_alias;
+pub mod create_trigger_statement;
+pub mod alter_view_statement;

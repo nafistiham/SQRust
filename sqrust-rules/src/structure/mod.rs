@@ -59,3 +59,5 @@ pub mod multiple_statements_in_file;
 pub mod deeply_nested_case;
 pub mod duplicate_order_by_column;
 pub mod duplicate_group_by_column;
+pub mod order_by_in_cte;
+pub mod union_column_alias;

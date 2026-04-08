@@ -62,3 +62,5 @@ pub mod when_on_new_line;
 pub mod case_end_new_line;
 pub mod order_by_column_per_line;
 pub mod group_by_column_per_line;
+pub mod space_around_modulo;
+pub mod space_around_bitwise_operator;
