@@ -1,0 +1,81 @@
+{
+  "name": "sqrust",
+  "displayName": "SQRust",
+  "description": "Fast SQL linter — the Ruff for SQL",
+  "version": "0.1.0",
+  "publisher": "sqrust",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nafistiham/SQRust"
+  },
+  "homepage": "https://github.com/nafistiham/SQRust",
+  "bugs": {
+    "url": "https://github.com/nafistiham/SQRust/issues"
+  },
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": ["Linters"],
+  "keywords": ["sql", "linter", "dbt", "sqlfluff", "sqrust"],
+  "activationEvents": ["onLanguage:sql"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "sqrust.checkFile",
+        "title": "SQRust: Check Current File"
+      },
+      {
+        "command": "sqrust.checkWorkspace",
+        "title": "SQRust: Check Workspace"
+      }
+    ],
+    "configuration": {
+      "title": "SQRust",
+      "properties": {
+        "sqrust.executablePath": {
+          "type": "string",
+          "default": "sqrust",
+          "description": "Path to the sqrust binary. Defaults to 'sqrust' (must be on PATH)."
+        },
+        "sqrust.dialect": {
+          "type": "string",
+          "default": "",
+          "enum": ["", "ansi", "bigquery", "snowflake", "duckdb", "postgres", "postgresql", "mysql"],
+          "description": "SQL dialect for parsing. Overrides sqrust.toml. Leave empty to use sqrust.toml or default (ansi)."
+        },
+        "sqrust.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable or disable SQRust linting."
+        },
+        "sqrust.lintOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run sqrust check when a .sql file is saved."
+        },
+        "sqrust.lintOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Run sqrust check when a .sql file is opened."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "lint": "eslint src --ext ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^2.0.0"
+  }
+}
