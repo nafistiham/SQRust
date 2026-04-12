@@ -369,6 +369,8 @@ struct JsonViolation {
     col: usize,
     rule: String,
     message: String,
+    /// "error" for parse failures, "warning" for all lint violations.
+    severity: &'static str,
 }
 
 #[derive(Parser)]
@@ -1030,6 +1032,7 @@ fn main() {
                                 col: 1,
                                 rule: "Parse/Error".to_string(),
                                 message: e.clone(),
+                                severity: "error",
                             }).collect();
                             diags.extend(active_rules
                                 .iter()
@@ -1040,6 +1043,7 @@ fn main() {
                                     col: d.col,
                                     rule: d.rule.to_string(),
                                     message: d.message,
+                                    severity: "warning",
                                 }));
                             diags
                         })
