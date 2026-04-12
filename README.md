@@ -163,6 +163,17 @@ sqrust fmt --dialect snowflake models/
 
 Supported values: `ansi`, `bigquery`, `snowflake`, `duckdb`, `postgres`, `postgresql`, `mysql`. Unknown values exit with a clear error.
 
+**VS Code extension:**
+
+Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sqrust.sqrust) or search for **SQRust** in the Extensions panel.
+
+- Lint on save and open — violations appear in the Problems panel
+- `SQRust: Check File` and `SQRust: Check Workspace` commands
+- Configure via settings:
+  - `sqrust.executablePath` — path to binary (default: `sqrust` on PATH)
+  - `sqrust.dialect` — override dialect per workspace
+  - `sqrust.enabled` — enable/disable linting
+
 **GitHub Actions:**
 
 ```yaml
