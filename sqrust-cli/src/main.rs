@@ -387,11 +387,19 @@ enum Commands {
         /// Output format: "text" (default) or "json"
         #[arg(long, value_name = "FORMAT", default_value = "text")]
         format: String,
+        /// SQL dialect to use for parsing. Overrides sqrust.toml.
+        /// Valid values: ansi, bigquery, snowflake, duckdb, postgres, mysql
+        #[arg(long, value_name = "DIALECT")]
+        dialect: Option<String>,
     },
     /// Format SQL files (auto-fix violations)
     Fmt {
         #[arg(value_name = "PATH", default_value = ".")]
         paths: Vec<PathBuf>,
+        /// SQL dialect to use for parsing. Overrides sqrust.toml.
+        /// Valid values: ansi, bigquery, snowflake, duckdb, postgres, mysql
+        #[arg(long, value_name = "DIALECT")]
+        dialect: Option<String>,
     },
     /// List all rules and their enabled/disabled status
     Rules {
@@ -405,6 +413,19 @@ enum Commands {
         #[arg(long, value_name = "RULE")]
         disable: Option<String>,
     },
+}
+
+/// Returns `Err` with a user-facing message if `dialect` is not a known value.
+fn validate_dialect(dialect: &str) -> Result<(), String> {
+    match dialect {
+        "ansi" | "bigquery" | "snowflake" | "duckdb" | "postgres" | "postgresql" | "mysql" => {
+            Ok(())
+        }
+        _ => Err(format!(
+            "unknown dialect '{}'. Valid values: ansi, bigquery, snowflake, duckdb, postgres, postgresql, mysql",
+            dialect
+        )),
+    }
 }
 
 fn rules() -> Vec<Box<dyn Rule>> {
@@ -931,8 +952,22 @@ fn modify_disable_list(rule: &str, add: bool) {
 fn main() {
     let cli = Cli::parse();
 
+    // Extract the --dialect flag value before branching on the subcommand.
+    let cli_dialect: Option<&str> = match &cli.command {
+        Commands::Check { dialect, .. } | Commands::Fmt { dialect, .. } => dialect.as_deref(),
+        _ => None,
+    };
+
+    // Validate the flag early so we fail fast before any file I/O.
+    if let Some(d) = cli_dialect {
+        if let Err(e) = validate_dialect(d) {
+            eprintln!("sqrust: {}", e);
+            process::exit(2);
+        }
+    }
+
     match cli.command {
-        Commands::Check { ref paths, .. } | Commands::Fmt { ref paths } => {
+        Commands::Check { ref paths, .. } | Commands::Fmt { ref paths, .. } => {
             // Load config from first path arg, or current dir.
             let config_start = paths.first().map(PathBuf::as_path).unwrap_or(Path::new("."));
             let config = match Config::load(config_start) {
@@ -942,6 +977,20 @@ fn main() {
                     process::exit(2);
                 }
             };
+
+            // Validate dialect from sqrust.toml (only when no CLI flag overrides it).
+            if cli_dialect.is_none() {
+                if let Some(d) = config.sqrust.dialect.as_deref() {
+                    if let Err(e) = validate_dialect(d) {
+                        eprintln!("sqrust: {}", e);
+                        process::exit(2);
+                    }
+                }
+            }
+
+            // --dialect flag overrides sqrust.toml dialect.
+            let effective_dialect: Option<&str> =
+                cli_dialect.or_else(|| config.sqrust.dialect.as_deref());
 
             let active_rules: Vec<Box<dyn Rule>> = rules()
                 .into_iter()
@@ -974,8 +1023,7 @@ fn main() {
                                     return Vec::new();
                                 }
                             };
-                            let dialect = config.sqrust.dialect.as_deref();
-                            let ctx = FileContext::from_source_with_dialect(&source, &path.to_string_lossy(), dialect);
+                            let ctx = FileContext::from_source_with_dialect(&source, &path.to_string_lossy(), effective_dialect);
                             let mut diags: Vec<JsonViolation> = ctx.parse_errors.iter().map(|e| JsonViolation {
                                 file: path.display().to_string(),
                                 line: 1,
@@ -1019,10 +1067,9 @@ fn main() {
                                 continue;
                             }
                         };
-                        let dialect = config.sqrust.dialect.as_deref();
                         let mut current = original.clone();
                         for rule in &active_rules {
-                            let ctx = FileContext::from_source_with_dialect(&current, &path.to_string_lossy(), dialect);
+                            let ctx = FileContext::from_source_with_dialect(&current, &path.to_string_lossy(), effective_dialect);
                             if let Some(fixed) = rule.fix(&ctx) {
                                 if fixed != current {
                                     current = fixed;

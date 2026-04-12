@@ -26,8 +26,9 @@ pub struct Config {
 #[derive(Deserialize, Default, Debug)]
 #[serde(deny_unknown_fields)]
 pub struct SqrustConfig {
-    /// SQL dialect. Currently informational only; ANSI parser is always used.
-    /// Future: "ansi" | "bigquery" | "snowflake" | "duckdb" | "postgres"
+    /// SQL dialect used for parsing all files in the project.
+    /// Valid values: "ansi" | "bigquery" | "snowflake" | "duckdb" | "postgres" | "mysql"
+    /// The --dialect CLI flag overrides this value.
     pub dialect: Option<String>,
 
     /// Glob patterns for files to include. Default: all `.sql` files found
