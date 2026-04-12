@@ -16,7 +16,7 @@ Catches unused CTEs, SELECT \*, unsafe casts, duplicate joins, and hundreds more
 
 If you use sqlfluff, you know the pain: linting a 200-file dbt project takes minutes in CI. For teams writing ANSI-compatible SQL, SQRust is a faster alternative.
 
-> **Dialect scope:** SQRust currently lints ANSI SQL. If your dbt project uses BigQuery- or Snowflake-specific syntax, parse errors may occur on dialect-specific constructs. BigQuery support is next on the roadmap.
+> **Dialect support:** SQRust supports ANSI, BigQuery, Snowflake, DuckDB, PostgreSQL, and MySQL. Set `dialect` in `sqrust.toml` or use the `--dialect` flag to enable dialect-aware parsing.
 
 Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus), all tools in ANSI mode:
 
@@ -148,12 +148,20 @@ Fixed: models/payments.sql
 
 **Dialect support:**
 
-Set `dialect` in `sqrust.toml` to use a dialect-aware parser:
+Set `dialect` in `sqrust.toml`, or pass `--dialect` on the command line:
 
 ```toml
 [sqrust]
 dialect = "bigquery"   # ansi (default) | bigquery | snowflake | duckdb | postgres | mysql
 ```
+
+```bash
+# Override per-run without editing sqrust.toml
+sqrust check --dialect bigquery models/
+sqrust fmt --dialect snowflake models/
+```
+
+Supported values: `ansi`, `bigquery`, `snowflake`, `duckdb`, `postgres`, `postgresql`, `mysql`. Unknown values exit with a clear error.
 
 **GitHub Actions:**
 
@@ -194,8 +202,8 @@ Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](d
 | Auto-fix | Partial (layout) | ✅ | ✅ |
 | Config file | ✅ | ✅ | ✅ |
 | Rule browser CLI | ✅ | ❌ | ❌ |
-| Dialect support | ANSI only | ANSI+ | 20+ dialects |
-| dbt-ready (ANSI SQL) | ✅ | ✅ | ✅ |
+| Dialect support | ANSI, BigQuery, Snowflake, DuckDB, Postgres, MySQL | ANSI+ | 20+ dialects |
+| dbt-ready | ✅ (BigQuery, Snowflake, ANSI) | ✅ | ✅ |
 
 ¹ Rule counts are not directly comparable across tools. sqlfluff and sqruff rules each apply across many dialects; SQRust's 300 rules are ANSI-only and include granular checks that competitors may combine into fewer, broader rules.
 
@@ -272,7 +280,7 @@ Every rule has ≥13 tests. We use TDD — tests first.
 
 ## Project Status
 
-Active personal project. I use SQRust on my own dbt projects and maintain it actively. v0.1.x is production-ready for ANSI SQL. BigQuery dialect support is the top priority for v0.2.
+Active personal project. I use SQRust on my own dbt projects and maintain it actively. v0.1.x is production-ready for ANSI SQL and supports BigQuery, Snowflake, DuckDB, PostgreSQL, and MySQL parsing via the `--dialect` flag. Dialect-specific lint rules are on the v0.2 roadmap.
 
 Issues and PRs are welcome. If a rule fires incorrectly on your SQL, or you need a rule that isn't here, open an issue.
 
