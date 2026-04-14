@@ -6,11 +6,16 @@ All notable changes to SQRust are documented here.
 
 ## [Unreleased]
 
+---
+
+## [0.1.4] — 2026-04-14
+
 ### Added
 - `--dialect` flag on `check` and `fmt` — overrides `sqrust.toml` dialect per-run. Valid values: `ansi`, `bigquery`, `snowflake`, `duckdb`, `postgres`, `postgresql`, `mysql`.
 - Unknown dialect values now exit with code 2 and a clear error message (previously silently fell back to GenericDialect).
 - `--format json` output now includes a `severity` field (`"error"` for parse failures, `"warning"` for lint violations).
-- VS Code extension (`sqrust-vscode`) — lint on save/open, Problems panel integration, `sqrust.checkFile` and `sqrust.checkWorkspace` commands.
+- VS Code extension — lint on save/open, Problems panel integration, `sqrust.checkFile` and `sqrust.checkWorkspace` commands, dialect setting. Available on the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=NafisTiham.sqrust).
+- **330 rules** (up from 300): 30 new rules across Convention, Layout, Lint, Structure, and Ambiguous categories.
 
 ---
 

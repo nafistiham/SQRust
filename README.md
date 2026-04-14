@@ -6,7 +6,7 @@
 
 **A fast SQL linter written in Rust.** The Ruff for SQL.
 
-Catches unused CTEs, SELECT \*, unsafe casts, duplicate joins, and hundreds more — in 42ms.
+Catches unused CTEs, SELECT \*, unsafe casts, duplicate joins, and hundreds more — in 42ms. **330 rules** across 6 categories.
 
 ![sqrust demo](docs/demo.gif)
 
@@ -22,7 +22,7 @@ Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playb
 
 | Tool | Time | ANSI rules |
 |------|------|------------|
-| **SQRust** | **42 ms** | **300** |
+| **SQRust** | **42 ms** | **330** |
 | sqruff | 79 ms | ~62 |
 | sqlfluff 4.0.4 | 10,925 ms | ~89 |
 
@@ -35,11 +35,11 @@ Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, March 
 
 ### Selective mode: top 50 rules
 
-Don't need all 300 rules? Use `sqrust rules --disable` to trim to your essentials. Running just the top 50 most-used rules cuts the time in half:
+Don't need all 330 rules? Use `sqrust rules --disable` to trim to your essentials. Running just the top 50 most-used rules cuts the time in half:
 
 | Config | Time | vs sqruff | vs sqlfluff |
 |--------|------|-----------|-------------|
-| SQRust — all 300 rules | **42 ms** | 1.9× faster | 260× faster |
+| SQRust — all 330 rules | **42 ms** | 1.9× faster | 260× faster |
 | SQRust — top 50 rules | **21 ms** | 3.8× faster | 520× faster |
 | sqruff | 79 ms | baseline | — |
 | sqlfluff 4.0.4 | 10,925 ms | — | baseline |
@@ -187,15 +187,15 @@ Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/item
 
 ## Rules
 
-300 rules across 6 categories, mapped to sqlfluff's catalog where applicable.
+330 rules across 6 categories, mapped to sqlfluff's catalog where applicable.
 
 | Category | Rules | Examples |
 |----------|-------|---------|
-| **Convention** | 63 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `NoIsnullFunction`, `NoDualTable`, `NoNvl2` |
-| **Layout** | 60 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `GroupByOnNewLine`, `OrderByOnNewLine` |
-| **Lint** | 58 | `UnusedCte`, `DuplicateCteNames`, `DuplicateJoin`, `SelectWithoutFrom`, `AddColumnWithoutDefault` |
-| **Structure** | 57 | `WildcardInUnion`, `NaturalJoin`, `MaxSelectColumns`, `LateralJoin`, `WindowFrameFullPartition` |
-| **Ambiguous** | 58 | `FloatingPointComparison`, `CastWithoutLength`, `UnsafeDivision`, `ConvertFunction` |
+| **Convention** | 69 | `SelectStar`, `ColonCast`, `NotEqual`, `IsNull`, `NoIsnullFunction`, `NoDualTable`, `NoNvl2` |
+| **Layout** | 66 | `LongLines`, `TrailingWhitespace`, `ClauseOnNewLine`, `GroupByOnNewLine`, `OrderByOnNewLine` |
+| **Lint** | 63 | `UnusedCte`, `DuplicateCteNames`, `DuplicateJoin`, `SelectWithoutFrom`, `AddColumnWithoutDefault` |
+| **Structure** | 63 | `WildcardInUnion`, `NaturalJoin`, `MaxSelectColumns`, `LateralJoin`, `WindowFrameFullPartition` |
+| **Ambiguous** | 65 | `FloatingPointComparison`, `CastWithoutLength`, `UnsafeDivision`, `ConvertFunction` |
 | **Capitalisation** | 4 | `Keywords`, `Functions`, `Literals`, `Types` |
 
 Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](docs/migration.md) · [Architecture](docs/architecture.md) · [Changelog](CHANGELOG.md)
@@ -207,7 +207,7 @@ Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](d
 |  | SQRust | sqruff | sqlfluff |
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
-| Rules (ANSI mode)¹ | **300** | ~62 | ~89 |
+| Rules (ANSI mode)¹ | **330** | ~62 | ~89 |
 | Speed (495 files, ANSI) | **42 ms** | 79 ms | 10,925 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | Partial (layout) | ✅ | ✅ |

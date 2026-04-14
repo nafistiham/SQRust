@@ -2,8 +2,8 @@
 # Copy this file to your project root as sqrust.toml and adjust as needed.
 
 [sqrust]
-# SQL dialect (informational only; ANSI parser is always used in v0.1.0).
-# Future: "ansi" | "bigquery" | "snowflake" | "duckdb" | "postgres"
+# SQL dialect for parsing. Overrides the default (ansi).
+# Valid values: ansi | bigquery | snowflake | duckdb | postgres | postgresql | mysql
 # dialect = "ansi"
 
 # Glob patterns for paths to exclude from linting.
@@ -11,7 +11,7 @@
 # exclude = ["dbt_packages/**", "target/**"]
 
 [rules]
-# All 165 rules are enabled by default.
+# All 330 rules are enabled by default.
 # To disable specific rules, list them here:
 #
 # disable = [

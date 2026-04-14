@@ -1,6 +1,6 @@
 # SQRust Rule Catalog
 
-300 rules across 6 categories. All rules are enabled by default.
+330 rules across 6 categories. All rules are enabled by default.
 
 Disable rules via `sqrust.toml`:
 
@@ -18,7 +18,7 @@ sqrust rules --enable Convention/SelectStar
 
 ---
 
-## Ambiguous (59 rules)
+## Ambiguous (65 rules)
 
 Rules that flag SQL which is syntactically valid but semantically unclear or dialect-dependent.
 
@@ -99,7 +99,7 @@ Rules that enforce consistent casing for SQL elements.
 
 ---
 
-## Convention (58 rules)
+## Convention (69 rules)
 
 Rules that enforce style and portability conventions.
 
@@ -170,7 +170,7 @@ Rules that enforce style and portability conventions.
 
 ---
 
-## Layout (58 rules)
+## Layout (66 rules)
 
 Rules that enforce formatting and whitespace conventions.
 
@@ -239,7 +239,7 @@ Rules that enforce formatting and whitespace conventions.
 
 ---
 
-## Lint (57 rules)
+## Lint (63 rules)
 
 Rules that detect correctness issues, anti-patterns, and dangerous DDL.
 
@@ -305,7 +305,7 @@ Rules that detect correctness issues, anti-patterns, and dangerous DDL.
 
 ---
 
-## Structure (55 rules)
+## Structure (63 rules)
 
 Rules that flag complex or potentially inefficient query structures.
 
