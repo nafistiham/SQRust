@@ -216,7 +216,7 @@ Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](d
 | Dialect support | ANSI, BigQuery, Snowflake, DuckDB, Postgres, MySQL | ANSI+ | 20+ dialects |
 | dbt-ready | ✅ (BigQuery, Snowflake, ANSI) | ✅ | ✅ |
 
-¹ Rule counts are not directly comparable across tools. sqlfluff and sqruff rules each apply across many dialects; SQRust's 300 rules are ANSI-only and include granular checks that competitors may combine into fewer, broader rules.
+¹ Rule counts are not directly comparable across tools. sqlfluff and sqruff rules each apply across many dialects; SQRust's 330 rules are ANSI-only and include granular checks that competitors may combine into fewer, broader rules.
 
 ---
 
@@ -235,7 +235,7 @@ disable = [
 ]
 ```
 
-All 300 rules are enabled by default. Use `disable` to turn off specific rules by name, or use `sqrust rules --disable <rule>` to have it written automatically.
+All 330 rules are enabled by default. Use `disable` to turn off specific rules by name, or use `sqrust rules --disable <rule>` to have it written automatically.
 
 See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
 
@@ -249,7 +249,7 @@ See [`sqrust.toml.example`](sqrust.toml.example) for a fully annotated template.
 # .pre-commit-config.yaml
 repos:
   - repo: https://github.com/nafistiham/SQRust
-    rev: v0.1.2
+    rev: v0.1.4
     hooks:
       - id: sqrust
         args: [check]

@@ -87,7 +87,7 @@ hyperfine \
     --export-json "$RESULTS_JSON" \
     --style basic \
     "sqrust check $CORPUS/" \
-    "sqruff lint $CORPUS/" \
+    "sqruff lint --dialect ansi $CORPUS/" \
     "sqlfluff lint --dialect ansi $CORPUS/"
 
 # ── parse results ────────────────────────────────────────────────────────────
@@ -106,7 +106,7 @@ times = [(r["command"].split()[0], r["median"] * 1000, r["stddev"] * 1000) for r
 
 fastest = min(t for _, t, _ in times)
 
-rules = {"sqrust": 165, "sqruff": "~30", "sqlfluff": "~80"}
+rules = {"sqrust": 330, "sqruff": "~62", "sqlfluff": "~89"}
 
 header = f"{'Tool':<12} {'Median':>10} {'Std Dev':>10} {'Rules':>8} {'vs fastest':>12}"
 print(header)
