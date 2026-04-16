@@ -18,42 +18,31 @@ If you use sqlfluff, you know the pain: linting a 200-file dbt project takes min
 
 > **Dialect support:** SQRust supports ANSI, BigQuery, Snowflake, DuckDB, PostgreSQL, and MySQL. Set `dialect` in `sqrust.toml` or use the `--dialect` flag to enable dialect-aware parsing.
 
-Benchmarked on **495 SQL files** (jaffle-shop + attribution-playbook + mrr-playbook, combined real dbt corpus), all tools in ANSI mode:
+Two public corpora, all tools in ANSI mode, measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, Apple M-series, sqruff v0.34.1, sqlfluff v4.1.0):
+
+**22 files — jaffle-shop + attribution-playbook + mrr-playbook (real dbt projects):**
 
 | Tool | Time | ANSI rules |
 |------|------|------------|
-| **SQRust** | **42 ms** | **330** |
-| sqruff | 79 ms | ~62 |
-| sqlfluff 4.0.4 | 10,925 ms | ~89 |
+| **SQRust** | **18 ms** | **330** |
+| sqruff | 37 ms | ~62 |
+| sqlfluff 4.1.0 | 327 ms | ~89 |
 
-> **2× faster than sqruff. 260× faster than sqlfluff.**
+> **2× faster than sqruff. 18× faster than sqlfluff.**
+
+**500 files — Dune Spellbook (complex real-world analytics SQL):**
+
+| Tool | Time | ANSI rules |
+|------|------|------------|
+| **SQRust** | **274 ms** | **330** |
+| sqruff | 394 ms | ~62 |
+| sqlfluff 4.1.0 | 47,839 ms | ~89 |
+
+> **1.4× faster than sqruff. 174× faster than sqlfluff.**
 
 Speed numbers are directly comparable — same corpus, same ANSI mode. Rule counts are **not** directly comparable: sqlfluff and sqruff rules cover 20+ dialects each; SQRust rules are ANSI-only today and include granular dialect-specific checks (e.g. separate rules for Oracle's `SYSDATE`, `NVL2`, `DUAL` table) that won't fire on most projects.
 
-Measured with [hyperfine](https://github.com/sharkdp/hyperfine) (5+ runs, March 2026, Apple M-series, sqruff v0.34.1, sqlfluff v4.0.4).
 [Run the benchmark yourself](#run-the-benchmark-yourself).
-
-### Selective mode: top 50 rules
-
-Don't need all 330 rules? Use `sqrust rules --disable` to trim to your essentials. Running just the top 50 most-used rules cuts the time in half:
-
-| Config | Time | vs sqruff | vs sqlfluff |
-|--------|------|-----------|-------------|
-| SQRust — all 330 rules | **42 ms** | 1.9× faster | 260× faster |
-| SQRust — top 50 rules | **21 ms** | 3.8× faster | 520× faster |
-| sqruff | 79 ms | baseline | — |
-| sqlfluff 4.0.4 | 10,925 ms | — | baseline |
-
-```bash
-# See all rules and their current status
-sqrust rules
-
-# Disable rules you don't need
-sqrust rules --disable Convention/SelectStar
-
-# Filter by category
-sqrust rules --category Layout
-```
 
 ---
 
@@ -208,7 +197,7 @@ Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](d
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
 | Rules (ANSI mode)¹ | **330** | ~62 | ~89 |
-| Speed (495 files, ANSI) | **42 ms** | 79 ms | 10,925 ms |
+| Speed (22 dbt files, ANSI) | **18 ms** | 37 ms | 327 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | Partial (layout) | ✅ | ✅ |
 | Config file | ✅ | ✅ | ✅ |
