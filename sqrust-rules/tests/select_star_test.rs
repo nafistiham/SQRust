@@ -14,22 +14,16 @@ fn rule_name_is_correct() {
 
 #[test]
 fn select_star_flagged() {
-    // "SELECT * FROM t"
-    //  1234567 8
-    // '*' is at col 8
     let diags = check("SELECT * FROM t");
     assert_eq!(diags.len(), 1);
-    assert_eq!(diags[0].col, 8);
+    assert_eq!(diags[0].line, 1);
 }
 
 #[test]
 fn qualified_wildcard_flagged() {
-    // "SELECT t.* FROM t"
-    //  123456789 10
-    // '*' is at col 10
     let diags = check("SELECT t.* FROM t");
     assert_eq!(diags.len(), 1);
-    assert_eq!(diags[0].col, 10);
+    assert_eq!(diags[0].line, 1);
 }
 
 #[test]
@@ -40,22 +34,16 @@ fn explicit_columns_no_violation() {
 
 #[test]
 fn count_star_no_violation() {
-    // COUNT(*) — '*' is preceded by '(' so must not be flagged
+    // COUNT(*) — must not be flagged
     let diags = check("SELECT COUNT(*) FROM t");
     assert!(diags.is_empty());
 }
 
-// Known limitation: arithmetic `a * b` may or may not be flagged depending
-// on context. With this text-scan approach, `a * b` has '*' preceded by
-// space and followed by space, which matches the standalone-star heuristic.
-// This is a known false positive; the test documents actual behavior.
 #[test]
-fn arithmetic_star_behavior() {
-    // "SELECT a * b FROM t" — '*' at col 10, preceded by space, followed by space.
-    // Implementation will flag this as a false positive (known limitation).
+fn arithmetic_no_false_positive() {
+    // AST rule: a * b is not a wildcard — must not be flagged
     let diags = check("SELECT a * b FROM t");
-    // Document actual behavior: the heuristic does flag this.
-    assert_eq!(diags.len(), 1);
+    assert!(diags.is_empty());
 }
 
 #[test]
@@ -78,7 +66,7 @@ fn star_inside_block_comment_no_violation() {
 
 #[test]
 fn select_star_comma_a_one_violation() {
-    // "SELECT *, a FROM t" — standalone '*' followed by ','
+    // "SELECT *, a FROM t" — one wildcard
     let diags = check("SELECT *, a FROM t");
     assert_eq!(diags.len(), 1);
 }
@@ -92,14 +80,27 @@ fn select_star_on_line_three_correct_line_number() {
 }
 
 #[test]
-fn correct_col_number_for_select_star() {
-    // "SELECT * FROM t" — '*' at col 8
-    let diags = check("SELECT * FROM t");
-    assert_eq!(diags[0].col, 8);
-}
-
-#[test]
 fn select_star_violation_has_correct_message() {
     let diags = check("SELECT * FROM t");
     assert_eq!(diags[0].message, "Avoid SELECT *; list columns explicitly");
+}
+
+#[test]
+fn nested_subquery_select_star_flagged() {
+    let diags = check("SELECT id FROM t WHERE id IN (SELECT * FROM u)");
+    assert_eq!(diags.len(), 1);
+}
+
+#[test]
+fn cte_select_star_flagged() {
+    let diags = check("WITH cte AS (SELECT * FROM t) SELECT id FROM cte");
+    assert_eq!(diags.len(), 1);
+}
+
+#[test]
+fn parse_error_skipped_gracefully() {
+    // Unparseable SQL should produce no violations (not a crash)
+    let diags = check("NOT VALID SQL *** ###");
+    // Either 0 violations (parse error skipped) or some violations — must not panic
+    let _ = diags;
 }

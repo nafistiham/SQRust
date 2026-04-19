@@ -134,7 +134,7 @@ repos:
 ```yaml
 repos:
   - repo: https://github.com/nafistiham/SQRust
-    rev: v0.1.1
+    rev: v0.1.4
     hooks:
       - id: sqrust
         args: [check]
@@ -149,13 +149,13 @@ Key differences:
 
 ## Differences to be aware of
 
-**Dialect scope.** SQRust currently lints ANSI SQL. If your project uses BigQuery, Snowflake, or other dialect-specific syntax, some rules may produce false positives until dialect support is added. You can disable specific rules to handle this.
+**Dialect scope.** SQRust supports ANSI, BigQuery, Snowflake, DuckDB, PostgreSQL, and MySQL parsing. Set `dialect` in `sqrust.toml` or pass `--dialect` on the CLI. Dialect-aware parsing prevents parse errors on dialect-specific syntax; dialect-specific lint rules (rules that only fire on BigQuery SQL, etc.) are on the v0.2 roadmap.
 
 **Auto-fix scope.** sqlfluff's `--fix` covers many rule categories. SQRust's `fmt` command currently fixes layout violations only (trailing whitespace, indentation, etc.). Semantic rule fixes are on the roadmap.
 
 **Rule parameters.** sqlfluff rules can be tuned per-project (e.g. `max_line_length = 120`). SQRust v0.1 does not support per-rule parameters — all rules use built-in defaults. This is planned for a future release.
 
-**Rule coverage.** SQRust has 300 rules vs sqlfluff's ~89. Some SQRust rules have no sqlfluff equivalent. Some sqlfluff rules have no SQRust equivalent yet — if you depend on a specific rule, check [docs/rules.md](rules.md) or open an issue.
+**Rule coverage.** SQRust has 330 rules vs sqlfluff's ~89. Some SQRust rules have no sqlfluff equivalent. Some sqlfluff rules have no SQRust equivalent yet — if you depend on a specific rule, check [docs/rules.md](rules.md) or open an issue.
 
 ---
 
