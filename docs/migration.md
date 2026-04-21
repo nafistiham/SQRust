@@ -19,7 +19,7 @@ max_line_length = 120
 
 ```toml
 [sqrust]
-# dialect is informational only in v0.1; ANSI parser is always used
+dialect = "ansi"   # ansi | bigquery | snowflake | duckdb | postgres | mysql
 
 [rules]
 disable = [

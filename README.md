@@ -6,7 +6,7 @@
 
 **A fast SQL linter written in Rust.** The Ruff for SQL.
 
-Catches unused CTEs, SELECT \*, unsafe casts, duplicate joins, and hundreds more — in 42ms. **330 rules** across 6 categories.
+Catches unused CTEs, SELECT \*, unsafe casts, duplicate joins, and hundreds more — in 18ms. **330 rules** across 6 categories.
 
 ![sqrust demo](docs/demo.gif)
 
@@ -154,7 +154,7 @@ Supported values: `ansi`, `bigquery`, `snowflake`, `duckdb`, `postgres`, `postgr
 
 **VS Code extension:**
 
-Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=sqrust.sqrust) or search for **SQRust** in the Extensions panel.
+Install from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=NafisTiham.sqrust) or search for **SQRust** in the Extensions panel.
 
 - Lint on save and open — violations appear in the Problems panel
 - `SQRust: Check File` and `SQRust: Check Workspace` commands

@@ -2,7 +2,7 @@
 
 ## Overview
 
-SQRust is a SQL linter written in Rust. It parses SQL files, walks the AST, and applies 300 lint rules in a single parallel pass. The design follows the same core insight as Ruff: do everything in one compiled pass rather than interpreting rules in a slow runtime.
+SQRust is a SQL linter written in Rust. It parses SQL files, walks the AST, and applies 330 lint rules in a single parallel pass. The design follows the same core insight as Ruff: do everything in one compiled pass rather than interpreting rules in a slow runtime.
 
 ```
 sqrust check models/
@@ -28,7 +28,7 @@ sqrust check models/
 
 ```
 sqrust-core/       Rule trait, Diagnostic, FileContext, Config
-sqrust-rules/      One file per rule (300 rules across 6 categories)
+sqrust-rules/      One file per rule (330 rules across 6 categories)
 sqrust-cli/        Binary: argument parsing, file walking, output
 ```
 
@@ -162,7 +162,7 @@ JSON output: `sqrust check --format json` — available since v0.1.1.
 
 ## Rule registration
 
-All 300 rules are instantiated in `sqrust-cli/src/main.rs` as a `Vec<Box<dyn Rule>>`. Adding a new rule requires:
+All 330 rules are instantiated in `sqrust-cli/src/main.rs` as a `Vec<Box<dyn Rule>>`. Adding a new rule requires:
 
 1. Create `sqrust-rules/src/<category>/<rule_name>.rs`
 2. `impl Rule for <RuleName>`
@@ -185,10 +185,13 @@ All 300 rules are instantiated in `sqrust-cli/src/main.rs` as a `Vec<Box<dyn Rul
 
 ## Performance profile
 
-On 495 SQL files (jaffle-shop + attribution-playbook + mrr-playbook corpus, duplicated 20×):
+Benchmarked with hyperfine on two public corpora (Apple M-series, sqruff v0.34.1, sqlfluff v4.1.0):
 
-- **42 ms** median (300 rules, 4-core MacBook)
-- Parse time dominates at this scale — `sqlparser-rs` is the bottleneck, not rule evaluation
+**22 files — jaffle-shop + attribution-playbook + mrr-playbook:**
+- **18 ms** median (330 rules) vs sqruff 37 ms vs sqlfluff 327 ms
 - Startup overhead: < 5 ms (no JVM, no Python interpreter)
 
-The 2× gap over `sqruff` (79 ms on the same corpus) is partly explained by the rule count difference (300 vs 62) and partly by the text-scan rules doing more byte-level work.
+**500 files — Dune Spellbook (complex analytics SQL):**
+- **274 ms** median (330 rules) vs sqruff 394 ms vs sqlfluff 47,839 ms
+
+Parse time dominates at this scale — `sqlparser-rs` is the bottleneck, not rule evaluation. The speed gap over `sqruff` is partly explained by the rule count difference (330 vs 62) and partly by text-scan rules doing more byte-level work.
