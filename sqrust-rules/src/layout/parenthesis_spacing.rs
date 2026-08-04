@@ -46,7 +46,7 @@ impl Rule for ParenthesisSpacing {
                 while j < len && bytes[j] == b' ' && !skip[j] {
                     j += 1;
                 }
-                if j < len && bytes[j] == b')' {
+                if j < len && bytes[j] == b')' && !is_indentation_before(bytes, j) {
                     // Suppress all these spaces; let `)` be emitted on next iteration
                     i = j;
                     continue;
@@ -63,6 +63,22 @@ impl Rule for ParenthesisSpacing {
 
         Some(String::from_utf8(result).expect("source was valid UTF-8"))
     }
+}
+
+/// Returns true if everything before `idx` on its line is whitespace, meaning
+/// the run of spaces immediately preceding `idx` is indentation.
+fn is_indentation_before(bytes: &[u8], idx: usize) -> bool {
+    let mut k = idx;
+    while k > 0 {
+        k -= 1;
+        match bytes[k] {
+            b' ' | b'\t' | b'\r' => continue,
+            b'\n' => return true,
+            _ => return false,
+        }
+    }
+    // Reached the start of the file with only whitespace behind us.
+    true
 }
 
 /// Scans the source for paren spacing violations.
@@ -89,11 +105,15 @@ fn find_violations(source: &str, rule_name: &'static str) -> Vec<Diagnostic> {
             });
         }
 
-        // Space before closing parenthesis: ` ` immediately followed by `)`
+        // Space before closing parenthesis: ` ` immediately followed by `)`.
+        // A `)` whose line contains only whitespace before it is the closing
+        // paren of a multi-line expression — that whitespace is indentation,
+        // not inline padding, and removing it would dedent the line.
         if i + 1 < len
             && bytes[i] == b' '
             && bytes[i + 1] == b')'
             && !skip[i]
+            && !is_indentation_before(bytes, i + 1)
         {
             let (line, col) = byte_offset_to_line_col(source, i);
             diags.push(Diagnostic {
