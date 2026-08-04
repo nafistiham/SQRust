@@ -4,7 +4,7 @@ pub struct ParenthesisSpacing;
 
 impl Rule for ParenthesisSpacing {
     fn name(&self) -> &'static str {
-        "ParenthesisSpacing"
+        "Layout/ParenthesisSpacing"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

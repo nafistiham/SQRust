@@ -15,7 +15,7 @@ fn check(sql: &str) -> Vec<sqrust_core::Diagnostic> {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(NaturalJoin.name(), "NaturalJoin");
+    assert_eq!(NaturalJoin.name(), "Structure/NaturalJoin");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

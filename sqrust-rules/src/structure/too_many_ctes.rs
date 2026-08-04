@@ -17,7 +17,7 @@ impl Default for TooManyCtes {
 
 impl Rule for TooManyCtes {
     fn name(&self) -> &'static str {
-        "TooManyCtes"
+        "Structure/TooManyCtes"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

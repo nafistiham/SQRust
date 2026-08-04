@@ -15,7 +15,7 @@ fn check(sql: &str) -> Vec<sqrust_core::Diagnostic> {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(HavingWithoutAggregate.name(), "HavingWithoutAggregate");
+    assert_eq!(HavingWithoutAggregate.name(), "Structure/HavingWithoutAggregate");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

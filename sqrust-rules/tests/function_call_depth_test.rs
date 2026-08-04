@@ -20,7 +20,7 @@ fn check_with(sql: &str, max_depth: usize) -> Vec<sqrust_core::Diagnostic> {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(FunctionCallDepth::default().name(), "FunctionCallDepth");
+    assert_eq!(FunctionCallDepth::default().name(), "Structure/FunctionCallDepth");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

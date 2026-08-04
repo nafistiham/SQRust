@@ -32,7 +32,7 @@ fn make_case(n: usize) -> String {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(CaseWhenCount::default().name(), "CaseWhenCount");
+    assert_eq!(CaseWhenCount::default().name(), "Structure/CaseWhenCount");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

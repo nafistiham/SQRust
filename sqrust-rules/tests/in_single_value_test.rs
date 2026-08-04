@@ -11,7 +11,7 @@ fn check(sql: &str) -> Vec<sqrust_core::Diagnostic> {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(InSingleValue.name(), "InSingleValue");
+    assert_eq!(InSingleValue.name(), "Convention/InSingleValue");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

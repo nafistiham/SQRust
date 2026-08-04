@@ -15,7 +15,7 @@ impl Default for TooManyJoins {
 
 impl Rule for TooManyJoins {
     fn name(&self) -> &'static str {
-        "TooManyJoins"
+        "Structure/TooManyJoins"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -86,7 +86,7 @@ fn check_select(
     if n > max_joins {
         let (line, col) = find_keyword_pos(&ctx.source, "JOIN");
         diags.push(Diagnostic {
-            rule: "TooManyJoins",
+            rule: "Structure/TooManyJoins",
             message: format!(
                 "Query has {n} JOINs, exceeding the maximum of {max}",
                 n = n,

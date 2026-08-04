@@ -26,7 +26,7 @@ fn make_in_list(n: usize) -> String {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(LargeInList::default().name(), "LargeInList");
+    assert_eq!(LargeInList::default().name(), "Structure/LargeInList");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

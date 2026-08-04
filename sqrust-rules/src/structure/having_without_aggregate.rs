@@ -7,7 +7,7 @@ pub struct HavingWithoutAggregate;
 
 impl Rule for HavingWithoutAggregate {
     fn name(&self) -> &'static str {
-        "HavingWithoutAggregate"
+        "Structure/HavingWithoutAggregate"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

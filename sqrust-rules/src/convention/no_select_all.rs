@@ -6,7 +6,7 @@ pub struct NoSelectAll;
 
 impl Rule for NoSelectAll {
     fn name(&self) -> &'static str {
-        "NoSelectAll"
+        "Convention/NoSelectAll"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

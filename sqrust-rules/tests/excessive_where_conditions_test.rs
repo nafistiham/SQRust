@@ -46,7 +46,7 @@ fn make_having(n: usize) -> String {
 fn rule_name_is_correct() {
     assert_eq!(
         ExcessiveWhereConditions::default().name(),
-        "ExcessiveWhereConditions"
+        "Structure/ExcessiveWhereConditions"
     );
 }
 

@@ -5,7 +5,7 @@ pub struct NaturalJoin;
 
 impl Rule for NaturalJoin {
     fn name(&self) -> &'static str {
-        "NaturalJoin"
+        "Structure/NaturalJoin"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

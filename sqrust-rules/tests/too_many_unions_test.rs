@@ -41,7 +41,7 @@ fn make_except(n: usize) -> String {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(TooManyUnions::default().name(), "TooManyUnions");
+    assert_eq!(TooManyUnions::default().name(), "Structure/TooManyUnions");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

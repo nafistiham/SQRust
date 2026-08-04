@@ -17,7 +17,7 @@ impl Default for ExcessiveWhereConditions {
 
 impl Rule for ExcessiveWhereConditions {
     fn name(&self) -> &'static str {
-        "ExcessiveWhereConditions"
+        "Structure/ExcessiveWhereConditions"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -88,7 +88,7 @@ fn check_select(
         if n > max {
             let (line, col) = find_keyword_pos(&ctx.source, "WHERE");
             diags.push(Diagnostic {
-                rule: "ExcessiveWhereConditions",
+                rule: "Structure/ExcessiveWhereConditions",
                 message: format!(
                     "WHERE clause has {n} conditions, exceeding the maximum of {max}",
                     n = n,
@@ -106,7 +106,7 @@ fn check_select(
         if n > max {
             let (line, col) = find_keyword_pos(&ctx.source, "HAVING");
             diags.push(Diagnostic {
-                rule: "ExcessiveWhereConditions",
+                rule: "Structure/ExcessiveWhereConditions",
                 message: format!(
                     "HAVING clause has {n} conditions, exceeding the maximum of {max}",
                     n = n,

@@ -15,7 +15,7 @@ impl Default for ExcessiveGroupByColumns {
 
 impl Rule for ExcessiveGroupByColumns {
     fn name(&self) -> &'static str {
-        "ExcessiveGroupByColumns"
+        "Structure/ExcessiveGroupByColumns"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -85,7 +85,7 @@ fn check_select(
         if n > max_columns {
             let (line, col) = find_keyword_pos(&ctx.source, "GROUP");
             diags.push(Diagnostic {
-                rule: "ExcessiveGroupByColumns",
+                rule: "Structure/ExcessiveGroupByColumns",
                 message: format!(
                     "GROUP BY has {n} columns, exceeding the maximum of {max}",
                     n = n,

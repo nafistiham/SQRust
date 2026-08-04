@@ -32,7 +32,7 @@ fn make_ctes(n: usize) -> String {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(TooManyCtes::default().name(), "TooManyCtes");
+    assert_eq!(TooManyCtes::default().name(), "Structure/TooManyCtes");
 }
 
 // ── default max_ctes ──────────────────────────────────────────────────────────

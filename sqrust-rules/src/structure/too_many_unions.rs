@@ -17,7 +17,7 @@ impl Default for TooManyUnions {
 
 impl Rule for TooManyUnions {
     fn name(&self) -> &'static str {
-        "TooManyUnions"
+        "Structure/TooManyUnions"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -57,7 +57,7 @@ fn check_query(
         // Find the first set operation keyword in source.
         let (line, col) = find_first_set_op_pos(&ctx.source);
         diags.push(Diagnostic {
-            rule: "TooManyUnions",
+            rule: "Structure/TooManyUnions",
             message: format!(
                 "Query has {n} UNION operations, exceeding the maximum of {max}",
                 n = n,

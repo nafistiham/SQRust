@@ -11,7 +11,7 @@ fn check(sql: &str) -> Vec<sqrust_core::Diagnostic> {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(SelectDistinctStar.name(), "SelectDistinctStar");
+    assert_eq!(SelectDistinctStar.name(), "Convention/SelectDistinctStar");
 }
 
 // ── parse error ───────────────────────────────────────────────────────────────

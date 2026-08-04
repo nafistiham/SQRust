@@ -19,7 +19,7 @@ impl Default for CaseWhenCount {
 
 impl Rule for CaseWhenCount {
     fn name(&self) -> &'static str {
-        "CaseWhenCount"
+        "Structure/CaseWhenCount"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -140,7 +140,7 @@ fn check_expr(
             if n > max {
                 let (line, col) = find_nth_keyword_pos(&ctx.source, "CASE", occ);
                 diags.push(Diagnostic {
-                    rule: "CaseWhenCount",
+                    rule: "Structure/CaseWhenCount",
                     message: format!(
                         "CASE expression has {n} WHEN clauses, exceeding the maximum of {max}"
                     ),

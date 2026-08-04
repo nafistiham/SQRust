@@ -6,7 +6,7 @@ pub struct UnnecessaryElseNull;
 
 impl Rule for UnnecessaryElseNull {
     fn name(&self) -> &'static str {
-        "UnnecessaryElseNull"
+        "Convention/UnnecessaryElseNull"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

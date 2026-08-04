@@ -22,7 +22,7 @@ fn check_with(sql: &str, max_columns: usize) -> Vec<sqrust_core::Diagnostic> {
 fn rule_name_is_correct() {
     assert_eq!(
         ExcessiveGroupByColumns::default().name(),
-        "ExcessiveGroupByColumns"
+        "Structure/ExcessiveGroupByColumns"
     );
 }
 

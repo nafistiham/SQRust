@@ -8,7 +8,7 @@ pub struct WindowWithoutOrderBy;
 
 impl Rule for WindowWithoutOrderBy {
     fn name(&self) -> &'static str {
-        "WindowWithoutOrderBy"
+        "Structure/WindowWithoutOrderBy"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -163,7 +163,7 @@ fn check_function(func: &Function, ctx: &FileContext, diags: &mut Vec<Diagnostic
         if spec.window_frame.is_some() && spec.order_by.is_empty() {
             let (line, col) = find_over_pos(&ctx.source);
             diags.push(Diagnostic {
-                rule: "WindowWithoutOrderBy",
+                rule: "Structure/WindowWithoutOrderBy",
                 message: "Window function has a frame specification but no ORDER BY; results are non-deterministic".to_string(),
                 line,
                 col,

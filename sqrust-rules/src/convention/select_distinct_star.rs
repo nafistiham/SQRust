@@ -7,7 +7,7 @@ pub struct SelectDistinctStar;
 
 impl Rule for SelectDistinctStar {
     fn name(&self) -> &'static str {
-        "SelectDistinctStar"
+        "Convention/SelectDistinctStar"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

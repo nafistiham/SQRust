@@ -17,7 +17,7 @@ impl Default for LargeInList {
 
 impl Rule for LargeInList {
     fn name(&self) -> &'static str {
-        "LargeInList"
+        "Structure/LargeInList"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -133,7 +133,7 @@ fn check_expr(
             if n > max {
                 let (line, col) = find_nth_keyword_pos(&ctx.source, "IN", occ);
                 diags.push(Diagnostic {
-                    rule: "LargeInList",
+                    rule: "Structure/LargeInList",
                     message: format!(
                         "IN list has {n} values, exceeding the maximum of {max}"
                     ),

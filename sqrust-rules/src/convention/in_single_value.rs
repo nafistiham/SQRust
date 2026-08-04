@@ -7,7 +7,7 @@ pub struct InSingleValue;
 
 impl Rule for InSingleValue {
     fn name(&self) -> &'static str {
-        "InSingleValue"
+        "Convention/InSingleValue"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {

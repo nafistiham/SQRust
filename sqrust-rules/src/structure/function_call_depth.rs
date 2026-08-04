@@ -14,7 +14,7 @@ impl Default for FunctionCallDepth {
 
 impl Rule for FunctionCallDepth {
     fn name(&self) -> &'static str {
-        "FunctionCallDepth"
+        "Structure/FunctionCallDepth"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -98,7 +98,7 @@ fn walk_expr_for_depth(expr: &Expr, max_depth: usize, source: &str, diags: &mut 
             if depth > max_depth {
                 let (line, col) = find_function_position(source, func);
                 diags.push(Diagnostic {
-                    rule: "FunctionCallDepth",
+                    rule: "Structure/FunctionCallDepth",
                     message: format!(
                         "Function call nesting depth {} exceeds maximum {}",
                         depth, max_depth

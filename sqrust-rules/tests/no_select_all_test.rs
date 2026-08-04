@@ -9,7 +9,7 @@ fn check(sql: &str) -> Vec<sqrust_core::Diagnostic> {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(NoSelectAll.name(), "NoSelectAll");
+    assert_eq!(NoSelectAll.name(), "Convention/NoSelectAll");
 }
 
 #[test]

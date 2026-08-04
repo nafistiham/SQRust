@@ -30,7 +30,7 @@ fn make_joins(n: usize) -> String {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(TooManyJoins::default().name(), "TooManyJoins");
+    assert_eq!(TooManyJoins::default().name(), "Structure/TooManyJoins");
 }
 
 // ── default max_joins ─────────────────────────────────────────────────────────

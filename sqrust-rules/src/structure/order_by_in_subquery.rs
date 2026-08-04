@@ -7,7 +7,7 @@ pub struct OrderByInSubquery;
 
 impl Rule for OrderByInSubquery {
     fn name(&self) -> &'static str {
-        "OrderByInSubquery"
+        "Structure/OrderByInSubquery"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -56,7 +56,7 @@ fn check_inner_query(query: &Query, ctx: &FileContext, diags: &mut Vec<Diagnosti
         if !order_by.exprs.is_empty() && query.limit.is_none() && query.offset.is_none() {
             let (line, col) = find_keyword_pos(&ctx.source, "ORDER BY");
             diags.push(Diagnostic {
-                rule: "OrderByInSubquery",
+                rule: "Structure/OrderByInSubquery",
                 message: "ORDER BY in subquery without LIMIT has no effect on the final result"
                     .to_string(),
                 line,
