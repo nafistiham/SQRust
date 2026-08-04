@@ -575,6 +575,7 @@ dependencies = [
  "sqrust-rules",
  "tempfile",
  "toml",
+ "toml_edit",
  "walkdir",
 ]
 

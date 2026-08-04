@@ -402,6 +402,10 @@ enum Commands {
         /// Valid values: ansi, bigquery, snowflake, duckdb, postgres, mysql
         #[arg(long, value_name = "DIALECT")]
         dialect: Option<String>,
+        /// Report which files would change without writing them.
+        /// Exits 1 if any file needs formatting.
+        #[arg(long)]
+        check: bool,
     },
     /// List all rules and their enabled/disabled status
     Rules {
@@ -415,6 +419,19 @@ enum Commands {
         #[arg(long, value_name = "RULE")]
         disable: Option<String>,
     },
+}
+
+/// Returns `Err` with a user-facing message if `format` is not a known value.
+/// Without this, `--format jsonl` silently produces text output and any
+/// script parsing the result breaks with no signal.
+fn validate_format(format: &str) -> Result<(), String> {
+    match format {
+        "text" | "json" => Ok(()),
+        _ => Err(format!(
+            "unknown format '{}'. Valid values: text, json",
+            format
+        )),
+    }
 }
 
 /// Returns `Err` with a user-facing message if `dialect` is not a known value.
@@ -803,17 +820,70 @@ fn rules() -> Vec<Box<dyn Rule>> {
     ]
 }
 
-fn collect_sql_files(paths: &[PathBuf]) -> Vec<PathBuf> {
+/// True for dot-directories and dot-files below the walk root (`.git`,
+/// `.claude`, ...). The root itself is never hidden, so `sqrust check .`
+/// still works.
+fn is_hidden(entry: &walkdir::DirEntry) -> bool {
+    entry.depth() > 0
+        && entry
+            .file_name()
+            .to_str()
+            .is_some_and(|s| s.starts_with('.'))
+}
+
+/// True if no file under `dir` can ever be linted, so the walker can skip
+/// descending into it entirely.
+///
+/// Without this the whole tree is traversed and excludes are applied only
+/// afterwards — meaning a `target/**` exclude still costs a full stat walk of
+/// every build artifact.
+fn dir_is_pruned(dir: &Path, exclude: &[String]) -> bool {
+    if exclude.is_empty() {
+        return false;
+    }
+    for pattern_str in exclude {
+        // Only `target/**` and `target/*` unambiguously mean "nothing under
+        // target". A bare `target` is left to per-file filtering so pruning
+        // never widens what a pattern excludes.
+        let Some(base) = pattern_str
+            .strip_suffix("/**")
+            .or_else(|| pattern_str.strip_suffix("/*"))
+        else {
+            continue;
+        };
+        // A wildcard in the prefix still gets per-file filtering, which stays
+        // correct either way.
+        if base.is_empty() || base.contains('*') || base.contains('?') {
+            continue;
+        }
+        if matches_any_glob(dir, &[base.to_string()]) {
+            return true;
+        }
+    }
+    false
+}
+
+fn collect_sql_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
     let mut files = Vec::new();
+    let mut seen = std::collections::HashSet::new();
+
     for path in paths {
         if path.is_file() {
-            files.push(path.clone());
-        } else {
-            for entry in WalkDir::new(path).into_iter().filter_map(|e| e.ok()) {
-                let p = entry.path().to_path_buf();
-                if p.extension().map_or(false, |ext| ext == "sql") {
-                    files.push(p);
-                }
+            if seen.insert(path.clone()) {
+                files.push(path.clone());
+            }
+            continue;
+        }
+        let walker = WalkDir::new(path).into_iter().filter_entry(|e| {
+            if is_hidden(e) {
+                return false;
+            }
+            !(e.file_type().is_dir() && e.depth() > 0 && dir_is_pruned(e.path(), exclude))
+        });
+        for entry in walker.filter_map(|e| e.ok()) {
+            let p = entry.path().to_path_buf();
+            if p.extension().is_some_and(|ext| ext == "sql") && seen.insert(p.clone()) {
+                files.push(p);
             }
         }
     }
@@ -896,11 +966,14 @@ fn modify_disable_list(rule: &str, add: bool) {
         String::new()
     };
 
-    let mut doc: toml::Value = if raw.is_empty() {
-        toml::Value::Table(toml::map::Map::new())
+    // toml_edit preserves comments, key order and formatting on round-trip.
+    // Re-serialising a plain `toml::Value` would silently delete every comment
+    // in the user's config and reorder their sections.
+    let mut doc: toml_edit::DocumentMut = if raw.is_empty() {
+        toml_edit::DocumentMut::new()
     } else {
-        match toml::from_str(&raw) {
-            Ok(v) => v,
+        match raw.parse() {
+            Ok(d) => d,
             Err(e) => {
                 eprintln!("sqrust: cannot parse {}: {}", path.display(), e);
                 process::exit(2);
@@ -908,43 +981,74 @@ fn modify_disable_list(rule: &str, add: bool) {
         }
     };
 
-    // Ensure [rules] table exists.
-    let rules_table = doc
-        .as_table_mut()
-        .unwrap()
-        .entry("rules")
-        .or_insert_with(|| toml::Value::Table(toml::map::Map::new()))
-        .as_table_mut()
-        .unwrap();
+    // Ensure [rules] exists. Every branch must handle a config whose `rules` /
+    // `disable` keys hold the wrong TOML type — unwrapping here would turn a
+    // typo in sqrust.toml into a panic.
+    if doc.get("rules").is_none() {
+        doc["rules"] = toml_edit::Item::Table(toml_edit::Table::new());
+    }
+    let Some(rules_table) = doc["rules"].as_table_like_mut() else {
+        eprintln!(
+            "sqrust: `rules` in {} must be a table, found {}",
+            path.display(),
+            doc["rules"].type_name()
+        );
+        process::exit(2);
+    };
 
-    // Get or create the disable array.
-    let disable = rules_table
-        .entry("disable")
-        .or_insert_with(|| toml::Value::Array(Vec::new()))
-        .as_array_mut()
-        .unwrap();
+    if rules_table.get("disable").is_none() {
+        rules_table.insert(
+            "disable",
+            toml_edit::Item::Value(toml_edit::Value::Array(toml_edit::Array::new())),
+        );
+    }
+    let disable_item = rules_table.get_mut("disable").expect("just inserted");
+    let type_name = disable_item.type_name();
+    let Some(disable) = disable_item.as_array_mut() else {
+        eprintln!(
+            "sqrust: `rules.disable` in {} must be an array, found {}",
+            path.display(),
+            type_name
+        );
+        process::exit(2);
+    };
 
-    let rule_val = toml::Value::String(rule.to_string());
+    let already_present = disable.iter().any(|v| v.as_str() == Some(rule));
+
+    let mut modified = false;
 
     if add {
-        if !disable.contains(&rule_val) {
-            disable.push(rule_val);
+        if !already_present {
+            modified = true;
+            // Keep an already-multi-line array multi-line instead of
+            // appending onto the last entry's line.
+            let multiline = disable.to_string().contains('\n');
+            disable.push(rule);
+            if multiline {
+                if let Some(v) = disable.iter_mut().last() {
+                    v.decor_mut().set_prefix("\n    ");
+                }
+                disable.set_trailing_comma(true);
+                disable.set_trailing("\n");
+            }
             println!("Disabled: {}", rule);
         } else {
             println!("{} is already disabled.", rule);
         }
+    } else if already_present {
+        modified = true;
+        disable.retain(|v| v.as_str() != Some(rule));
+        println!("Enabled: {}", rule);
     } else {
-        let before = disable.len();
-        disable.retain(|v| v != &rule_val);
-        if disable.len() < before {
-            println!("Enabled: {}", rule);
-        } else {
-            println!("{} was not in the disable list.", rule);
-        }
+        println!("{} was not in the disable list.", rule);
     }
 
-    let out = toml::to_string_pretty(&doc).expect("serialise toml");
-    std::fs::write(&path, out).unwrap_or_else(|e| {
+    // Don't rewrite the file — or claim we did — when nothing changed.
+    if !modified {
+        return;
+    }
+
+    std::fs::write(&path, doc.to_string()).unwrap_or_else(|e| {
         eprintln!("sqrust: cannot write {}: {}", path.display(), e);
         process::exit(2);
     });
@@ -963,6 +1067,13 @@ fn main() {
     // Validate the flag early so we fail fast before any file I/O.
     if let Some(d) = cli_dialect {
         if let Err(e) = validate_dialect(d) {
+            eprintln!("sqrust: {}", e);
+            process::exit(2);
+        }
+    }
+
+    if let Commands::Check { ref format, .. } = cli.command {
+        if let Err(e) = validate_format(format) {
             eprintln!("sqrust: {}", e);
             process::exit(2);
         }
@@ -999,7 +1110,7 @@ fn main() {
                 .filter(|r| config.rule_enabled(r.name()))
                 .collect();
 
-            let all_files = collect_sql_files(paths);
+            let all_files = collect_sql_files(paths, &config.sqrust.exclude);
             let files: Vec<PathBuf> = all_files
                 .into_iter()
                 .filter(|p| is_included(p, &config.sqrust.include))
@@ -1014,6 +1125,7 @@ fn main() {
                     }
 
                     let use_json = format == "json";
+                    let read_failures = std::sync::atomic::AtomicUsize::new(0);
 
                     let violations: Vec<JsonViolation> = files
                         .par_iter()
@@ -1022,6 +1134,8 @@ fn main() {
                                 Ok(s) => s,
                                 Err(e) => {
                                     eprintln!("Error reading {}: {}", path.display(), e);
+                                    read_failures
+                                        .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
                                     return Vec::new();
                                 }
                             };
@@ -1057,36 +1171,109 @@ fn main() {
                         }
                     }
 
+                    // A file we could not read was never checked, so reporting
+                    // success would let a CI gate pass on unchecked SQL.
+                    if read_failures.load(std::sync::atomic::Ordering::Relaxed) > 0 {
+                        process::exit(1);
+                    }
+
                     if !violations.is_empty() {
                         process::exit(1);
                     }
                 }
 
-                Commands::Fmt { .. } => {
-                    for path in &files {
+                Commands::Fmt { check, .. } => {
+                    use std::sync::atomic::{AtomicUsize, Ordering};
+                    let changed = AtomicUsize::new(0);
+                    let failed = AtomicUsize::new(0);
+
+                    files.par_iter().for_each(|path| {
                         let original = match std::fs::read_to_string(path) {
                             Ok(s) => s,
                             Err(e) => {
                                 eprintln!("Error reading {}: {}", path.display(), e);
-                                continue;
+                                failed.fetch_add(1, Ordering::Relaxed);
+                                return;
                             }
                         };
+
+                        let name = path.to_string_lossy();
                         let mut current = original.clone();
+
+                        // Parse once up front and re-parse only when a rule
+                        // actually rewrites the source. Parsing inside the
+                        // rule loop cost one full parse per rule per file.
+                        let mut ctx = FileContext::from_source_with_dialect(
+                            &current,
+                            &name,
+                            effective_dialect,
+                        );
+                        let parsed_before = ctx.parse_errors.is_empty();
+
                         for rule in &active_rules {
-                            let ctx = FileContext::from_source_with_dialect(&current, &path.to_string_lossy(), effective_dialect);
                             if let Some(fixed) = rule.fix(&ctx) {
                                 if fixed != current {
                                     current = fixed;
+                                    ctx = FileContext::from_source_with_dialect(
+                                        &current,
+                                        &name,
+                                        effective_dialect,
+                                    );
                                 }
                             }
                         }
-                        if current != original {
-                            if let Err(e) = std::fs::write(path, &current) {
-                                eprintln!("Error writing {}: {}", path.display(), e);
-                            } else {
-                                println!("Fixed: {}", path.display());
-                            }
+
+                        if current == original {
+                            return;
                         }
+
+                        // Never write SQL that stopped parsing. Without this a
+                        // faulty fix silently replaces valid source with
+                        // syntactically broken SQL.
+                        if parsed_before && !ctx.parse_errors.is_empty() {
+                            eprintln!(
+                                "Skipped {}: formatting would produce SQL that no longer parses",
+                                path.display()
+                            );
+                            failed.fetch_add(1, Ordering::Relaxed);
+                            return;
+                        }
+
+                        // The file did not parse to begin with — most often a
+                        // dbt model containing Jinja. Only the text-based rules
+                        // ran, and the guard above cannot verify the result, so
+                        // say so rather than reporting a silent success.
+                        if !parsed_before {
+                            eprintln!(
+                                "Warning: {} could not be parsed; applied text-level fixes only \
+                                 (output not syntax-checked)",
+                                path.display()
+                            );
+                        }
+
+                        changed.fetch_add(1, Ordering::Relaxed);
+
+                        if check {
+                            println!("Would reformat: {}", path.display());
+                            return;
+                        }
+
+                        if let Err(e) = std::fs::write(path, &current) {
+                            eprintln!("Error writing {}: {}", path.display(), e);
+                            failed.fetch_add(1, Ordering::Relaxed);
+                        } else {
+                            println!("Fixed: {}", path.display());
+                        }
+                    });
+
+                    // A failed read or write must not report success — CI
+                    // gates of the form `sqrust fmt && git diff --exit-code`
+                    // would otherwise pass having formatted nothing.
+                    if failed.load(Ordering::Relaxed) > 0 {
+                        process::exit(1);
+                    }
+                    if check && changed.load(Ordering::Relaxed) > 0 {
+                        process::exit(1);
                     }
                 }
                 Commands::Rules { .. } => unreachable!(),

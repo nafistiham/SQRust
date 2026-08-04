@@ -19,6 +19,7 @@ sqrust-rules = { path = "sqrust-rules", version = "0.1.4" }
 sqlparser = "0.53"
 serde = { version = "1", features = ["derive"] }
 toml = "0.8"
+toml_edit = "0.22"
 clap = { version = "4", features = ["derive"] }
 rayon = "1"
 walkdir = "2"
