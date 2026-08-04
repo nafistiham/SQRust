@@ -31,7 +31,14 @@ impl Rule for NestedSubquery {
         // Each such pattern represents one level of subquery nesting.
         // We record the byte offset of the SELECT keyword at which we first
         // exceed max_depth so we can provide an accurate line/col.
+        // `paren_stack` records, for every open paren, whether it started a
+        // subquery. `depth` is how many subquery parens are currently open, so
+        // it falls again on `)` — measuring real nesting rather than a
+        // file-wide count of `(SELECT`. Sibling CTEs and independent
+        // statements each return to zero instead of accumulating.
+        let mut paren_stack: Vec<bool> = Vec::new();
         let mut depth: usize = 0;
+        let mut max_depth_seen: usize = 0;
         let mut first_excess_offset: Option<usize> = None;
 
         let mut i = 0;
@@ -44,6 +51,14 @@ impl Rule for NestedSubquery {
 
             let b = bytes[i];
 
+            if b == b')' {
+                if paren_stack.pop() == Some(true) {
+                    depth = depth.saturating_sub(1);
+                }
+                i += 1;
+                continue;
+            }
+
             // Look for `(` in code.
             if b == b'(' {
                 // Scan forward past optional whitespace to find SELECT.
@@ -55,6 +70,7 @@ impl Rule for NestedSubquery {
                 // j now points at the first non-whitespace byte after `(`.
                 // Check whether it starts the keyword SELECT (case-insensitive,
                 // word-boundary after).
+                let mut opened_subquery = false;
                 if j + 6 <= len {
                     let candidate = &bytes[j..j + 6];
                     let is_select = b"SELECT"
@@ -72,13 +88,18 @@ impl Rule for NestedSubquery {
                     let all_code = (j..j + 6).all(|k| skip_map.is_code(k));
 
                     if is_select && boundary_after && all_code {
+                        opened_subquery = true;
                         depth += 1;
+                        if depth > max_depth_seen {
+                            max_depth_seen = depth;
+                        }
                         if depth > self.max_depth && first_excess_offset.is_none() {
                             first_excess_offset = Some(j);
                         }
                     }
                 }
 
+                paren_stack.push(opened_subquery);
                 i += 1;
                 continue;
             }
@@ -86,6 +107,7 @@ impl Rule for NestedSubquery {
             i += 1;
         }
 
+        let depth = max_depth_seen;
         if depth > self.max_depth {
             let offset = first_excess_offset.unwrap_or(0);
             let (line, col) = line_col(source, offset);
