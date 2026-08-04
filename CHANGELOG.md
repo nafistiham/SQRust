@@ -24,6 +24,13 @@ All notable changes to SQRust are documented here.
 - Duplicate paths (`sqrust check . .`) no longer double-report every violation.
 - `Structure/NestedSubquery` measures real nesting depth. It previously counted every `(SELECT` in the file without ever decrementing, so three independent statements were reported as "nesting depth 3", and any dbt model with three or more CTEs was flagged.
 - `Layout/ClauseOnNewLine` no longer flags a correctly formatted `LEFT JOIN`, SQL keywords inside comments, or `ORDER BY` within an `OVER (...)` window specification.
+- `Layout/SelectColumnPerLine` and `Layout/GroupByColumnPerLine` no longer treat a function's argument separator as a column separator — `COALESCE(a, b)` and `date_trunc('month', ts)` were flagged as "multiple columns on one line".
+- `Layout/ParenthesisSpacing` no longer flags the indentation before a `)` that closes a multi-line expression on its own line. The same detection drove its `fix()`, so `sqrust fmt` would have dedented every multi-line function call and subquery.
+- `Layout/FunctionCallSpacing` no longer treats `JOIN ... USING (col)` as a function call with a stray space. `VALUES`, `RETURNING`, `INTO`, `ALL`, `ANY`, `SOME` and `LATERAL` are also recognised as syntax.
+- `Layout/ArithmeticOperatorAtLineEnd` no longer flags the trailing `-` of dbt/Jinja whitespace-trim tags (`{#-`, `{%-`, `{{-`).
+- `Layout/ArithmeticOperatorPadding` no longer treats the wildcard in `SELECT *, other_col` or `t.*` as unpadded multiplication.
+
+Together these cut violations on the vendored dbt corpus from 516 to 445; excluding the Capitalisation rules (a style preference, not a defect) the remaining lint noise across those 12 files is about 73.
 
 ### Added
 - `sqrust fmt --check` reports which files would be reformatted without writing them, and exits 1 if any would. Intended for CI.
