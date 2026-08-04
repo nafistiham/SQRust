@@ -251,12 +251,15 @@ impl Rule for NotEqual {
             // Check if this position is inside a skip range
             let in_skip = skip_ranges.iter().any(|&(s, e)| pos >= s && pos < e);
             if in_skip {
-                // Find the range end and copy verbatim
+                // Copy the containing range verbatim. The filter must test
+                // containment (`pos < e`), not just `pos >= s` — otherwise
+                // ranges that already ended are selected too, and `min()`
+                // returns an end before `pos`, reversing the slice.
                 let range_end = skip_ranges
                     .iter()
-                    .filter(|&&(s, _)| pos >= s)
+                    .filter(|&&(s, e)| pos >= s && pos < e)
                     .map(|&(_, e)| e)
-                    .min()
+                    .max()
                     .unwrap_or(pos + 1);
                 result.push_str(&source[pos..range_end]);
                 pos = range_end;
@@ -273,6 +276,12 @@ impl Rule for NotEqual {
             }
         }
 
-        Some(result)
+        // Only report a fix when something actually changed — a rule that
+        // always returns Some rewrites files that have no violations.
+        if result == *source {
+            None
+        } else {
+            Some(result)
+        }
     }
 }

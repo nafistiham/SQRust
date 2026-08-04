@@ -10,7 +10,7 @@ fn ctx(src: &str) -> FileContext {
 
 #[test]
 fn rule_name_is_correct() {
-    assert_eq!(MaxBlankLines::default().name(), "MaxBlankLines");
+    assert_eq!(MaxBlankLines::default().name(), "Layout/MaxBlankLines");
 }
 
 #[test]

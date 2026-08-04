@@ -12,7 +12,7 @@ impl Default for MaxBlankLines {
 
 impl Rule for MaxBlankLines {
     fn name(&self) -> &'static str {
-        "MaxBlankLines"
+        "Layout/MaxBlankLines"
     }
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
@@ -58,27 +58,54 @@ impl Rule for MaxBlankLines {
             return None;
         }
 
-        let lines: Vec<&str> = ctx.source.lines().collect();
-        let mut result: Vec<&str> = Vec::with_capacity(lines.len());
+        // Copy each line together with its original terminator. Using
+        // `lines()` + `join("\n")` here would rewrite a CRLF file as LF as a
+        // side effect of dropping blank lines.
+        let source = &ctx.source;
+        let mut fixed = String::with_capacity(source.len());
+        let mut rest = source.as_str();
         let mut blank_run = 0usize;
 
-        for line in &lines {
-            if line.trim().is_empty() {
-                blank_run += 1;
-                if blank_run <= self.max_blank_lines {
-                    result.push(line);
+        loop {
+            match rest.find('\n') {
+                Some(nl) => {
+                    let (chunk, tail) = rest.split_at(nl + 1);
+                    let without_nl = &chunk[..chunk.len() - 1];
+                    let content = without_nl.strip_suffix('\r').unwrap_or(without_nl);
+
+                    if content.trim().is_empty() {
+                        blank_run += 1;
+                        // Lines beyond the max are silently dropped.
+                        if blank_run <= self.max_blank_lines {
+                            fixed.push_str(chunk);
+                        }
+                    } else {
+                        blank_run = 0;
+                        fixed.push_str(chunk);
+                    }
+                    rest = tail;
                 }
-                // Lines beyond the max are silently dropped.
-            } else {
-                blank_run = 0;
-                result.push(line);
+                None => {
+                    // Final segment with no trailing newline.
+                    if !rest.is_empty() {
+                        if rest.trim().is_empty() {
+                            blank_run += 1;
+                            if blank_run <= self.max_blank_lines {
+                                fixed.push_str(rest);
+                            }
+                        } else {
+                            fixed.push_str(rest);
+                        }
+                    }
+                    break;
+                }
             }
         }
 
-        let mut fixed = result.join("\n");
-        if ctx.source.ends_with('\n') {
-            fixed.push('\n');
+        if fixed == *source {
+            None
+        } else {
+            Some(fixed)
         }
-        Some(fixed)
     }
 }

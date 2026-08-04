@@ -12,7 +12,14 @@ impl Rule for WhitespaceBeforeSemicolon {
     }
 
     fn fix(&self, ctx: &FileContext) -> Option<String> {
-        Some(apply_fix(&ctx.source))
+        let fixed = apply_fix(&ctx.source);
+        // Only report a fix when something actually changed — a rule that
+        // always returns Some rewrites files that have no violations.
+        if fixed == ctx.source {
+            None
+        } else {
+            Some(fixed)
+        }
     }
 }
 
@@ -168,13 +175,20 @@ fn apply_fix(source: &str) -> String {
         i += 1;
     }
 
-    // Reconstruct source without removed bytes
-    bytes
+    // Reconstruct source without removed bytes.
+    //
+    // This must stay at the byte level: mapping `b as char` would reinterpret
+    // each byte of a multi-byte UTF-8 sequence as its own codepoint, turning
+    // "café" into "cafÃ©". Only ASCII space/tab bytes are ever removed, so the
+    // remaining bytes are still valid UTF-8.
+    let kept: Vec<u8> = bytes
         .iter()
         .enumerate()
         .filter(|(idx, _)| !remove[*idx])
-        .map(|(_, &b)| b as char)
-        .collect()
+        .map(|(_, &b)| b)
+        .collect();
+
+    String::from_utf8(kept).expect("only ASCII whitespace removed from valid UTF-8")
 }
 
 /// Converts a byte offset into a 1-indexed (line, col) pair.

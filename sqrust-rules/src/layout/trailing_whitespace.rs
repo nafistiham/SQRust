@@ -24,11 +24,46 @@ impl Rule for TrailingWhitespace {
     }
 
     fn fix(&self, ctx: &FileContext) -> Option<String> {
-        let lines: Vec<&str> = ctx.source.lines().map(|l| l.trim_end()).collect();
-        let mut fixed = lines.join("\n");
-        if ctx.source.ends_with('\n') {
-            fixed.push('\n');
+        // Walk the source terminator-by-terminator rather than using
+        // `lines()` + `join("\n")`: that pair silently rewrites CRLF files as
+        // LF, changing every line of a Windows-authored file as a side effect
+        // of trimming spaces.
+        let source = &ctx.source;
+        let mut fixed = String::with_capacity(source.len());
+        let mut rest = source.as_str();
+
+        loop {
+            match rest.find('\n') {
+                Some(nl) => {
+                    let (chunk, tail) = rest.split_at(nl + 1);
+                    let content = &chunk[..chunk.len() - 1];
+                    let (body, cr) = match content.strip_suffix('\r') {
+                        Some(b) => (b, "\r"),
+                        None => (content, ""),
+                    };
+                    fixed.push_str(trim_spaces_tabs(body));
+                    fixed.push_str(cr);
+                    fixed.push('\n');
+                    rest = tail;
+                }
+                None => {
+                    // Final segment, no trailing newline.
+                    fixed.push_str(trim_spaces_tabs(rest));
+                    break;
+                }
+            }
         }
-        Some(fixed)
+
+        // Only report a fix when something actually changed — a rule that
+        // always returns Some rewrites files that have no violations.
+        if fixed == *source {
+            None
+        } else {
+            Some(fixed)
+        }
     }
+}
+
+fn trim_spaces_tabs(s: &str) -> &str {
+    s.trim_end_matches(|c| c == ' ' || c == '\t')
 }
