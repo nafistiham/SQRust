@@ -8,6 +8,8 @@ const KEYWORD_BEFORE_PAREN: &[&str] = &[
     "IN", "NOT", "EXISTS", "AS", "ON", "BETWEEN", "HAVING", "WHERE", "WHEN", "THEN", "ELSE",
     "FROM", "JOIN", "UNION", "INTERSECT", "EXCEPT", "SELECT", "BY", "PARTITION", "OVER",
     "WITHIN", "AND", "OR", "CASE", "IF",
+    // `JOIN ... USING (col)` and `VALUES (...)` are syntax, not function calls.
+    "USING", "VALUES", "RETURNING", "INTO", "ALL", "ANY", "SOME", "LATERAL",
 ];
 
 impl Rule for FunctionCallSpacing {

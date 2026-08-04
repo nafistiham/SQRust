@@ -37,12 +37,12 @@ impl Rule for ArithmeticOperatorAtLineEnd {
             let op_char: Option<char> = match last_char {
                 '+' | '/' => Some(last_char),
                 '-' => {
-                    // Look at the second-to-last char to rule out "--"
-                    let second_last = trimmed.chars().rev().nth(1);
-                    if second_last == Some('-') {
-                        None
-                    } else {
-                        Some('-')
+                    // Look at the second-to-last char to rule out "--" and the
+                    // dbt/Jinja whitespace-trim tags `{#-`, `{%-`, `{{-`,
+                    // whose trailing '-' is not arithmetic.
+                    match trimmed.chars().rev().nth(1) {
+                        Some('-') | Some('#') | Some('%') | Some('{') => None,
+                        _ => Some('-'),
                     }
                 }
                 _ => None,

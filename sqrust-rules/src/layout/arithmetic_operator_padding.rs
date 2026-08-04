@@ -29,11 +29,19 @@ impl Rule for ArithmeticOperatorPadding {
                 // `if !skip.is_code(i)` ensures we never reach this point for `--`
                 // or `/* */` comment bytes. No manual comment skip needed here.
 
-                // * inside parentheses: SELECT *, COUNT(*) etc.
+                // `*` as a wildcard rather than multiplication: `COUNT(*)`,
+                // `SELECT *, other_col`, `t.*`. Multiplication always has an
+                // operand — a word character or literal — on both sides, so
+                // these punctuation neighbours can never be one.
                 if op == b'*' {
                     let prev_nws = prev_non_whitespace(bytes, i);
                     let next_nws = next_non_whitespace(bytes, i, len);
-                    if prev_nws == Some(b'(') || next_nws == Some(b')') {
+                    if prev_nws == Some(b'(')
+                        || prev_nws == Some(b'.')
+                        || prev_nws == Some(b',')
+                        || next_nws == Some(b')')
+                        || next_nws == Some(b',')
+                    {
                         i += 1;
                         continue;
                     }
