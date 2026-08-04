@@ -96,11 +96,22 @@ impl Config {
 }
 
 /// Walk up from `start` looking for `sqrust.toml`.
+///
+/// `start` is made absolute first. A relative path such as `.` or `q.sql`
+/// otherwise ends the walk immediately — `Path::new(".").parent()` is `Some("")`
+/// and `Path::new("").parent()` is `None` — so a `sqrust.toml` in any parent
+/// directory would never be found when the tool is run from a subdirectory.
 fn find_config(start: &Path) -> Option<PathBuf> {
-    let mut dir = if start.is_file() {
-        start.parent()?.to_path_buf()
-    } else {
+    let absolute = if start.is_absolute() {
         start.to_path_buf()
+    } else {
+        std::env::current_dir().ok()?.join(start)
+    };
+
+    let mut dir = if absolute.is_file() {
+        absolute.parent()?.to_path_buf()
+    } else {
+        absolute
     };
 
     loop {
