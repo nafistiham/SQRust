@@ -127,7 +127,11 @@ models/payments.sql:41:1: [Layout/LongLines] Line exceeds 120 characters (was 14
 
 **Auto-fix (`sqrust fmt`):**
 
-Fixes Layout violations automatically — trailing whitespace, trailing newlines, excess blank lines. Convention, Lint, Structure, and Ambiguous rules are report-only; full auto-fix is on the roadmap.
+Fixes 16 of the 330 rules automatically — trailing whitespace, whitespace before semicolons, excess blank lines, double spaces, spacing around `=`, `,` and parentheses, comment spacing, mixed line endings, and a few Convention rewrites (`!=` → `<>`, `= NULL` → `IS NULL`). The remaining rules are report-only; wider auto-fix is on the roadmap.
+
+`sqrust fmt --check` reports which files would change without writing them, and exits 1 if any would — use this in CI.
+
+Formatting never rewrites content inside string literals or comments, preserves your existing line endings, and skips any file whose formatted output would no longer parse.
 
 ```
 $ sqrust fmt models/

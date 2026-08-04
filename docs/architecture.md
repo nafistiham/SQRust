@@ -74,7 +74,6 @@ The `main.rs` binary handles:
 - `sqrust check <path>` — lint files
 - `sqrust fmt <path>` — auto-fix layout violations
 - `sqrust rules` — browse and toggle rules
-- `sqrust explain <RuleName>` — show rule description
 
 ---
 

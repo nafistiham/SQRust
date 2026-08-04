@@ -8,7 +8,13 @@
 
 # Glob patterns for paths to exclude from linting.
 # Example: skip dbt package installs and build output.
+# Directories named by a plain `dir/**` pattern are skipped during the
+# directory walk, so excluding large build dirs also makes linting faster.
 # exclude = ["dbt_packages/**", "target/**"]
+
+# Glob patterns for paths to include. When omitted or empty, every .sql file
+# found under the linted path is included (minus anything matched by exclude).
+# include = ["models/**", "analyses/**"]
 
 [rules]
 # All 330 rules are enabled by default.

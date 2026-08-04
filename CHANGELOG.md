@@ -6,6 +6,32 @@ All notable changes to SQRust are documented here.
 
 ## [Unreleased]
 
+### Breaking
+- **18 rules gained the `Category/` prefix their documentation already used.** `TooManyJoins` is now `Structure/TooManyJoins`, `ParenthesisSpacing` is now `Layout/ParenthesisSpacing`, and so on. Previously these rules returned a bare name, so the documented `disable = ["Structure/TooManyJoins"]` silently did nothing and `--category` reached only 312 of 330 rules. If your `sqrust.toml` disables any of the following by bare name, add the prefix: `CaseWhenCount`, `ExcessiveGroupByColumns`, `ExcessiveWhereConditions`, `FunctionCallDepth`, `HavingWithoutAggregate`, `InSingleValue`, `LargeInList`, `MaxBlankLines`, `NaturalJoin`, `NoSelectAll`, `OrderByInSubquery`, `ParenthesisSpacing`, `SelectDistinctStar`, `TooManyCtes`, `TooManyJoins`, `TooManyUnions`, `UnnecessaryElseNull`, `WindowWithoutOrderBy`.
+
+### Fixed
+- **`sqrust fmt` no longer corrupts files.** Three separate data-loss bugs, each of which could rewrite a file that had no violations at all:
+  - `Convention/NotEqual` panicked (exit 101) on any file containing two or more string literals or comments — i.e. most real SQL.
+  - `Layout/WhitespaceBeforeSemicolon` mangled multi-byte UTF-8, turning `café` into `cafÃ©`.
+  - `Layout/TrailingWhitespace` and `Layout/MaxBlankLines` silently rewrote CRLF files as LF.
+- `fmt` now verifies the formatted output still parses before writing, and skips the file if it would not.
+- `fmt` warns when formatting a file that could not be parsed (e.g. a dbt Jinja model), since only text-level rules apply and the parse check cannot run.
+- `sqrust.toml` is now found when the linted path is relative — `sqrust check .` from a subdirectory previously ignored the project config entirely.
+- `sqrust rules --enable/--disable` no longer deletes the comments and formatting in your `sqrust.toml`, and no longer rewrites the file when nothing changed.
+- A malformed `sqrust.toml` (for example `disable = "x"` instead of an array) now reports a clear error and exits 2 instead of panicking.
+- `check` and `fmt` exit non-zero when a file cannot be read or written, instead of reporting success.
+- `--format` is validated; `--format jsonl` previously produced text output with no warning.
+- Duplicate paths (`sqrust check . .`) no longer double-report every violation.
+- `Structure/NestedSubquery` measures real nesting depth. It previously counted every `(SELECT` in the file without ever decrementing, so three independent statements were reported as "nesting depth 3", and any dbt model with three or more CTEs was flagged.
+- `Layout/ClauseOnNewLine` no longer flags a correctly formatted `LEFT JOIN`, SQL keywords inside comments, or `ORDER BY` within an `OVER (...)` window specification.
+
+### Added
+- `sqrust fmt --check` reports which files would be reformatted without writing them, and exits 1 if any would. Intended for CI.
+
+### Performance
+- `sqrust fmt` is roughly 100× faster: it parsed the file once per rule (about 330 full parses per file) and ran single-threaded. It now parses once, re-parses only when a rule actually changes the source, and runs in parallel like `check`.
+- Directory walking skips hidden directories and prunes directories excluded by a `dir/**` pattern instead of traversing them and filtering afterwards.
+
 ---
 
 ## [0.1.4] — 2026-04-14
