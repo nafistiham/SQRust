@@ -1,5 +1,7 @@
 use sqrust_core::{Diagnostic, FileContext, Rule};
 
+use crate::capitalisation::build_depth;
+
 pub struct GroupByColumnPerLine;
 
 impl Rule for GroupByColumnPerLine {
@@ -25,6 +27,7 @@ fn find_violations(source: &str, rule_name: &'static str) -> Vec<Diagnostic> {
     let bytes = source.as_bytes();
     let len = bytes.len();
     let skip = build_skip_set(bytes, len);
+    let depth = build_depth(bytes, &skip);
 
     // Find GROUP BY position outside strings/comments
     let group_by_start = match find_clause_start(&upper, &skip, b"GROUP", b"BY") {
@@ -50,7 +53,7 @@ fn find_violations(source: &str, rule_name: &'static str) -> Vec<Diagnostic> {
 
         let line_skip_offset = source_offset_of_region_line(source, after_group_by, rel_line_idx);
 
-        if let Some(col) = find_inline_comma(line, line_skip_offset, &skip) {
+        if let Some(col) = find_inline_comma(line, line_skip_offset, &skip, &depth) {
             diags.push(Diagnostic {
                 rule: rule_name,
                 message: "In multi-line GROUP BY, each column should be on its own line"
@@ -82,7 +85,7 @@ fn source_offset_of_region_line(source: &str, region_start: usize, rel_line_idx:
 
 /// Find a comma on `line` that is followed by non-whitespace content on the same line.
 /// Returns 1-indexed column if found.
-fn find_inline_comma(line: &str, line_abs_offset: usize, skip: &[bool]) -> Option<usize> {
+fn find_inline_comma(line: &str, line_abs_offset: usize, skip: &[bool], depth: &[u32]) -> Option<usize> {
     let bytes = line.as_bytes();
     let len = bytes.len();
     let mut i = 0;
@@ -90,7 +93,12 @@ fn find_inline_comma(line: &str, line_abs_offset: usize, skip: &[bool]) -> Optio
     while i < len {
         let abs = line_abs_offset + i;
 
-        if bytes[i] == b',' && (abs >= skip.len() || !skip[abs]) {
+        // A comma nested inside parentheses separates function arguments
+        // (`date_trunc('month', ts)`), not GROUP BY columns.
+        if bytes[i] == b','
+            && (abs >= skip.len() || !skip[abs])
+            && depth.get(abs).copied().unwrap_or(0) == 0
+        {
             let rest = &bytes[i + 1..];
             let has_content_after = rest.iter().any(|&b| b != b' ' && b != b'\t');
             if has_content_after {

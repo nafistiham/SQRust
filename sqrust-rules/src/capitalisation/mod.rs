@@ -152,3 +152,30 @@ impl SkipMap {
 pub(crate) fn is_word_char(ch: u8) -> bool {
     ch.is_ascii_alphanumeric() || ch == b'_'
 }
+
+/// Parenthesis nesting depth immediately before each byte, counting only real
+/// code (`skip[i] == false`).
+///
+/// Rules that scan for clause-level tokens need this to tell a top-level
+/// construct from one nested inside a function call, window specification, or
+/// subquery — for example a comma separating SELECT columns versus one
+/// separating the arguments of `COALESCE(a, b)`.
+///
+/// The returned vector has `bytes.len() + 1` entries so the position just past
+/// the end is addressable.
+pub(crate) fn build_depth(bytes: &[u8], skip: &[bool]) -> Vec<u32> {
+    let mut depth_at = vec![0u32; bytes.len() + 1];
+    let mut depth: u32 = 0;
+    for (i, &b) in bytes.iter().enumerate() {
+        depth_at[i] = depth;
+        if !skip.get(i).copied().unwrap_or(false) {
+            if b == b'(' {
+                depth += 1;
+            } else if b == b')' {
+                depth = depth.saturating_sub(1);
+            }
+        }
+    }
+    depth_at[bytes.len()] = depth;
+    depth_at
+}

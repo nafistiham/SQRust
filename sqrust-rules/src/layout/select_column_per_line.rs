@@ -1,5 +1,7 @@
 use sqrust_core::{Diagnostic, FileContext, Rule};
 
+use crate::capitalisation::build_depth;
+
 pub struct SelectColumnPerLine;
 
 impl Rule for SelectColumnPerLine {
@@ -21,6 +23,7 @@ fn find_violations(source: &str, rule_name: &'static str) -> Vec<Diagnostic> {
     }
 
     let skip = build_skip_set(bytes, len);
+    let depth = build_depth(bytes, &skip);
     let lines: Vec<&str> = source.split('\n').collect();
     let line_count = lines.len();
     let mut diags = Vec::new();
@@ -56,9 +59,9 @@ fn find_violations(source: &str, rule_name: &'static str) -> Vec<Diagnostic> {
             // This line is inside the SELECT list. Check if it has a comma
             // that is NOT the last non-whitespace/comment character on the line —
             // which would indicate multiple columns on the same line.
-            if has_inline_comma(lines[i], candidate_offset, &skip) {
+            if has_inline_comma(lines[i], candidate_offset, &skip, &depth) {
                 // Find the column of the comma.
-                let col = find_inline_comma_col(lines[i], candidate_offset, &skip);
+                let col = find_inline_comma_col(lines[i], candidate_offset, &skip, &depth);
                 diags.push(Diagnostic {
                     rule: rule_name,
                     message: "Multiple SELECT columns on one line; prefer placing each column expression on its own line".to_string(),
@@ -158,12 +161,12 @@ fn line_starts_clause(
 /// A trailing comma at end-of-line (e.g. `  a,`) does NOT indicate multiple
 /// columns on the same line — it just separates this column from the next one.
 /// Only a comma with non-whitespace code AFTER it counts as "inline".
-fn has_inline_comma(line: &str, line_offset: usize, skip: &[bool]) -> bool {
-    find_inline_comma_col(line, line_offset, skip) > 0
+fn has_inline_comma(line: &str, line_offset: usize, skip: &[bool], depth: &[u32]) -> bool {
+    find_inline_comma_col(line, line_offset, skip, depth) > 0
 }
 
 /// Returns the 1-indexed column of the first inline comma, or 0 if none.
-fn find_inline_comma_col(line: &str, line_offset: usize, skip: &[bool]) -> usize {
+fn find_inline_comma_col(line: &str, line_offset: usize, skip: &[bool], depth: &[u32]) -> usize {
     let bytes = line.as_bytes();
     let len = bytes.len();
 
@@ -175,7 +178,9 @@ fn find_inline_comma_col(line: &str, line_offset: usize, skip: &[bool]) -> usize
             continue;
         }
 
-        if bytes[i] == b',' {
+        // A comma nested inside parentheses separates function arguments
+        // (`COALESCE(a, b)`), not SELECT columns.
+        if bytes[i] == b',' && depth.get(abs).copied().unwrap_or(0) == 0 {
             // Check if there is any non-whitespace code character after this comma
             // on the same line (outside skip).
             let mut j = i + 1;
