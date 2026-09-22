@@ -30,7 +30,17 @@ All notable changes to SQRust are documented here.
 - `Layout/ArithmeticOperatorAtLineEnd` no longer flags the trailing `-` of dbt/Jinja whitespace-trim tags (`{#-`, `{%-`, `{{-`).
 - `Layout/ArithmeticOperatorPadding` no longer treats the wildcard in `SELECT *, other_col` or `t.*` as unpadded multiplication.
 
-Together these cut violations on the vendored dbt corpus from 516 to 445; excluding the Capitalisation rules (a style preference, not a defect) the remaining lint noise across those 12 files is about 73.
+Together these cut violations on the vendored dbt corpus from 516 to 445; excluding the Capitalisation rules (a style preference, not a defect) the remaining findings across those 12 files total 83, or 71 once the 12 expected Jinja parse errors are also set aside.
+
+### Fixed (docs and packaging)
+- `sqrust check` output is now sorted by file, then line, then column — it previously arrived in rule-registry and directory-entry order, so the documented "sorted by file path then line number" was not what users saw. JSON output is sorted the same way.
+- `docs/rules.md` listed 298 of the 330 rules — the entire Wave 32–34 batch was missing. All 330 rules are now documented.
+- README example output now quotes the real messages emitted by `TrailingWhitespace`, `ColonCast`, and `LongLines` instead of paraphrases.
+- The sqlfluff rule count quoted in the README, migration guide, and benchmark script was corrected from ~89 to 73 (as reported by `sqlfluff rules` on v4.1.0); sqruff's was confirmed as exactly 62.
+- The VS Code command is titled `SQRust: Check File`, matching what the READMEs and extension changelog already claimed.
+- Release builds now include `aarch64-unknown-linux-gnu`, so the one-line installer's Linux/ARM64 path downloads a real artifact instead of a 404.
+- Benchmark numbers were removed from `docs/architecture.md`; the README is the single source of truth for them (as `docs/product.md` already claimed).
+- Every rule now has at least 13 tests; five early rules (`TrailingWhitespace`, `TrailingNewline`, `CommaStyle`, `TabIndentation`, `LongLines`) had 8–12.
 
 ### Added
 - `sqrust fmt --check` reports which files would be reformatted without writing them, and exits 1 if any would. Intended for CI.
