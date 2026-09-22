@@ -25,6 +25,9 @@ jobs:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
             archive: tar.gz
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            archive: tar.gz
           - target: x86_64-pc-windows-msvc
             os: windows-latest
             archive: zip
@@ -50,8 +53,16 @@ jobs:
         if: matrix.target == 'x86_64-apple-darwin'
         run: rustup target add x86_64-apple-darwin
 
+      - name: Install AArch64 cross-linker (Linux ARM64 on x86_64 runner)
+        if: matrix.target == 'aarch64-unknown-linux-gnu'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu
+
       - name: Build release binary
         run: cargo build -p sqrust-cli --release --target ${{ matrix.target }}
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: ${{ matrix.target == 'aarch64-unknown-linux-gnu' && 'aarch64-linux-gnu-gcc' || '' }}
 
       - name: Package (Unix)
         if: matrix.archive == 'tar.gz'
