@@ -155,7 +155,7 @@ Key differences:
 
 **Rule parameters.** sqlfluff rules can be tuned per-project (e.g. `max_line_length = 120`). SQRust v0.1 does not support per-rule parameters — all rules use built-in defaults. This is planned for a future release.
 
-**Rule coverage.** SQRust has 330 rules vs sqlfluff's ~89. Some SQRust rules have no sqlfluff equivalent. Some sqlfluff rules have no SQRust equivalent yet — if you depend on a specific rule, check [docs/rules.md](rules.md) or open an issue.
+**Rule coverage.** SQRust has 330 rules vs sqlfluff's 73 (v4.1.0). Some SQRust rules have no sqlfluff equivalent. Some sqlfluff rules have no SQRust equivalent yet — if you depend on a specific rule, check [docs/rules.md](rules.md) or open an issue.
 
 ---
 

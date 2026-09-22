@@ -4,7 +4,7 @@
 
 SQRust is a SQL linter written in Rust. It is fast, comprehensive, and ships as a single binary with no runtime dependencies.
 
-**The problem it solves:** sqlfluff is the default SQL linter for dbt projects, but it is slow — 8+ minutes to lint a 200-file project in CI. Teams disable it locally because waiting that long to commit is impractical. Violations only get caught in CI, hours after the code was written.
+**The problem it solves:** sqlfluff is the default SQL linter for dbt projects, but it is slow — minutes to lint a large project in CI (47 seconds for 500 files on an Apple M-series machine; slower on typical CI runners). Teams disable it locally because waiting that long to commit is impractical. Violations only get caught in CI, hours after the code was written.
 
 SQRust is the Ruff-for-SQL play: take the same idea that made Ruff successful for Python linting (compile everything, do one parallel pass), apply it to SQL.
 

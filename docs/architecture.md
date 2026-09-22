@@ -178,19 +178,18 @@ All 330 rules are instantiated in `sqrust-cli/src/main.rs` as a `Vec<Box<dyn Rul
 | `rayon` | File-level parallelism |
 | `clap` | CLI argument parsing |
 | `toml` + `serde` | `sqrust.toml` config deserialization |
+| `toml_edit` | Comment-preserving edits for `sqrust rules --enable/--disable` |
+| `serde_json` | `--format json` output |
 | `glob` | Exclude pattern matching |
+| `walkdir` | Directory traversal during file discovery |
 
 ---
 
 ## Performance profile
 
-Benchmarked with hyperfine on two public corpora (Apple M-series, sqruff v0.34.1, sqlfluff v4.1.0):
-
-**22 files — jaffle-shop + attribution-playbook + mrr-playbook:**
-- **18 ms** median (330 rules) vs sqruff 37 ms vs sqlfluff 327 ms
-- Startup overhead: < 5 ms (no JVM, no Python interpreter)
-
-**500 files — Dune Spellbook (complex analytics SQL):**
-- **274 ms** median (330 rules) vs sqruff 394 ms vs sqlfluff 47,839 ms
+Benchmark numbers live in one place — the [README](../README.md#why-sqrust) — so they cannot
+drift out of sync between documents. Summary: SQRust finishes ahead of sqruff and roughly two
+orders of magnitude ahead of sqlfluff on the same corpora, in the same ANSI mode, measured with
+hyperfine.
 
 Parse time dominates at this scale — `sqlparser-rs` is the bottleneck, not rule evaluation. The speed gap over `sqruff` is partly explained by the rule count difference (330 vs 62) and partly by text-scan rules doing more byte-level work.

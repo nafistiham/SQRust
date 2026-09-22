@@ -25,8 +25,8 @@ Two public corpora, all tools in ANSI mode, measured with [hyperfine](https://gi
 | Tool | Time | ANSI rules |
 |------|------|------------|
 | **SQRust** | **18 ms** | **330** |
-| sqruff | 37 ms | ~62 |
-| sqlfluff 4.1.0 | 327 ms | ~89 |
+| sqruff | 37 ms | 62 |
+| sqlfluff 4.1.0 | 327 ms | 73 |
 
 > **2× faster than sqruff. 18× faster than sqlfluff.**
 
@@ -35,8 +35,8 @@ Two public corpora, all tools in ANSI mode, measured with [hyperfine](https://gi
 | Tool | Time | ANSI rules |
 |------|------|------------|
 | **SQRust** | **274 ms** | **330** |
-| sqruff | 394 ms | ~62 |
-| sqlfluff 4.1.0 | 47,839 ms | ~89 |
+| sqruff | 394 ms | 62 |
+| sqlfluff 4.1.0 | 47,839 ms | 73 |
 
 > **1.4× faster than sqruff. 174× faster than sqlfluff.**
 
@@ -119,10 +119,10 @@ sqrust rules --enable Convention/SelectStar
 **Output:**
 
 ```
-models/orders.sql:12:5: [Convention/SelectStar] Avoid SELECT *; list columns explicitly
-models/orders.sql:34:1: [Layout/TrailingWhitespace] Trailing whitespace on line
-models/payments.sql:8:24: [Convention/ColonCast] Avoid PostgreSQL-style ::cast; use CAST() instead
-models/payments.sql:41:1: [Layout/LongLines] Line exceeds 120 characters (was 143)
+models/orders.sql:1:1: [Convention/SelectStar] Avoid SELECT *; list columns explicitly
+models/orders.sql:34:1: [Layout/TrailingWhitespace] Trailing whitespace
+models/payments.sql:8:3: [Convention/ColonCast] PostgreSQL :: cast; use CAST(expr AS type) for portability
+models/payments.sql:41:121: [Layout/LongLines] Line is 143 characters, maximum is 120
 ```
 
 **Auto-fix (`sqrust fmt`):**
@@ -200,7 +200,7 @@ Full rule list → [docs/rules.md](docs/rules.md) · [Migration from sqlfluff](d
 |  | SQRust | sqruff | sqlfluff |
 |--|--------|--------|----------|
 | Language | Rust | Rust | Python |
-| Rules (ANSI mode)¹ | **330** | ~62 | ~89 |
+| Rules (ANSI mode)¹ | **330** | 62 | 73 |
 | Speed (22 dbt files, ANSI) | **18 ms** | 37 ms | 327 ms |
 | Single binary | ✅ | ✅ | ❌ |
 | Auto-fix | Partial (layout) | ✅ | ✅ |
