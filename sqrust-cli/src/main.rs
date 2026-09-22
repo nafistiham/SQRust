@@ -1127,7 +1127,7 @@ fn main() {
                     let use_json = format == "json";
                     let read_failures = std::sync::atomic::AtomicUsize::new(0);
 
-                    let violations: Vec<JsonViolation> = files
+                    let mut violations: Vec<JsonViolation> = files
                         .par_iter()
                         .flat_map(|path| {
                             let source = match std::fs::read_to_string(path) {
@@ -1162,6 +1162,16 @@ fn main() {
                             diags
                         })
                         .collect();
+
+                    // Deterministic output regardless of thread scheduling or
+                    // directory-entry order: file path, then line, then column.
+                    violations.sort_by(|a, b| {
+                        a.file
+                            .cmp(&b.file)
+                            .then(a.line.cmp(&b.line))
+                            .then(a.col.cmp(&b.col))
+                            .then(a.rule.cmp(&b.rule))
+                    });
 
                     if use_json {
                         println!("{}", serde_json::to_string_pretty(&violations).unwrap_or_else(|_| "[]".to_string()));
