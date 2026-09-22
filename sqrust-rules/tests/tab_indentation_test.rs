@@ -85,3 +85,25 @@ fn tab_only_line_produces_violation() {
     assert_eq!(diags[0].line, 1);
     assert_eq!(diags[0].col, 1);
 }
+
+#[test]
+fn spaces_before_tab_do_not_count_as_leading_tab() {
+    // Only a tab in the very first column is flagged; mixed "space then tab"
+    // indentation is NoDoubleSpaces' territory, not this rule's.
+    let diags = check("  \tSELECT id\n");
+    assert!(diags.is_empty());
+}
+
+#[test]
+fn crlf_line_starting_with_tab_is_flagged() {
+    let diags = check("\tSELECT id\r\n\tFROM users\r\n");
+    assert_eq!(diags.len(), 2);
+    assert_eq!(diags[0].line, 1);
+    assert_eq!(diags[1].line, 2);
+}
+
+#[test]
+fn rule_is_report_only_no_fix_available() {
+    let ctx = FileContext::from_source("\tSELECT 1\n", "test.sql");
+    assert!(TabIndentation.fix(&ctx).is_none());
+}

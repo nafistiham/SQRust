@@ -115,3 +115,12 @@ fn violation_carries_correct_rule_name() {
     let diags = check(&line);
     assert_eq!(diags[0].rule, "Layout/LongLines");
 }
+
+#[test]
+fn crlf_line_at_exactly_the_limit_is_not_flagged() {
+    // `lines()` strips the \r, so a CRLF file's carriage return must not
+    // count toward the line length.
+    let sql = format!("{}\r\n", "a".repeat(120));
+    let diags = check(&sql);
+    assert!(diags.is_empty());
+}

@@ -61,3 +61,40 @@ fn fix_removes_trailing_whitespace() {
     let fixed = TrailingWhitespace.fix(&ctx).expect("fix should be available");
     assert_eq!(fixed, "SELECT id\nFROM users\n");
 }
+
+#[test]
+fn fix_returns_none_when_already_clean() {
+    use sqrust_core::Rule;
+    let ctx = FileContext::from_source("SELECT id\nFROM users\n", "test.sql");
+    assert!(TrailingWhitespace.fix(&ctx).is_none());
+}
+
+#[test]
+fn fix_preserves_crlf_line_endings() {
+    use sqrust_core::Rule;
+    let ctx = FileContext::from_source("SELECT id   \r\nFROM users  \r\n", "test.sql");
+    let fixed = TrailingWhitespace.fix(&ctx).expect("fix should be available");
+    assert_eq!(fixed, "SELECT id\r\nFROM users\r\n");
+}
+
+#[test]
+fn crlf_line_with_trailing_space_is_flagged() {
+    let diags = check("SELECT id \r\nFROM users\r\n");
+    assert_eq!(diags.len(), 1);
+    assert_eq!(diags[0].line, 1);
+}
+
+#[test]
+fn whitespace_only_line_is_flagged() {
+    let diags = check("SELECT id\n   \nFROM users\n");
+    assert_eq!(diags.len(), 1);
+    assert_eq!(diags[0].line, 2);
+    assert_eq!(diags[0].col, 1);
+}
+
+#[test]
+fn last_line_without_newline_still_flagged() {
+    let diags = check("SELECT id\nFROM users\t");
+    assert_eq!(diags.len(), 1);
+    assert_eq!(diags[0].line, 2);
+}

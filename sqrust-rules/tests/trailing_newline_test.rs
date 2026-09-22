@@ -54,3 +54,34 @@ fn file_ending_with_double_newline_has_no_violation() {
     let diags = check("SELECT 1\n\n");
     assert!(diags.is_empty());
 }
+
+#[test]
+fn crlf_file_ending_with_newline_has_no_violation() {
+    let diags = check("SELECT 1\r\nFROM users\r\n");
+    assert!(diags.is_empty());
+}
+
+#[test]
+fn crlf_file_not_ending_with_newline_flags_last_line() {
+    let diags = check("SELECT 1\r\nFROM users");
+    assert_eq!(diags.len(), 1);
+    assert_eq!(diags[0].line, 2);
+}
+
+#[test]
+fn violation_col_points_just_past_last_character() {
+    let diags = check("SELECT 1");
+    assert_eq!(diags[0].col, 9);
+}
+
+#[test]
+fn diagnostic_carries_correct_rule_name() {
+    let diags = check("SELECT 1");
+    assert_eq!(diags[0].rule, "Layout/TrailingNewline");
+}
+
+#[test]
+fn rule_is_report_only_no_fix_available() {
+    let ctx = FileContext::from_source("SELECT 1", "test.sql");
+    assert!(TrailingNewline.fix(&ctx).is_none());
+}

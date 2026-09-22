@@ -94,3 +94,17 @@ fn multiple_mixed_only_one_diagnostic_produced() {
     // The point: as long as there's mixing, exactly 1 diagnostic.
     assert_eq!(diags.len(), 1);
 }
+
+#[test]
+fn commas_in_the_middle_of_a_single_line_are_not_style_relevant() {
+    // A comma that neither starts nor ends the line is just a separator.
+    let diags = check("SELECT id, name, email FROM users\n");
+    assert!(diags.is_empty());
+}
+
+#[test]
+fn whitespace_only_lines_between_columns_are_ignored() {
+    let sql = "SELECT\n    id,\n   \n    name,\nFROM users";
+    let diags = check(sql);
+    assert!(diags.is_empty());
+}
