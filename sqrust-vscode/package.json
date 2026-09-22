@@ -32,7 +32,7 @@
     "commands": [
       {
         "command": "sqrust.checkFile",
-        "title": "SQRust: Check Current File"
+        "title": "SQRust: Check File"
       },
       {
         "command": "sqrust.checkWorkspace",
