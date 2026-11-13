@@ -1,4 +1,5 @@
 use sqrust_core::{Diagnostic, FileContext, Rule};
+use crate::capitalisation::SkipMap;
 
 pub struct LeadingOperator;
 
@@ -9,6 +10,8 @@ impl Rule for LeadingOperator {
 
     fn check(&self, ctx: &FileContext) -> Vec<Diagnostic> {
         let mut diags = Vec::new();
+        let skip_map = SkipMap::build(&ctx.source);
+        let mut offset = 0;
 
         // Text-based scan: works even when ctx.parse_errors is non-empty.
         // Split on '\n' so we get accurate line indices.
@@ -21,6 +24,11 @@ impl Rule for LeadingOperator {
             // 1-indexed column of the operator keyword in the original line
             let leading_spaces = line.len() - trimmed.len();
             let col = leading_spaces + 1;
+            let operator_offset = offset + leading_spaces;
+            offset += line.len() + 1;
+            if trimmed.is_empty() || !skip_map.is_code(operator_offset) {
+                continue;
+            }
 
             // Check for AND at line start.
             // Word boundary: AND must be followed by whitespace or be the whole token

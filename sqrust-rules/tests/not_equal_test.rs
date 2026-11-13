@@ -104,3 +104,15 @@ fn fix_does_not_replace_inside_string() {
     let fixed = NotEqual.fix(&ctx).expect("fix should be available");
     assert_eq!(fixed, "SELECT '!=' FROM t WHERE a <> b");
 }
+
+#[test]
+fn backtick_identifiers_and_jinja_are_preserved() {
+    for sql in ["SELECT `a!=b` FROM t", "{% if a != b %}SELECT 1{% endif %}"] {
+        let ctx = FileContext::from_source(sql, "test.sql");
+        assert!(NotEqual.check(&ctx).is_empty());
+        assert!(NotEqual.fix(&ctx).is_none());
+    }
+    let ctx = FileContext::from_source("SELECT `a!=b` FROM t WHERE x != 1", "test.sql");
+    assert_eq!(NotEqual.check(&ctx).len(), 1);
+    assert_eq!(NotEqual.fix(&ctx).unwrap(), "SELECT `a!=b` FROM t WHERE x <> 1");
+}

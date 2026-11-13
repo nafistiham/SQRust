@@ -1,4 +1,5 @@
 use sqrust_core::{Diagnostic, FileContext, Rule};
+use crate::capitalisation::SkipMap;
 
 pub struct NotEqual;
 
@@ -137,9 +138,11 @@ impl Rule for NotEqual {
         let mut diags = Vec::new();
         let source = &ctx.source;
 
+        let skip_map = SkipMap::build(source);
+
         // Collect positions of '!' that are outside strings/comments and followed by '='
         visit_outside_tokens(source, |byte_off, ch, line, col| {
-            if ch == '!' {
+            if ch == '!' && skip_map.is_code(byte_off) {
                 // Check the next byte character
                 let rest = &source[byte_off..];
                 if rest.starts_with("!=") {
@@ -158,6 +161,7 @@ impl Rule for NotEqual {
 
     fn fix(&self, ctx: &FileContext) -> Option<String> {
         let source = &ctx.source;
+        let skip_map = SkipMap::build(source);
         let chars: Vec<char> = source.chars().collect();
         let len = chars.len();
 
@@ -266,7 +270,11 @@ impl Rule for NotEqual {
                 continue;
             }
 
-            if pos + 1 < src_len && source_bytes[pos] == b'!' && source_bytes[pos + 1] == b'=' {
+            if pos + 1 < src_len
+                && source_bytes[pos] == b'!'
+                && source_bytes[pos + 1] == b'='
+                && skip_map.is_code(pos)
+            {
                 result.push_str("<>");
                 pos += 2;
             } else {
