@@ -863,13 +863,16 @@ fn dir_is_pruned(dir: &Path, exclude: &[String]) -> bool {
     false
 }
 
-fn collect_sql_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
+fn collect_sql_files(paths: &[PathBuf], exclude: &[String]) -> Result<Vec<PathBuf>, String> {
     let mut files = Vec::new();
     let mut seen = std::collections::HashSet::new();
 
     for path in paths {
         if path.is_file() {
-            if seen.insert(path.clone()) {
+            let identity = path
+                .canonicalize()
+                .map_err(|e| format!("Cannot resolve {}: {}", path.display(), e))?;
+            if seen.insert(identity) {
                 files.push(path.clone());
             }
             continue;
@@ -880,14 +883,20 @@ fn collect_sql_files(paths: &[PathBuf], exclude: &[String]) -> Vec<PathBuf> {
             }
             !(e.file_type().is_dir() && e.depth() > 0 && dir_is_pruned(e.path(), exclude))
         });
-        for entry in walker.filter_map(|e| e.ok()) {
+        for entry in walker {
+            let entry = entry.map_err(|e| format!("Cannot discover SQL files: {}", e))?;
             let p = entry.path().to_path_buf();
-            if p.extension().is_some_and(|ext| ext == "sql") && seen.insert(p.clone()) {
-                files.push(p);
+            if p.is_file() && p.extension().is_some_and(|ext| ext == "sql") {
+                let identity = p
+                    .canonicalize()
+                    .map_err(|e| format!("Cannot resolve {}: {}", p.display(), e))?;
+                if seen.insert(identity) {
+                    files.push(p);
+                }
             }
         }
     }
-    files
+    Ok(files)
 }
 
 /// Match a path against a list of glob patterns (full path and all suffixes).
@@ -1110,7 +1119,10 @@ fn main() {
                 .filter(|r| config.rule_enabled(r.name()))
                 .collect();
 
-            let all_files = collect_sql_files(paths, &config.sqrust.exclude);
+            let all_files = collect_sql_files(paths, &config.sqrust.exclude).unwrap_or_else(|e| {
+                eprintln!("sqrust: {}", e);
+                process::exit(2);
+            });
             let files: Vec<PathBuf> = all_files
                 .into_iter()
                 .filter(|p| is_included(p, &config.sqrust.include))
@@ -1121,6 +1133,9 @@ fn main() {
                 Commands::Check { ref format, .. } => {
                     if files.is_empty() {
                         eprintln!("No SQL files found.");
+                        if format == "json" {
+                            println!("[]");
+                        }
                         process::exit(0);
                     }
 

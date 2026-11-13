@@ -8,6 +8,11 @@ fn check(sql: &str) -> Vec<sqrust_core::Diagnostic> {
 }
 
 #[test]
+fn operators_in_multiline_comments_and_strings_are_ignored() {
+    assert!(check("SELECT 'text\nAND more text';\n/*\nOR documentation\n*/").is_empty());
+}
+
+#[test]
 fn rule_name_is_correct() {
     let sql = "SELECT a\nFROM t\nWHERE x = 1\n  AND y = 2";
     let diags = check(sql);
